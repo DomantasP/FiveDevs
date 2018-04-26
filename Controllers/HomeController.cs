@@ -11,13 +11,18 @@ namespace FiveDevsShop.Controllers
 {
     public class HomeController : Controller
     {
-        //private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext db;
+
+        public HomeController(ApplicationDbContext context)
+        {
+            this.db = context;
+        }
 
         public IActionResult Index()
         {
-            //var categories = db.Category.ToList();
+            var categories = db.Category.ToList();
 
-            return View();
+            return View(categories);
         }
 
         public IActionResult About()
