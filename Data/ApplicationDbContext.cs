@@ -16,6 +16,8 @@ namespace FiveDevsShop.Data
             this.Database.EnsureCreated();
         }
 
+        public DbSet<Category> Category { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
