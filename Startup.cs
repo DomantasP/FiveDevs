@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using FiveDevsShop.Data;
 using FiveDevsShop.Models;
 using FiveDevsShop.Services;
+using Microsoft.AspNetCore.Routing.Constraints;
 
 namespace FiveDevsShop
 {
@@ -60,6 +61,12 @@ namespace FiveDevsShop
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "product",
+                    template: "product/{*id}",
+                    defaults: new { controller = "Product", action = "GetProduct" },
+                    constraints: new { id = new IntRouteConstraint() });
             });
         }
     }
