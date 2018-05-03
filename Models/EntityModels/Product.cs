@@ -10,9 +10,8 @@
 
         public decimal Price { get; set; }
 
-        // Should product have only one category ?
         public int CategoryId { get; set; }
 
-        public int Quantity { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

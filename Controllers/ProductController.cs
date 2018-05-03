@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using FiveDevsShop.Data;
+using FiveDevsShop.Models;
 
 namespace FiveDevsShop.Controllers
 {
@@ -17,6 +18,12 @@ namespace FiveDevsShop.Controllers
         {
             var product = db.Product.Where(p => p.Id == id).FirstOrDefault();
 
+            return View(product);
+        }
+
+        public IActionResult AddProduct(Product product)
+        {
+            
             return View(product);
         }
     }
