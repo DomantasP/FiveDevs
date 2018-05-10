@@ -21,6 +21,7 @@ namespace FiveDevsShop.Controllers
         public IActionResult Index()
         {
             var categories = db.Category.ToList();
+    
 
             return View(categories);
         }
@@ -38,6 +39,14 @@ namespace FiveDevsShop.Controllers
 
             return View();
         }
+
+        public IActionResult AdminMain()
+        {
+            ViewData["Message"] = "Add product page.";
+
+            return View();
+        }
+
 
         public IActionResult Error()
         {

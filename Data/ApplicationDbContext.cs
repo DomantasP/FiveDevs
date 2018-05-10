@@ -17,6 +17,10 @@ namespace FiveDevsShop.Data
         }
 
         public DbSet<Category> Category { get; set; }
+        public DbSet<Item> Item { get; set; }
+        public DbSet<Photo> Photo { get; set; }
+        public DbSet<ApplicationUser> User { get; set; }
+        //public DbSet<User> User { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
