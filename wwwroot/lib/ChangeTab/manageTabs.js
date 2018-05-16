@@ -3,7 +3,6 @@
 $(document).ready(function () {
     
     app = Sammy('#main', function (context) {
-        console.log("here");
         this.get('#/', function () {
             changeTabToProduct();
         });
@@ -13,6 +12,9 @@ $(document).ready(function () {
         });
         this.get('#/Naudotojai', function () {
             changeTabToUser();
+        });
+        this.get('#/Products/EditProduct', function () {
+
         });
         
         
@@ -27,7 +29,6 @@ function changeTab(value) {
         dataType: 'html',
         async: false,
         success: function (data) {
-            //console.log(data);
             $('.user-dashboard').empty();
             $('.user-dashboard').html(data);
         }
@@ -39,18 +40,15 @@ function changeTabToUser() {
     changeTab('UserManagementView');
     getUserModel();
     
-    /*$('li.active').attr('class', 'inactive');
-    $('#usersTab').attr('class', 'active');*/
+  
 }
 
 function getUserModel() {
-    //$('#example').DataTable();
     $.ajax({
         url: '/Admin/AdminGetUserModel',
         type: 'POST',
         async: false,
         success: function (data) {
-            console.log(data);
             for (var i = 0; i < data.length; i++) {
                 record = data[i];
                 $("#usersTableBody").append("<tr>\
@@ -72,8 +70,6 @@ function getUserModel() {
 function changeTabToProduct() {
     changeSelectedTabColor('#productsTab');
     changeTab('AdminProductView');
-    //var elementExists = document.getElementsByClassName("dataTables_empty");
-    //console.log(elementExists);
     getProductModel();
     
 }
@@ -95,7 +91,7 @@ function getProductModel() {
                     <td>"+ record.title +"</td>\
                     <td>"+ record.price +"</td>\
                     <td>"+ record.discount +"</td>\
-                    <td> <a href='#' class='edit' id="+ record.id +" onclick='editProdut(this)'><img src='../lib/Table/pencil_green.png' alt='redaguoti' height='30' width='30' /></a>\
+                    <td> <a href='#/Products/EditProduct' class='edit' id="+ record.id +" onclick='editProdut(this)'><img src='../lib/Table/pencil_green.png' alt='redaguoti' height='30' width='30' /></a>\
                          <a href='#' class='delete' id="+ record.id +"><img src='../lib/Table/cross_red.png' alt='ištrinti' height='30' width='30' /></a></td>\
                     </tr>");
             }

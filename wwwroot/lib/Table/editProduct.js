@@ -10,7 +10,6 @@
 
 
     $("html, body").animate({ scrollTop: 500 }, 2000);
-    //console.log($(value).attr('id'));
 
     var productId = { id: $(value).attr('id') };
 
@@ -26,7 +25,6 @@
                 return true;
             },
             success: function (product) {
-                //console.log(product);
                 $('input#Id').attr('value', product.id);            
                 $('input#Sku_code').attr('value', product.sku_code);
                 $('input#Category').attr('value', product.category_id);
@@ -62,8 +60,6 @@ function submitForm() {
         timeout: 30000,
         data: product,
         error: function (error) {
-            /*console.log("dont work");
-            console.log(error);*/
             notify({
                 type: "error", //alert | success | error | warning | info
                 title: "Nesėkmė",
@@ -76,13 +72,9 @@ function submitForm() {
             });
         },
         success: function (product) {
-            /*console.log("works");
-            console.log(product);*/
             $("html, body").animate({ scrollTop: -500 }, 2000);
-            //console.log("works");
 
             $('.editForm').remove();
-            //*******
             notify({
                 type: "success", //alert | success | error | warning | info
                 title: "Sėkmė",
@@ -93,7 +85,6 @@ function submitForm() {
                 icon: '<img src="/./lib/Messages/images/paper_plane.png" alt = "sėkmė"/>',
                 message: "Prekės duomenys sėkmingai redaguoti."
             });
-            //*****
         }
     });
     $('.notify').fadeOut(4000, function () { $('.notify').remove(); });

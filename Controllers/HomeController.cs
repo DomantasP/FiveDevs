@@ -20,10 +20,9 @@ namespace FiveDevsShop.Controllers
 
         public IActionResult Index()
         {
-            var categories = db.Category.ToList();
     
 
-            return View(categories);
+            return View();
         }
 
         public IActionResult About()

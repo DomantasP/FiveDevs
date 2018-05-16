@@ -33,12 +33,10 @@ namespace FiveDevsShop.Controllers
         }
         public IActionResult AdminProductView()
         {
-            //List<Item> items = db.Item.ToList();
             ViewData["Message"] = "Prekių apžvalga";
 
             return PartialView();
         }
-        //[HttpPost]
         public IActionResult AdminEditProductView()
         {
             List<Item> items = db.Item.ToList();
@@ -67,7 +65,7 @@ namespace FiveDevsShop.Controllers
 
         [HttpPost]
         public IActionResult AdminGetProductById(int id)
-        {//db.Item.Find(id);
+        {
             Item item = db.Item.First(p => p.Id == id);
             ViewData["Message"] = "Redaguoti prekę";
 
@@ -91,7 +89,6 @@ namespace FiveDevsShop.Controllers
             if (!Int32.TryParse(category_idS, out category_id)) return null;
             if (!Decimal.TryParse(priceS, NumberStyles.Number, CultureInfo.InvariantCulture, out price)) return null;
             if (!Int32.TryParse(discountS, out discount)) return null;
-            //System.Diagnostics.Debug.WriteLine("HERE");
             using (var transaction = db.Database.BeginTransaction())
             {
                     item.Id = id;
