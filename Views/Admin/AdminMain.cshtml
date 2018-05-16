@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Administratoriaus pultas";
+}
+<head id="headers">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/lib/ChangeTab/sammy.js"></script>
+    <script src="~/lib/ChangeTab/manageTabs.js"></script>
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+    <script src="~/lib/Table/jquery.dataTables.js"></script>
+    <script id="dtb1" src="~/lib/Table/dataTables.jquerui.js"></script>
+    <script id="dtb2" src="~/lib/Table/dataTable.js"></script>
+    <script src="~/lib/Table/editProduct.js"></script>
+    <link href="~/lib/Table/dataTable_1.css" rel="stylesheet">
+    <link href="~/lib/Table/dataTable_2.css" rel="stylesheet">
+    <script src="~/lib/Table/dataTablesTest.js"></script>
+
+    <link rel="stylesheet" href="~/lib/ProductForm/productForm.css">
+    <script src="~/lib/ProductForm/jquery-validate.js"></script>
+    <script src="~/lib/ProductForm/jquery-validate.min.js"></script>
+    <link rel="stylesheet" href="~/lib/Messages/css/jquery.notify.css">
+    <script src="~/lib/Messages/js/jquery.notify.min.js"></script>
+
+
+
+
+
+</head>
+<body class="home">
+    <h2>Administratorius</h2>
+    <div class="container-fluid display-table">
+        <div class="row display-table-row">
+            <div class="col-md-2 col-sm-1 hidden-xs display-table-cell v-align box" id="navigation">
+                <div class="logo">
+                    <a hef="home.html">
+                        <img src="~/images/admin/admin_logo.png" alt="merkery_logo" class="hidden-xs hidden-sm">
+                        <img src="~/images/admin/circle_purple.svg" alt="merkery_logo" class="visible-xs visible-sm circle-logo">
+                    </a>
+                </div>
+                <div class="navi">
+                    <ul>
+                        <li id ="productsTab"><a href="#/Products"><i class="fa fa-home" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Prekės</span></a></li>
+                        <li id = "usersTab"><a href="#/Naudotojai"><i class="fa fa-users" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Naudotojai</span></a></li>
+                        <li><a href="#"><i class="fa fa-bar-chart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Pranešimai</span></a></li>
+                        <li><a href="#"><i class="fa fa-calendar" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Kalendorius</span></a></li>
+                        <li><a href="#"><i class="fa fa-stats" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Statistika</span></a></li>
+                        <li><a href="#"><i class="fa fa-settings" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Nustatymai</span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-10 col-sm-11 display-table-cell v-align">
+
+                <div class="user-dashboard" id="main">
+                    
+
+                    <!--<div class="row">
+        <div class="col-md-5 col-sm-5 col-xs-12 gutter">
+
+        </div>
+    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <!--<div id="add_project" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header login-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 class="modal-title">Add Project</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="text" placeholder="Project Title" name="name">
+                    <input type="text" placeholder="Post of Post" name="mail">
+                    <input type="text" placeholder="Author" name="passsword">
+                    <textarea placeholder="Desicrption"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" data-dismiss="modal">Close</button>
+                    <button type="button" class="add-project" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>-->
+</body>

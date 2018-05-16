@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewData["Title"] = "AdminEditProductView";
+}
+
+
+<body>
+    <div id="page-wrapper" class="editForm">
+        <div class="container">
+            <h1>
+                Prekės redagavimo langas
+            </h1>
+            <form name="myForm" class="form-horizontal" id="myForm"
+                  action="#" method="POST" enctype="multipart/form-data">
+                <div class="panel panel-info">
+                    <div class="panel-heading">Form validation</div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-md-4">ID</label>
+                                        <div class="col-md-6">
+                                            <input id="Id" type="text" class="form-control" name="Id" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4">SKU kodas</label>
+                                        <div class="col-md-6">
+                                            <input id="Sku_code" type="text" class="form-control" name="Sku_code" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group  ">
+                                        <label class="col-md-4">Kategorija</label>
+                                        <div class="col-md-6">
+                                            <input id="Category" type="text" class="form-control" name="Category" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4">Pavadinimas</label>
+                                        <div class="col-md-6">
+                                            <input id="Title" type="text" class="form-control" name="Title" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4">Kaina</label>
+                                        <div class="col-md-6">
+                                            <input id="Price" type="text" class="form-control" name="Price" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4">Aprašymas</label>
+                                        <div class="col-md-6">
+                                            <input id="Description" type="text" class="form-control" name="Description" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4">Nuolaida</label>
+                                        <div class="col-md-6">
+                                            <input id="Discount" type="text" class="form-control" name="Discount" required />
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <!-- end div -->
+                            </div>
+                            <!-- end div -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-md-offset-4" style="margin-bottom: 50px;">
+                    <center>
+                        <input type="button" onclick="submitForm()" class="btn btn-primary" value="Submit" />
+                    </center>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</body>
