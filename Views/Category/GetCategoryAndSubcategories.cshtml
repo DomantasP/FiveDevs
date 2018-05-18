@@ -1,0 +1,19 @@
+﻿@model IEnumerable<FiveDevsShop.Models.Category>
+@{
+    ViewData["Title"] = "Kategorijos";
+}
+
+@if (Model.First() == null)
+{
+    <h2>Kategorijos</h2>
+}
+else
+{
+    <h2>@Model.First().Title</h2>
+}
+<ul>
+    @foreach (var category in Model.Skip(1))
+    {
+            <li><a asp-area="" asp-controller="Category" asp-action=@category.Id>@category.Title</a></li>
+    }
+</ul>
