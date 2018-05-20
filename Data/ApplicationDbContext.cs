@@ -16,9 +16,5 @@ namespace FiveDevsShop.Data
 
         public DbSet<Product> Product { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-        }
     }
 }
