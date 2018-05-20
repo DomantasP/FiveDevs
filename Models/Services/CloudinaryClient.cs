@@ -1,23 +1,24 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Microsoft.Extensions.Configuration;
 
 namespace FiveDevsShop.Services
  {
-     public class CloudinaryClient
+     public static class CloudinaryClient
      {
-         // Put these into the config file
          private static readonly Account account = new Account(
-             "five-devs-shop",
-             "396914585999764",
-             "wE1cISeIFct9Ki5grzal_xampY4");
+             AppSettingsProvider.CloudinaryCloud,
+             AppSettingsProvider.CloudinaryApiKey,
+             AppSettingsProvider.CloudinarytSecret);
              
          private static readonly Cloudinary cloudinary = new Cloudinary(account);
          
-         public static void UploadImage(string filePath)
+         public static void UploadImage(string filePath, string imageId)
          {
              var uploadParams = new ImageUploadParams()
              {
-                 File = new FileDescription(@"./img.jpg")
+                 File = new FileDescription(filePath),
+                 PublicId = imageId
              };
      
              var uploadResult = cloudinary.Upload(uploadParams);

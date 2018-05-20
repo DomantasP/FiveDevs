@@ -20,6 +20,8 @@ namespace FiveDevsShop
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            BuildAppSettingsProvider();
         }
 
         public IConfiguration Configuration { get; }
@@ -61,7 +63,25 @@ namespace FiveDevsShop
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "product",
+                    template: "product/add",
+                    defaults: new { controller = "Product", action = "AddProduct" });
+
+                routes.MapRoute(
+                    name: "get_product",
+                    template: "product/{id?}",
+                    constraints: new { id = new IntRouteConstraint() },
+                    defaults: new { controller = "Product", action = "GetProduct" });
             });
+        }
+
+        private void BuildAppSettingsProvider()
+        {
+            AppSettingsProvider.CloudinaryCloud = Configuration["CloudinaryCredentials:Cloud"];
+            AppSettingsProvider.CloudinaryApiKey = Configuration["CloudinaryCredentials:ApiKey"];
+            AppSettingsProvider.CloudinarytSecret = Configuration["CloudinaryCredentials:Secret"];
         }
     }
 }

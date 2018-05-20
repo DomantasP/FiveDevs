@@ -16,5 +16,7 @@ namespace FiveDevsShop.Data
 
         public DbSet<Product> Product { get; set; }
 
+        public DbSet<Image> Image { get; set; }
+
     }
 }
