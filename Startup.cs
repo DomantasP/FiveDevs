@@ -60,6 +60,11 @@ namespace FiveDevsShop
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "category",
+                    template: "category/{id?}",
+                    defaults: new { controller = "Category", action = "GetCategoryAndSubcategories" });
             });
         }
     }
