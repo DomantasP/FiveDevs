@@ -1,0 +1,135 @@
+﻿
+@{
+    ViewData["Title"] = "SalesView";
+}
+
+<h2>SalesView</h2>
+<body>
+    <div id="order">
+        <!--Horizontal Tab-->
+        <div id="horizontalTab">
+            <ul>
+                <li><a href="#Nepatvirtinti">Nepatvirtintos siuntos</a></li>
+                <li><a href="#Neissiusti">Patvirtintos siuntos</a></li>
+                <li><a href="#Nepristatyti">Išsiųstos siuntos</a></li>
+                <li><a href="#Pristatyti">Pristatytos siuntos</a></li>
+
+            </ul>
+            <div id="Nepatvirtinti">
+                <table id="purchasesTable" class="display orderTable" style="width:100%">
+                    <thead>
+                        @Html.Partial("~/Views/Shared/orderPurchaseHeader.cshtml")  
+                    </thead>
+                    <tbody id="purchasesTableBody" class="orderTableBody"></tbody>
+                    <tfoot>
+                        @Html.Partial("~/Views/Shared/orderPurchaseHeader.cshtml")
+                    </tfoot>
+                </table>
+            </div>
+            <div id="Neissiusti">
+                <table id="purchasesTable2" class="display orderTable" style="width:100%">
+                    <thead>
+                        @Html.Partial("~/Views/Shared/orderPurchaseHeader.cshtml")
+                    </thead>
+                    <tbody id="purchasesTableBody2" class="orderTableBody"></tbody>
+                    <tfoot>
+                        @Html.Partial("~/Views/Shared/orderPurchaseHeader.cshtml")
+                    </tfoot>
+                </table>
+            </div>
+            <div id="Nepristatyti">
+                <table id="purchasesTable3" class="display orderTable" style="width:100%">
+                    <thead>
+                        @Html.Partial("~/Views/Shared/orderPurchaseHeader.cshtml")
+                    </thead>
+                    <tbody id="purchasesTableBody3" class="orderTableBody"></tbody>
+                    <tfoot>
+                        @Html.Partial("~/Views/Shared/orderPurchaseHeader.cshtml")
+                    </tfoot>
+                </table>
+            </div>
+            <div id="Pristatyti">
+                <div id="Nepristatyti">
+                    <table id="purchasesTable4" class="display orderTable" style="width:100%">
+                        <thead>
+                            @Html.Partial("~/Views/Shared/orderPurchaseHeader.cshtml")
+                        </thead>
+                        <tbody id="purchasesTableBody4" class="orderTableBody"></tbody>
+                        <tfoot>
+                            @Html.Partial("~/Views/Shared/orderPurchaseHeader.cshtml")
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <style>
+            .AllOrderData {
+                font-size: 15px;
+            }
+            table#orderDataTable {
+                border-collapse: separate;
+                border-spacing: 16px;
+            }
+        </style>
+        <div id="orderMoreInformation">
+            <hr />
+            <h2 hidden>Informacija apie prekių užsakymą</h2>
+            <div hidden id="orderData">
+                <table hidden id="orderDataTable">
+                    <tr>
+                        <td class="AllOrderData"><b>Data:</b></td>
+                        <td class="AllOrderData orderData orderDate"></td>
+                    </tr>
+                    <tr>
+                        <td class="AllOrderData"><b>Užsakymo numeris:</b></td>
+                        <td class="AllOrderData orderData orderId"></td>
+                    </tr>
+                    <tr>
+                        <td class="AllOrderData"><b>Naudotojo vardas:</b></td>
+                        <td class="AllOrderData orderData orderUsername"></td>
+                    </tr>
+                    <tr>
+                        <td class="AllOrderData"><b>Siuntos adresas:</b></td>
+                        <td class="AllOrderData orderData orderAdress"></td>
+                    </tr>
+                    <tr>
+                        <td class="AllOrderData"><b>Užsakymo vertė:</b></td>
+                        <td class="AllOrderData orderValue"></td>
+                    </tr>
+                </table>
+            </div>
+            <br />
+            <div hidden id="orderProducts">
+                <table id="productsTable" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Prekės ID</th>
+                            <th>SKU kodas</th>
+                            <th>Kategorija</th>
+                            <th>Pavadinimas</th>
+                            <th>Kaina</th>
+                            <th>Kiekis</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody"></tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Prekės ID</th>
+                            <th>SKU kodas</th>
+                            <th>Kategorija</th>
+                            <th>Pavadinimas</th>
+                            <th>Kaina</th>
+                            <th>Kiekis</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                <br />
+                <div class="col-md-4 col-md-offset-4" style="margin-bottom: 50px;">
+                    <center>
+                        <input type="button" onclick="confirmOrder(this)" class="btn btn-primary" value="Patvirtinti" />
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
