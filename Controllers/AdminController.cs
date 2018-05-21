@@ -31,6 +31,7 @@ namespace FiveDevsShop.Controllers
             ViewData["Message"] = "Naudotojų peržiūra";
             return PartialView();
         }
+<<<<<<< HEAD
         public IActionResult SalesView()
         {
             ViewData["Message"] = "Pardavimų peržiūra";
@@ -39,6 +40,10 @@ namespace FiveDevsShop.Controllers
         public IActionResult AdminProductView()
         {
 
+=======
+        public IActionResult AdminProductView()
+        {
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
             ViewData["Message"] = "Prekių apžvalga";
 
             return PartialView();
@@ -50,6 +55,7 @@ namespace FiveDevsShop.Controllers
 
             return PartialView(items);
         }
+<<<<<<< HEAD
 
         [HttpPost]
         public JsonResult ConfirmOrder(int orderId) //Id - order Id
@@ -195,6 +201,8 @@ namespace FiveDevsShop.Controllers
         }
 
 
+=======
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
         [HttpPost]
         public IActionResult AdminGetUserModel()
         {
@@ -217,7 +225,10 @@ namespace FiveDevsShop.Controllers
         [HttpPost]
         public IActionResult AdminGetProductById(int id)
         {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
             Item item = db.Item.First(p => p.Id == id);
             ViewData["Message"] = "Redaguoti prekę";
 

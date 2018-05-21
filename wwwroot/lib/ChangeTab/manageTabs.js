@@ -3,6 +3,7 @@
 $(document).ready(function () {
     
     app = Sammy('#main', function (context) {
+<<<<<<< HEAD
 
         this.get('#/', function () {
             changeTabWithSpinner(changeTabToProduct);
@@ -108,11 +109,44 @@ function changeTab(value) {
             }
         });
         
+=======
+        this.get('#/', function () {
+            changeTabToProduct();
+        });
+        this.get('#/Products', function () {
+            changeTabToProduct();
+
+        });
+        this.get('#/Naudotojai', function () {
+            changeTabToUser();
+        });
+        this.get('#/Products/EditProduct', function () {
+
+        });
+        
+        
+    });
+    app.run('#/')
+})
+
+function changeTab(value) {
+    $.ajax({
+        url: '/Admin/' + value,
+        type: 'POST',
+        dataType: 'html',
+        async: false,
+        success: function (data) {
+            $('.user-dashboard').empty();
+            $('.user-dashboard').html(data);
+        }
+    });
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
 }
 
 function changeTabToUser() {
     changeSelectedTabColor('#usersTab');
     changeTab('UserManagementView');
+<<<<<<< HEAD
     getUserModel();  
 }
 
@@ -123,6 +157,14 @@ function changeTabToSales() {
 
 function getUserModel() {
 
+=======
+    getUserModel();
+    
+  
+}
+
+function getUserModel() {
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
     $.ajax({
         url: '/Admin/AdminGetUserModel',
         type: 'POST',
@@ -130,6 +172,7 @@ function getUserModel() {
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
                 record = data[i];
+<<<<<<< HEAD
 
                 if (record.ban_flag == 0) {
                     $("#usersTableBody").append("<tr id = " + record.username + ">\
@@ -146,11 +189,23 @@ function getUserModel() {
                     <td><a href='#/Naudotojai/Atblokuoti' class='ban' id=" + record.username + " onclick='unblockUser(this)'><img src='../lib/Table/images/unblock_green.png' alt='atblokuoti' height='30' width='30' /></a></td>\
                     </tr>");
                 }         
+=======
+                $("#usersTableBody").append("<tr>\
+                    <td>"+ record.username + "</td>\
+                    <td>"+ record.email + "</td>\
+                    <td>"+ record.ban_flag + "</td>\
+                    <td>"+ record.ban_flag + "</td>\
+                    </tr>");
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
             }
 
         }
     });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
     $('#usersTable').DataTable();
 
 }
@@ -158,7 +213,10 @@ function getUserModel() {
 function changeTabToProduct() {
     changeSelectedTabColor('#productsTab');
     changeTab('AdminProductView');
+<<<<<<< HEAD
 
+=======
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
     getProductModel();
     
 }
@@ -180,7 +238,11 @@ function getProductModel() {
                     <td>"+ record.title +"</td>\
                     <td>"+ record.price +"</td>\
                     <td>"+ record.discount +"</td>\
+<<<<<<< HEAD
                     <td> <a href='#/Products' class='edit' id="+ record.id +" onclick='editProdut(this)'><img src='../lib/Table/pencil_green.png' alt='redaguoti' height='30' width='30' /></a>\
+=======
+                    <td> <a href='#/Products/EditProduct' class='edit' id="+ record.id +" onclick='editProdut(this)'><img src='../lib/Table/pencil_green.png' alt='redaguoti' height='30' width='30' /></a>\
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
                          <a href='#' class='delete' id="+ record.id +"><img src='../lib/Table/cross_red.png' alt='ištrinti' height='30' width='30' /></a></td>\
                     </tr>");
             }

@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+=======
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
 using Microsoft.EntityFrameworkCore;
 using FiveDevsShop.Models;
 
@@ -17,6 +21,7 @@ namespace FiveDevsShop.Data
         }
 
         public DbSet<Category> Category { get; set; }
+<<<<<<< HEAD
         public DbSet<Item> Item { get; set; }
         public DbSet<Photo> Photo { get; set; }
         public DbSet<ApplicationUser> User { get; set; }
@@ -28,5 +33,17 @@ namespace FiveDevsShop.Data
             base.OnModelCreating(builder);
             builder.Entity<Purchase>().HasKey(c => new { c.Order_id, c.Item_id });
         }
+=======
+        
+        public DbSet<Photo> Photo { get; set; }
+        
+        public DbSet<ApplicationUser> User { get; set; }
+        //public DbSet<User> User { get; set; }
+
+        public DbSet<Item> Item { get; set; }
+
+        public DbSet<Image> Image { get; set; }
+
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
     }
 }

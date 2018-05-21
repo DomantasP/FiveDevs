@@ -1,0 +1,6 @@
+﻿@model IEnumerable<Category>
+
+@foreach (var category in Model)
+{
+        <li><a asp-area="" asp-controller="Category" asp-action=@category.Id>@category.Title</a></li>
+}

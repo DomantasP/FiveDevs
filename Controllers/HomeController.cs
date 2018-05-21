@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+=======
+﻿using System.Diagnostics;
+using System.Linq;
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
 using Microsoft.AspNetCore.Mvc;
 using FiveDevsShop.Models;
 using FiveDevsShop.Data;
@@ -20,8 +25,11 @@ namespace FiveDevsShop.Controllers
 
         public IActionResult Index()
         {
+<<<<<<< HEAD
     
 
+=======
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
             return View();
         }
 

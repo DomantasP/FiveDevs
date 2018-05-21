@@ -500,7 +500,11 @@
                                                     } catch (c) { }
                                                 }, fnStateSaveParams: null, iStateDuration: 7200, iDeferLoading: null, iDisplayLength: 10, iDisplayStart: 0, iTabIndex: 0, oClasses: {}, oLanguage: {
                                                     oAria: { sSortAscending: ": Rikiavimas pagal stulpelį didėjančiai", sSortDescending: ": Rikiavimas pagal stulpelį mažėjančiai" }, oPaginate: { sFirst: "Pirmas", sLast: "Paskutinis", sNext: "Pirmyn", sPrevious: "Atgal" }, sEmptyTable: "Lentelėje nėra duomenų", sInfo: "Rodoma nuo _START_ iki _END_ iš _TOTAL_ įrašų", sInfoEmpty: "Rodoma nuo 0 iki 0 iš 0 įrašų",
+<<<<<<< HEAD
                                                     sInfoFiltered: "(Išfiltruota iš _MAX_ įrašų)", sInfoPostFix: "", sDecimal: "", sThousands: ",", sLengthMenu: "Rodyti _MENU_ įrašus", sLoadingRecords: "Palaukite...", sProcessing: "Processing...", sSearch: "Paieška:", sSearchPlaceholder: "", sUrl: "", sZeroRecords: "Nerasta įrašų"
+=======
+                                                    sInfoFiltered: "(Iššiltruota iš _MAX_ įrašų)", sInfoPostFix: "", sDecimal: "", sThousands: ",", sLengthMenu: "Rodyti _MENU_ įrašus", sLoadingRecords: "Palaukite...", sProcessing: "Processing...", sSearch: "Paieška:", sSearchPlaceholder: "", sUrl: "", sZeroRecords: "Nerasta įrašų"
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
                                                 }, oSearch: h.extend({}, m.models.oSearch), sAjaxDataProp: "data", sAjaxSource: null, sDom: "lfrtip", searchDelay: null, sPaginationType: "simple_numbers", sScrollX: "", sScrollXInner: "", sScrollY: "", sServerMethod: "GET", renderer: null, rowId: "DT_RowId"
                                             };
     X(m.defaults); m.defaults.column = { aDataSort: null, iDataSort: -1, asSorting: ["asc", "desc"], bSearchable: !0, bSortable: !0, bVisible: !0, fnCreatedCell: null, mData: null, mRender: null, sCellType: "td", sClass: "", sContentPadding: "", sDefaultContent: null, sName: "", sSortDataType: "std", sTitle: null, sType: null, sWidth: null }; X(m.defaults.column); m.models.oSettings = {

@@ -1,5 +1,8 @@
 ﻿using System;
+<<<<<<< HEAD
 using System.Collections.Generic;
+=======
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -9,7 +12,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+<<<<<<< HEAD
 using Microsoft.Extensions.Options;
+=======
+>>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
 using FiveDevsShop.Models;
 using FiveDevsShop.Models.ManageViewModels;
 using FiveDevsShop.Services;
