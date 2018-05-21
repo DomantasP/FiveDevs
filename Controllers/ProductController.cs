@@ -25,10 +25,7 @@ namespace FiveDevsShop.Controllers
 
         public IActionResult GetProduct(int id)
         {
-            var product = db.Product.FirstOrDefault(p => p.Id == id);
-
-
-            //CloudinaryClient.UploadImage();
+            var product = db.Item.FirstOrDefault(p => p.Id == id);
 
             return View(product);
         }
@@ -48,12 +45,14 @@ namespace FiveDevsShop.Controllers
                 var filePath = Path.GetTempFileName();
                 var imageIds = new List<String>();
 
-                var product = new Product()
+                var product = new Item()
                 {
                     Title = model.Title,
                     Description = model.Description,
                     Price = model.Price,
-                    CategoryId = model.CategoryId
+                    Category_id = model.CategoryId,
+                    Discount = model.Discount,
+                    Sku_code = model.SkuCode
                 };
 
                 foreach (var formFile in model.Images)
@@ -78,7 +77,7 @@ namespace FiveDevsShop.Controllers
                     imageIds.Add(imageId);
                 }
 
-                db.Product.Add(product);
+                db.Item.Add(product);
 
                 imageIds.ForEach(id => db.Image.Add(
                         new Image() { Id = id, ProductId = product.Id } ));

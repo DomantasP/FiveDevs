@@ -25,5 +25,11 @@ namespace FiveDevsShop.Models
 
         [Required]
         public List<IFormFile> Images { get; set; }
+        
+        [Required]
+        public int Discount { get; set; }
+        
+        [Required] public string SkuCode { get; set; }
+        
     }
 }

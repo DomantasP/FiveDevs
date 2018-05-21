@@ -14,7 +14,7 @@ namespace FiveDevsShop.Data
 
         public DbSet<Category> Category { get; set; }
 
-        public DbSet<Product> Product { get; set; }
+        public DbSet<Item> Item { get; set; }
 
         public DbSet<Image> Image { get; set; }
 
