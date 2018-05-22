@@ -11,10 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using FiveDevsShop.Data;
 using FiveDevsShop.Models;
 using FiveDevsShop.Services;
-<<<<<<< HEAD
-=======
 using Microsoft.AspNetCore.Routing.Constraints;
->>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
+
 
 namespace FiveDevsShop
 {
@@ -23,17 +21,10 @@ namespace FiveDevsShop
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-<<<<<<< HEAD
-        }
-
-        public IConfiguration Configuration { get; }
-=======
-
             BuildAppSettingsProvider();
         }
 
         private IConfiguration Configuration { get; }
->>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -72,10 +63,7 @@ namespace FiveDevsShop
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-<<<<<<< HEAD
-            });
-        }
-=======
+
 
                 routes.MapRoute(
                     name: "category",
@@ -102,6 +90,5 @@ namespace FiveDevsShop
             AppSettingsProvider.CloudinaryApiKey = Configuration["CloudinaryCredentials:ApiKey"];
             AppSettingsProvider.CloudinarytSecret = Configuration["CloudinaryCredentials:Secret"];
         }
->>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
     }
 }

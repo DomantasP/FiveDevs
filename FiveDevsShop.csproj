@@ -4,13 +4,11 @@
     <UserSecretsId>aspnet-FiveDevsShop-4CF6C95E-8FF7-48F6-91B8-5B8815AC3C3D</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-<<<<<<< HEAD
-=======
+
     <Compile Include="wwwroot\ViewComponents\CategoryViewComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CloudinaryDotNet" Version="1.3.0" />
->>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" PrivateAssets="All" />

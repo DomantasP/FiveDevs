@@ -1,112 +1,210 @@
-﻿
-@{
-    ViewData["Title"] = "AdminEditProductView";
+﻿var app;
+
+$(document).ready(function () {
+
+    app = Sammy('#main', function (context) {
+
+        this.get('#/', function () {
+            changeTabWithSpinner(changeTabToProduct);
+        });
+        this.get('#/Products', function () {
+            changeTabWithSpinner(changeTabToProduct);
+        });
+        this.get('#/Naudotojai', function () {
+            changeTabWithSpinner(changeTabToUser);
+        });
+        this.get('#/Naudotojai/Blokuoti', function () {
+            changeTabToUser();
+        });
+        this.get('#/Naudotojai/Atblokuoti', function () {
+            changeTabToUser();
+        });
+        this.get('#Nepatvirtinti', function () {
+            loadAllTabData(0, "#purchasesTableBody", '#purchasesTable', '#Nepatvirtinti');
+        });
+        this.get('#Neissiusti', function () {
+            loadAllTabData(1, "#purchasesTableBody2", '#purchasesTable2', '#Neissiusti');
+        });
+        this.get('#Nepristatyti', function () {
+            loadAllTabData(2, "#purchasesTableBody3", '#purchasesTable3', '#Nepristatyti');
+        });
+        this.get('#Pristatyti', function () {
+            loadAllTabData(3, "#purchasesTableBody4", '#purchasesTable4', '#Pristatyti');
+        });
+
+
+
+    })
+    app.run('#/')
+})
+
+function changeTabWithSpinner(functionn) {
+    setTimeout(function () {
+        $('.html-spinner').show();
+    }, 0);
+
+    setTimeout(function () {
+        functionn();
+        $('.html-spinner').hide();
+    }, 100);
 }
 
-<<<<<<< HEAD
-<head>
-    <title>Form Validation</title>
-    <link rel="stylesheet" href="~/lib/ProductForm/productForm.css">
-    <script src="~/lib/ProductForm/jquery-validate.js"></script>
-    <script src="~/lib/ProductForm/jquery-validate.min.js"></script>
+function loadAllTabData(orderStatus, tableBodyId, tableId, statusName) {
+    setTimeout(function () {
+        $('.html-spinner').show();
+    }, 0);
+
+    setTimeout(function () {
+        changeTabToSales();
+        loadHorizontalTabsStyle();
+        appendPurchasesTableBody(loadOrders(orderStatus), tableBodyId, tableId, statusName);
+        $('.html-spinner').hide();
+    }, 100);
+
+}
 
 
-    <link rel="stylesheet" href="~/lib/Messages/css/jquery.notify.css">
-    <script src="~/lib/Messages/js/jquery.notify.min.js"></script>
-    
-</head>
+function appendPurchasesTableBody(data, tableBodyId, tableId, href) {
+    for (var i = 0; i < data.length; i++) {
+        record = data[i];
+        $(tableBodyId).append("<tr id=" + record.id + ">
+    \
+    <td>"+ record.date + "</td>\
+    <td>"+ record.id + "</td>\
+    <td>"+ record.user + "</td>\
+    <td>"+ record.cost + "</td>\
+    <td>"+ "<a href=" + href + " class='moreInformation' id=" + record.id + " onclick='showOrderData(this)'><img src='../lib/Table/expand_black.png' alt='Daugiau informacijos' height='18' width='25' /></a>" + "</td>\
+</tr>");
+    }
+    $(tableId).DataTable();
+}
+
+function loadOrders(orderStatus) {
+    var declaredData = { status: orderStatus }
+    var returnValue;
+    $.ajax({
+        url: '/Admin/GetOrders',
+        type: 'POST',
+        data: declaredData,
+        async: false,
+        success: function (data) {
+            returnValue = data;
+        }
+    })
+
+    return returnValue;
+
+}
+
+function changeTab(value) {
+    $.ajax({
+        url: '/Admin/' + value,
+        type: 'POST',
+        dataType: 'html',
+        async: false,
+        success: function (data) {
+
+            $('.user-dashboard').empty();
+            $('.user-dashboard').html(data);
+        }
+    });
+
+}
+
+function changeTabToUser() {
+    changeSelectedTabColor('#usersTab');
+    changeTab('UserManagementView');
+    getUserModel();
+}
+
+function changeTabToSales() {
+    changeSelectedTabColor('#salesTab');
+    changeTab('SalesView');
+}
+
+function getUserModel() {
+
+    $.ajax({
+        url: '/Admin/AdminGetUserModel',
+        type: 'POST',
+        async: false,
+        success: function (data) {
+            for (var i = 0; i < data.length; i++) {
+                record = data[i];
+
+                if (record.ban_flag == 0) {
+                    $("#usersTableBody").append("<tr id=" + record.username + ">
+    \
+    <td>"+ record.username + "</td>\
+    <td>"+ record.email + "</td>\
+    <td>"+ record.ban_flag + "</td>\
+    <td><a href='#/Naudotojai/Blokuoti' class='ban' id=" + record.username + " onclick='blockUser(this)'><img src='../lib/Table/images/block_red.png' alt='blokuoti' height='20' width='20' /></a></td>\
+</tr>");
+                } else {
+                    $("#usersTableBody").append("<tr id=" + record.username + ">
+    \
+    <td>"+ record.username + "</td>\
+    <td>"+ record.email + "</td>\
+    <td>"+ record.ban_flag + "</td>\
+    <td><a href='#/Naudotojai/Atblokuoti' class='ban' id=" + record.username + " onclick='unblockUser(this)'><img src='../lib/Table/images/unblock_green.png' alt='atblokuoti' height='30' width='30' /></a></td>\
+</tr>");
+                }
+            }
+
+        }
+    });
+
+    $('#usersTable').DataTable();
+
+}
+
+function changeTabToProduct() {
+    changeSelectedTabColor('#productsTab');
+    changeTab('AdminProductView');
+
+    getProductModel();
+
+}
 
 
-<body>
-    <hr />
-    <div id="page-wrapper" class="editForm">
-        <div class="container">
-           
-            <h2 class="editProductView">Prekės redagavimo langas</h2>
-=======
 
-<body>
-    <div id="page-wrapper" class="editForm">
-        <div class="container">
-            <h1>
-                Prekės redagavimo langas
-            </h1>
->>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
-            <form name="myForm" class="form-horizontal" id="myForm"
-                  action="#" method="POST" enctype="multipart/form-data">
-                <div class="panel panel-info">
-                    <div class="panel-heading">Form validation</div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="col-md-4">ID</label>
-                                        <div class="col-md-6">
-<<<<<<< HEAD
-                                            <input id="Id" type="text" class="form-control" name="Sku_code" disabled />
-                                            
-=======
-                                            <input id="Id" type="text" class="form-control" name="Id" required />
->>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-4">SKU kodas</label>
-                                        <div class="col-md-6">
-                                            <input id="Sku_code" type="text" class="form-control" name="Sku_code" required />
-                                        </div>
-                                    </div>
-                                    <div class="form-group  ">
-                                        <label class="col-md-4">Kategorija</label>
-                                        <div class="col-md-6">
-                                            <input id="Category" type="text" class="form-control" name="Category" required />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-4">Pavadinimas</label>
-                                        <div class="col-md-6">
-                                            <input id="Title" type="text" class="form-control" name="Title" required />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-4">Kaina</label>
-                                        <div class="col-md-6">
-                                            <input id="Price" type="text" class="form-control" name="Price" required />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-4">Aprašymas</label>
-                                        <div class="col-md-6">
-                                            <input id="Description" type="text" class="form-control" name="Description" required />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-4">Nuolaida</label>
-                                        <div class="col-md-6">
-                                            <input id="Discount" type="text" class="form-control" name="Discount" required />
-                                        </div>
-                                    </div>
+function getProductModel() {
+    $.ajax({
+        url: '/Admin/AdminGetModel',
+        type: 'POST',
+        async: false,
+        success: function (data) {
+            for (var i = 0; i < data.length; i++) {
+                record = data[i];
+                $("#productsTable").append("<tr>
+    \
+    <td>"+ record.id + "</td>\
+    <td>"+ record.sku_code + "</td>\
+    <td>"+ record.category_id + "</td>\
+    <td>"+ record.title + "</td>\
+    <td>"+ record.price + "</td>\
+    <td>"+ record.discount + "</td>\
+    <td>
+        <a href='#/Products' class='edit' id="+ record.id + " onclick='editProdut(this)'><img src='../lib/Table/pencil_green.png' alt='redaguoti' height='30' width='30' /></a>\
+        <a href='#' class='delete' id="+ record.id + "><img src='../lib/Table/cross_red.png' alt='ištrinti' height='30' width='30' /></a>
+    </td>\
+</tr>");
+            }
+
+        }
+    });
 
 
-                                </div>
-                                <!-- end div -->
-                            </div>
-                            <!-- end div -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-md-offset-4" style="margin-bottom: 50px;">
-                    <center>
-<<<<<<< HEAD
-                        <input type="button" onclick="submitForm()" class="btn btn-primary" value="Koreguoti" />
-=======
-                        <input type="button" onclick="submitForm()" class="btn btn-primary" value="Submit" />
->>>>>>> 08d56f08d5bd2ddc594122d1b251dd1800fd13f8
-                    </center>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-</body>
+    $('#example').DataTable();
+
+}
+
+
+function changeSelectedTabColor(id) {
+    $('li.active').attr('class', 'inactive');
+    $(id).attr('class', 'active');
+}
+
+
+
+
