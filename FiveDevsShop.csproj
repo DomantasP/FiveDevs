@@ -4,6 +4,7 @@
     <UserSecretsId>aspnet-FiveDevsShop-4CF6C95E-8FF7-48F6-91B8-5B8815AC3C3D</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+
     <Compile Include="wwwroot\ViewComponents\CategoryViewComponent.cs" />
   </ItemGroup>
   <ItemGroup>

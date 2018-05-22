@@ -13,6 +13,7 @@ using FiveDevsShop.Models;
 using FiveDevsShop.Services;
 using Microsoft.AspNetCore.Routing.Constraints;
 
+
 namespace FiveDevsShop
 {
     public class Startup
@@ -20,7 +21,6 @@ namespace FiveDevsShop
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
             BuildAppSettingsProvider();
         }
 
@@ -63,6 +63,7 @@ namespace FiveDevsShop
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
 
                 routes.MapRoute(
                     name: "category",

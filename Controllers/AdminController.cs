@@ -31,6 +31,11 @@ namespace FiveDevsShop.Controllers
             ViewData["Message"] = "Naudotojų peržiūra";
             return PartialView();
         }
+        public IActionResult SalesView()
+        {
+            ViewData["Message"] = "Pardavimų peržiūra";
+            return PartialView();
+        }
         public IActionResult AdminProductView()
         {
             ViewData["Message"] = "Prekių apžvalga";
@@ -44,6 +49,149 @@ namespace FiveDevsShop.Controllers
 
             return PartialView(items);
         }
+        [HttpPost]
+        public JsonResult ConfirmOrder(int orderId) //Id - order Id
+        {
+            User_order order = db.User_order.FirstOrDefault(o => o.Id == orderId);
+            Debug.WriteLine(orderId);
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                order.Status += 1;
+
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch
+                {
+                    return null;
+                }
+                    transaction.Commit();
+            }
+
+            return Json(order.Id);
+        }
+
+        [HttpPost]
+        public JsonResult GetOrderItems(int Id) //Id - order Id
+        {
+            //var purchases = db.Purchase.Select(p => p.Order_id == Id);
+
+            var purchases = from p in db.Purchase
+                            join i in db.Item
+                            on p.Item_id equals i.Id
+                            where p.Order_id == Id
+                            select new
+                            {
+                                product_id = i.Id,
+                                sku_code = i.Sku_code,
+                                title = i.Title,
+                                price = p.Price,
+                                quantity = p.Quantity,
+                                category = i.Category_id
+
+                            };
+
+            return Json(purchases);
+        }
+        [HttpPost]
+        public JsonResult GetOrder(int Id)
+        {
+            User_order order = db.User_order.FirstOrDefault(o => o.Id == Id);
+            ApplicationUser user = db.User.FirstOrDefault(u => u.Id == order.User_id);
+            var cost = (from p in db.Purchase
+                       where p.Order_id == order.Id
+                       group p by new { p.Order_id } into pp
+                       select pp.Sum(c => (c.Price * c.Quantity))).FirstOrDefault();
+
+            var returnData = new
+            {
+                Id = order.Id,
+                Date = order.Date,
+                User = user.UserName,
+                Address = order.Address,
+                Cost = cost,
+                Status = order.Status
+            };
+                             
+            return Json(returnData);
+        }
+
+        
+        [HttpPost]
+        public JsonResult GetOrders(int status)
+        {
+            List<User_order> orders = db.User_order.ToList();
+            List<Purchase> purchases = db.Purchase.ToList();
+            List<ApplicationUser> users = db.User.ToList();
+
+            var sortedOrders = from o in orders
+                               where o.Status == status
+                               select o;
+
+            var sortedPurchase = from p in purchases
+                                 join o in sortedOrders
+                                 on p.Order_id equals o.Id
+                                 join u in users
+                                 on o.User_id equals u.Id
+                                 group p by new {o.Id, o.Date, u.UserName} into pg
+                                 select new
+                                 {
+                                     Id = pg.Key.Id,
+                                     Date = pg.Key.Date,
+                                     User = pg.Key.UserName,
+                                     Cost = pg.Sum(c=>(c.Price * c.Quantity))
+                                 };
+            
+  
+
+            return Json(sortedPurchase);
+        }
+
+        // status to ban - 1; to unban - 0
+        public JsonResult AdminChangeBanStatus(String username, int status)
+        {
+            ApplicationUser user = db.User.FirstOrDefault(p => p.UserName == username);
+
+
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                user.Ban_flag = status;
+
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch
+                {
+                    return null;
+                }
+                transaction.Commit();
+            }
+            var userSpecialData = from c in db.User.ToList()
+                                  where c.UserName == username
+                                  select new
+                                  {
+                                      Username = c.UserName,
+                                      Email = c.Email,
+                                      Ban_flag = c.Ban_flag
+                                  };
+
+            return Json(userSpecialData);
+        }
+
+        [HttpPost]
+        public IActionResult AdminBanUser(String username)
+        {
+            return AdminChangeBanStatus(username, 1);
+        }
+
+        [HttpPost]
+        public IActionResult AdminUnbanUser(String username)
+        {
+            return AdminChangeBanStatus(username, 0);
+        }
+
         [HttpPost]
         public IActionResult AdminGetUserModel()
         {

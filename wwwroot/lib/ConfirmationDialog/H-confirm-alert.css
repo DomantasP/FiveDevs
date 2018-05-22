@@ -1,0 +1,94 @@
+/***button***/
+*{
+	outline: none;
+}
+.Hbtn{
+	background-color: rgba(0,0,0,0);
+	border: 1px solid #0099FF;
+	border-radius: 5px;
+	color: #0099FF;
+	padding: 8px 15px;
+	cursor: pointer;
+	display: inline;
+}
+.Hbtn:hover{
+	background-color: #0099FF;
+	color: white;
+	border-color: #0099FF;
+}
+.Hbtn-default{
+	border: 1px solid #CCCCCC;
+	color: #CCCCCC;
+}
+.Hbtn-default:hover{
+	background-color: #CCCCCC;
+	border-color: #CCCCCC;
+}
+.Hbtn-success{
+	border: 1px solid #33CCCC;
+	color: #33CCCC;
+}
+.Hbtn-success:hover{
+	background-color: #33CCCC;
+	border-color: #33CCCC;
+}
+.Hbtn-danger{
+	border: 1px solid #CC3333;
+	color: #CC3333;
+}
+.Hbtn-danger:hover{
+	background-color: #CC3333;
+	border-color: #CC3333;
+}
+.Hbtn-warning{
+	border: 1px solid #FF9933;
+	color: #FF9933;
+}
+.Hbtn-warning:hover{
+	background-color: #FF9933;
+	border-color: #FF9933;
+}
+/***HConfirm***/
+.confirmContent{
+	display: table;
+	height: 500px;
+	width: 100%;
+	background-color: rgba(0,0,0,0.3);
+	z-index:40000;
+	position:fixed;
+	top:0px;
+	left:0px;
+	opacity:0;
+}
+.confirmContentInner{
+	display: table-cell;
+	vertical-align: middle;
+}
+.confirm{
+	background-color: white;
+	padding: 20px 20px;
+	width: 50%;
+	min-width: 300px;
+	max-width:450px;
+	margin: auto;
+	border-radius: 5px;
+}
+.confirm h4{
+	margin: 0px 0px 10px 0;
+}
+.confirm hr{
+	border:none;
+	border-bottom:1px solid #CCCCCC;
+}
+.confirm p{
+	margin: 20px 0px;
+	word-break: break-all;
+	text-indent: 2em;
+}
+.confirmButtonContent{
+	text-align: right;
+	width: 100%;
+}
+.confirmButtonContent button{
+	margin-left:10px;
+}
