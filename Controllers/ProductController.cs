@@ -25,7 +25,7 @@ namespace FiveDevsShop.Controllers
 
         public IActionResult GetProduct(int id)
         {
-            var product = db.Item.FirstOrDefault(p => p.Id == id);
+            var product = db.Product.FirstOrDefault(p => p.Id == id);
 
             return View(product);
         }
@@ -45,7 +45,7 @@ namespace FiveDevsShop.Controllers
                 var filePath = Path.GetTempFileName();
                 var imageIds = new List<String>();
 
-                var product = new Item()
+                var product = new Product()
                 {
                     Title = model.Title,
                     Description = model.Description,
@@ -77,8 +77,8 @@ namespace FiveDevsShop.Controllers
                     imageIds.Add(imageId);
                 }
 
-                db.Item.Add(product);
-
+                db.Product.Add(product);
+                    
                 imageIds.ForEach(id => db.Image.Add(
                         new Image() { Id = id, ProductId = product.Id } ));
 

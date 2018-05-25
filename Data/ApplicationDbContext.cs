@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using FiveDevsShop.Models;
@@ -17,7 +13,7 @@ namespace FiveDevsShop.Data
         }
 
         public DbSet<Category> Category { get; set; }
-        public DbSet<Item> Item { get; set; }
+        public DbSet<Product> Product { get; set; }
         public DbSet<Photo> Photo { get; set; }
         public DbSet<ApplicationUser> User { get; set; }
         public DbSet<Purchase> Purchase { get; set; }

@@ -21,7 +21,7 @@ namespace FiveDevsShop.Controllers
 
         public IActionResult AdminMain()
         {
-            List<Item> items = db.Item.ToList();
+            List<Product> items = db.Product.ToList();
             ViewData["Message"] = "Administratoriaus pultas";
 
             return View(items);
@@ -44,7 +44,7 @@ namespace FiveDevsShop.Controllers
         }
         public IActionResult AdminEditProductView()
         {
-            List<Item> items = db.Item.ToList();
+            List<Product> items = db.Product.ToList();
             ViewData["Message"] = "Redaguoti prekę";
 
             return PartialView(items);
@@ -78,7 +78,7 @@ namespace FiveDevsShop.Controllers
             //var purchases = db.Purchase.Select(p => p.Order_id == Id);
 
             var purchases = from p in db.Purchase
-                            join i in db.Item
+                            join i in db.Product
                             on p.Item_id equals i.Id
                             where p.Order_id == Id
                             select new
@@ -206,7 +206,7 @@ namespace FiveDevsShop.Controllers
         [HttpPost]
         public IActionResult AdminGetModel()
         {
-            List<Item> items = db.Item.ToList();
+            List<Product> items = db.Product.ToList();
 
             return Json(items);
         }
@@ -214,7 +214,7 @@ namespace FiveDevsShop.Controllers
         [HttpPost]
         public IActionResult AdminGetProductById(int id)
         {
-            Item item = db.Item.First(p => p.Id == id);
+            Product item = db.Product.First(p => p.Id == id);
             ViewData["Message"] = "Redaguoti prekę";
 
             return Json(item);
@@ -232,7 +232,7 @@ namespace FiveDevsShop.Controllers
             priceS = priceS.Replace(",", ".");
 
             if (!Int32.TryParse(idS, out id)) return null;
-            Item item = db.Item.FirstOrDefault(p => p.Id == id);
+            Product item = db.Product.FirstOrDefault(p => p.Id == id);
             if (item == null) return null;
             if (!Int32.TryParse(category_idS, out category_id)) return null;
             if (!Decimal.TryParse(priceS, NumberStyles.Number, CultureInfo.InvariantCulture, out price)) return null;
