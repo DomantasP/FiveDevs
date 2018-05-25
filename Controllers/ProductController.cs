@@ -27,7 +27,23 @@ namespace FiveDevsShop.Controllers
         {
             var product = db.Product.FirstOrDefault(p => p.Id == id);
 
-            return View(product);
+            List<string> galleryImages = new List<string>();
+
+            db.Image.Where(img => img.ProductId == product.Id).ToList()
+                    .ForEach(img => 
+                        galleryImages.Add(CloudinaryClient.GetImage(img.Id)));
+
+            var productViewModel = new ProductViewModel()
+            {
+                Title = product.Title,
+                Description = product.Description,
+                Price = product.Price,
+                SkuCode = product.Sku_code,
+                MainImage = CloudinaryClient.GetImage(product.MainImageId),
+                GalleryImages = galleryImages
+            };
+
+            return View(productViewModel);
         }
 
         public IActionResult AddProduct(ProductViewModel model)
@@ -36,14 +52,31 @@ namespace FiveDevsShop.Controllers
 
             if (ModelState.IsValid)
             {
-                if (!IsImageListValid(model.Images))
-                {
-                    // Show error that only images allowed
+                //Show error
+                if(!IsImageValid(model.MainImageFile))
                     return View(model);
+
+                foreach (var image in model.Images)
+                {
+                    var valid = IsImageValid(image);
+                    if(!valid)
+                    {
+                        // Show error that only images allowed
+                        return View(model);
+                    }
                 }
 
                 var filePath = Path.GetTempFileName();
                 var imageIds = new List<String>();
+
+                foreach (var formFile in model.Images)
+                {
+                    var imageId = UploadImage(formFile, filePath);
+                    imageIds.Add(imageId);
+                }
+
+                var mainImageId = UploadImage(model.MainImageFile, filePath);
+                imageIds.Add(mainImageId);
 
                 var product = new Product()
                 {
@@ -52,30 +85,9 @@ namespace FiveDevsShop.Controllers
                     Price = model.Price,
                     Category_id = model.CategoryId,
                     Discount = model.Discount,
-                    Sku_code = model.SkuCode
+                    Sku_code = model.SkuCode,
+                    MainImageId = mainImageId
                 };
-
-                foreach (var formFile in model.Images)
-                {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        formFile.CopyTo(stream);
-                    }
-
-                    var imageId = Guid.NewGuid().ToString();
-
-                    try
-                    {
-                        CloudinaryClient.UploadImage(filePath, imageId);
-                    }
-                    catch (Exception)
-                    {
-                        // Return message that file upload failed
-                        return View(model);
-                    }
-
-                    imageIds.Add(imageId);
-                }
 
                 db.Product.Add(product);
                     
@@ -92,38 +104,48 @@ namespace FiveDevsShop.Controllers
             }
         }
 
-        private bool IsImageListValid(List<IFormFile> files)
+        private bool IsImageValid(IFormFile file)
         {
+            int ImageMinimumBytes = 512;
 
-            foreach (var file in files)
+            if (file.ContentType.ToLower() != "image/jpg" &&
+                file.ContentType.ToLower() != "image/jpeg" &&
+                file.ContentType.ToLower() != "image/pjpeg" &&
+                file.ContentType.ToLower() != "image/gif" &&
+                file.ContentType.ToLower() != "image/x-png" &&
+                file.ContentType.ToLower() != "image/png")
             {
-                int ImageMinimumBytes = 512;
+                return false;
+            }
 
-                if (file.ContentType.ToLower() != "image/jpg" &&
-                    file.ContentType.ToLower() != "image/jpeg" &&
-                    file.ContentType.ToLower() != "image/pjpeg" &&
-                    file.ContentType.ToLower() != "image/gif" &&
-                    file.ContentType.ToLower() != "image/x-png" &&
-                    file.ContentType.ToLower() != "image/png")
-                {
-                    return false;
-                }
+            if (Path.GetExtension(file.FileName).ToLower() != ".jpg" &&
+                Path.GetExtension(file.FileName).ToLower() != ".png" &&
+                Path.GetExtension(file.FileName).ToLower() != ".gif" &&
+                Path.GetExtension(file.FileName).ToLower() != ".jpeg")
+            {
+                return false;
+            }
 
-                if (Path.GetExtension(file.FileName).ToLower() != ".jpg" &&
-                    Path.GetExtension(file.FileName).ToLower() != ".png" &&
-                    Path.GetExtension(file.FileName).ToLower() != ".gif" &&
-                    Path.GetExtension(file.FileName).ToLower() != ".jpeg")
-                {
-                    return false;
-                }
-
-                if (file.Length < ImageMinimumBytes)
-                {
-                    return false;
-                }
+            if (file.Length < ImageMinimumBytes)
+            {
+                return false;
             }
 
             return true;
+        }
+
+        private string UploadImage(IFormFile formFile, string filePath)
+        {
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                formFile.CopyTo(stream);
+            }
+
+            var imageId = Guid.NewGuid().ToString();
+
+            CloudinaryClient.UploadImage(filePath, imageId);
+
+            return imageId;
         }
     }
 

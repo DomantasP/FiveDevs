@@ -25,11 +25,18 @@ namespace FiveDevsShop.Models
 
         [Required]
         public List<IFormFile> Images { get; set; }
-        
+
+        [Required]
+        public IFormFile MainImageFile { get; set; }
+
         [Required]
         public int Discount { get; set; }
         
-        [Required] public string SkuCode { get; set; }
-        
+        [Required]
+        public string SkuCode { get; set; }
+
+        public List<string> GalleryImages { get; set; }
+
+        public string MainImage { get; set; }
     }
 }

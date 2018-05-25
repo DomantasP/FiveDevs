@@ -23,6 +23,11 @@ namespace FiveDevsShop.Services
      
              var uploadResult = cloudinary.Upload(uploadParams);
          }
+
+        public static string GetImage(string imageId)
+        {
+            return cloudinary.Api.UrlImgUp.BuildImageTag(imageId + ".jpg");
+        }
      }
      
 

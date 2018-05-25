@@ -1,11 +1,15 @@
-﻿
+﻿@model ProductViewModel
+
 @{
     ViewData["Title"] = "Product";
 }
 
-<div class="col-md-12">
-    <h2> @Model.Title</h2>
-    <p> @Model.Description</p>
-    <h4> @Model.Price</h4>
-</div>
+    <div class="col-md-12">
+        <div class="main-image-container col-md-6">@Html.Raw(Model.MainImage)</div>
+        <div class="col-md-6">
+            <h2> @Model.Title</h2>
+            <p> @Model.Description</p>
+            <h4> @Model.Price</h4>
+        </div>
+    </div>
 

@@ -1,6 +1,18 @@
-﻿body {
+﻿html, body {
+    height: 100%;
+    width: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
     padding-top: 50px;
     padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 /* Wrapping element */
@@ -8,6 +20,7 @@
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+    flex-grow: 1;
 }
 
 /* Carousel */
@@ -32,4 +45,18 @@
     .carousel-caption {
         display: none;
     }
+}
+
+/* CUSTOM STYLE BELOW*/
+.main-image-container {
+    text-align: right;
+}
+
+.main-image-container img {
+    height: 200px;
+    margin-left: auto;
+}
+
+footer {
+    text-align: center;
 }
