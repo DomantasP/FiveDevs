@@ -1,5 +1,6 @@
 ﻿using FiveDevsShop.Data;
 using FiveDevsShop.Models;
+using FiveDevsShop.Models.DomainServices;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -19,23 +20,47 @@ namespace FiveDevsShop.Controllers
 
         public IActionResult GetCategoryAndSubcategories(int? id)
         {
-            FiveDevsShop.Models.Category category;
-            List<Category> subCategories = new List<Category>();
+            Category current;
+            IEnumerable<Category> subcategories;
 
-            //The first element in subcategories list is a category and the later ones are its subcategories.
             if(id == null)
             {
-                subCategories = db.Category.Where(c => c.Parent_id == null).ToList();
-                subCategories.Insert(0, null);
+                current = null;
+                subcategories = db.Category.Where(c => c.Parent_id == null).ToList();
             }
             else
             {
-                category = db.Category.Find(id);
-                subCategories = db.Category.Where(c => c.Parent_id == id).ToList();
-                subCategories.Insert(0, category);
+                current = db.Category.Find(id);
+                subcategories = db.Category.Where(c => c.Parent_id == id);
             }
 
-            return View(subCategories);
+            return View(new CategoryViewModel()
+            {
+                Current = current,
+                Subcategories = subcategories,
+                Products = FindProductsInCategory(id),
+            });
+        }
+
+        private IEnumerable<ProductPreviewModel> FindProductsInCategory(int? id)
+        {
+            // TODO: currently this loads all products fitting criteria
+
+            if (id == null)
+            {
+                // we are at root, return all products
+                return db.Product.Select(ProductPreviewModel.FromProduct);
+            }
+
+            var categories = db.Category;
+            var subtree = CategoryTree.CategoriesInSubtree(categories, id.Value);
+            var products = new List<ProductPreviewModel>();
+            foreach (var categoryId in subtree)
+            {
+                products.AddRange(db.Product.Where(p => p.Category_id == categoryId).Select(ProductPreviewModel.FromProduct));
+            }
+
+            return products;
         }
     }
 }

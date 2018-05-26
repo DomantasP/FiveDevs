@@ -1,19 +1,21 @@
-﻿@model IEnumerable<FiveDevsShop.Models.Category>
+﻿@model CategoryViewModel
 @{
     ViewData["Title"] = "Kategorijos";
 }
 
-@if (Model.First() == null)
+@if (Model.IsAtRoot)
 {
     <h2>Kategorijos</h2>
 }
 else
 {
-    <h2>@Model.First().Title</h2>
+    <h2>@Model.Current.Title</h2>
 }
 <ul>
-    @foreach (var category in Model.Skip(1))
+    @foreach (var category in Model.Subcategories)
     {
-            <li><a asp-area="" asp-controller="Category" asp-action=@category.Id>@category.Title</a></li>
+        <li><a asp-area="" asp-controller="Category" asp-action=@category.Id>@category.Title</a></li>
     }
 </ul>
+
+@Html.Partial("/Views/Shared/Components/Product/ProductList.cshtml", Model.Products)
