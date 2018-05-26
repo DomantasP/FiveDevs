@@ -65,3 +65,7 @@
 .product-preview .discount-icon-container {
     position: relative;
 }
+
+.product-preview-list {
+    margin-top: 15px;
+}

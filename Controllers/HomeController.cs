@@ -45,6 +45,18 @@ namespace FiveDevsShop.Controllers
             return View();
         }
 
+        public IActionResult HomeProductList()
+        {
+            return View("Views/Home/Index.cshtml", new HomeViewModel()
+            {
+                Products = LoadProductPreviews(),
+            });
+        }
+
+        private IEnumerable<ProductPreviewModel> LoadProductPreviews()
+        {
+            return db.Product.Select(ProductPreviewModel.FromProduct);
+        }
 
         public IActionResult Error()
         {
