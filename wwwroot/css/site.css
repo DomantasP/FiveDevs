@@ -33,3 +33,18 @@
         display: none;
     }
 }
+
+/* product preview styles */
+.product-preview .product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+}
+
+.product-preview .product-title {
+    margin-top: 10px;
+}
+
+.product-preview .product-title a {
+    color: inherit;
+}

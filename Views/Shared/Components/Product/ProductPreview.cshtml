@@ -1,0 +1,10 @@
+﻿@model ProductPreviewModel
+
+
+<div class="product-preview col-md-3">
+    <a class="product-image-container" href="/">
+        <img class="product-image" src="@Model.MainImageUrl" />
+    </a>
+    <p class="text-center product-title"><a href="/">@Model.Title</a></p>
+    <p class="text-center product-price">@Model.Price Eur</p>
+</div>
