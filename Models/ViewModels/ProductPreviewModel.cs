@@ -14,5 +14,9 @@ namespace FiveDevsShop.Models
         public int Discount { get; set; }
 
         public string MainImageUrl { get; set; }
+
+        public decimal RealPrice => Math.Round(Price * (100 - Discount) / 100m, 2);
+
+        public bool IsDiscounted => Discount > 0;
     }
 }
