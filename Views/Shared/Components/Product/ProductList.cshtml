@@ -1,0 +1,15 @@
+﻿@model IEnumerable<ProductPreviewModel>
+@using FiveDevsShop.Extensions;
+
+
+<div class="product-preview-list container">
+    @foreach (var chunk in Model.Chunks(4))
+    {
+        <div class="row">
+            @foreach (var item in chunk)
+            {
+                @Html.Partial("ProductPreview.cshtml", item);
+            }
+        </div>
+    }
+</div>
