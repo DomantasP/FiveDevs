@@ -7,6 +7,8 @@ namespace FiveDevsShop.Models
 {
     public class ProductPreviewModel
     {
+        public int Id { get; set; }
+
         public string Title { get; set; }
 
         public decimal Price { get; set; }
@@ -23,6 +25,7 @@ namespace FiveDevsShop.Models
         {
             return new ProductPreviewModel()
             {
+                Id = product.Id,
                 Title = product.Title,
                 Price = product.Price,
                 Discount = product.Discount,
