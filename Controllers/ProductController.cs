@@ -30,6 +30,33 @@ namespace FiveDevsShop.Controllers
             return View(product);
         }
 
+        public IActionResult SearchProduct(string name)
+        {
+            if (name != null)
+            {
+                string[] splitName = name.Split(null);
+
+                var products = db.Product.ToList();
+
+                foreach (var word in splitName)
+                {
+                    for (int i = products.Count() - 1; i >= 0; i--)
+                    {
+                        if (!products.ElementAt(i).Title.ToLower().Contains(word.ToLower()))
+                        {
+                            products.RemoveAt(i);
+                        }
+                    }
+                }
+
+                return View(products);
+            }
+            else
+            {
+                return View();
+            }   
+        }
+
         public IActionResult AddProduct(ProductViewModel model)
         {
             model.Categories = db.Category.ToList();
