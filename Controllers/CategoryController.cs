@@ -12,8 +12,6 @@ namespace FiveDevsShop.Controllers
 {
     public class CategoryController : Controller
     {
-        const int ItemsPerPage = 20;
-
         private readonly ApplicationDbContext db;
 
         public CategoryController(ApplicationDbContext db)
