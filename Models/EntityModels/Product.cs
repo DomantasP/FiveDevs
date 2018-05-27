@@ -4,9 +4,9 @@
     {
         public int Id { get; set; }
 
-        public string Sku_code { get; set; }
+        public string SkuCode { get; set; }
 
-        public int Category_id { get; set; }
+        public int CategoryId { get; set; }
 
         public string Title { get; set; }
 

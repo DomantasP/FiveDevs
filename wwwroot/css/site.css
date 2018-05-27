@@ -10,8 +10,6 @@
 body {
     padding-top: 50px;
     padding-bottom: 20px;
-    display: flex;
-    flex-direction: column;
     height: 100%;
 }
 
@@ -20,7 +18,6 @@ body {
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
-    flex-grow: 1;
 }
 
 /* Carousel */
@@ -59,4 +56,93 @@ body {
 
 footer {
     text-align: center;
+    background: #ecf0f1;
+    padding: 40px !important;
+}
+
+footer div {
+    text-align: left;
+}
+
+footer div p {
+    text-align: center;
+}
+
+.bold {
+    font-weight: 600;
+}
+
+.price {
+    font-size: 28px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.product-container {
+    padding: 53px 106px 53px 106px;
+}
+
+.form-inline .form-control {
+    height: initial;
+}
+
+.description {
+    padding: 20px;
+}
+
+address {
+    text-align: left;
+}
+
+.green {
+    color: #00E640 ;
+}
+
+.red {
+    color: #D91E18;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+.category-breadcrumbs {
+    padding: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.category-breadcrumbs .glyphicon {
+    top: 2.5px;
+}
+
+.product-container h2 {
+    margin-top: 0px;
+}
+
+@media screen and (max-width: 767px) {
+    .product-container {
+        padding: 20px;
+    }
+
+    .not-found-container {
+        padding: 20px;
+    }
+}
+
+.no-padding {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.not-found-icon {
+    height: auto;
+    width: 250px;
+    margin: 40px auto;
+    max-width: 100%;
+}
+
+.not-found-container {
+    text-align: center;
+    padding: 53px;
 }

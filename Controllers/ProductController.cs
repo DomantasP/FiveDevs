@@ -23,30 +23,23 @@ namespace FiveDevsShop.Controllers
             this.db = db;
         }
 
+        [HttpGet]
         public IActionResult GetProduct(int id)
         {
             var product = db.Product.FirstOrDefault(p => p.Id == id);
 
-            List<string> galleryImages = new List<string>();
+            if (product == null)
+                return View("NotFound");
 
-            db.Image.Where(img => img.ProductId == product.Id).ToList()
-                    .ForEach(img => 
-                        galleryImages.Add(CloudinaryClient.GetImage(img.Id)));
+            var productViewModel = BuildProductViewModel(product);
 
-            var productViewModel = new ProductViewModel()
-            {
-                Title = product.Title,
-                Description = product.Description,
-                Price = product.Price,
-                SkuCode = product.Sku_code,
-                MainImage = CloudinaryClient.GetImage(product.MainImageId),
-                GalleryImages = galleryImages
-            };
+            // TODO: handle not found item
 
             return View(productViewModel);
         }
 
-        public IActionResult AddProduct(ProductViewModel model)
+        [HttpPost]
+        public IActionResult AddProduct(AddProductViewModel model)
         {
             model.Categories = db.Category.ToList();
 
@@ -76,20 +69,20 @@ namespace FiveDevsShop.Controllers
                 }
 
                 var mainImageId = UploadImage(model.MainImageFile, filePath);
-                imageIds.Add(mainImageId);
 
                 var product = new Product()
                 {
                     Title = model.Title,
                     Description = model.Description,
                     Price = model.Price,
-                    Category_id = model.CategoryId,
+                    CategoryId = model.CategoryId,
                     Discount = model.Discount,
-                    Sku_code = model.SkuCode,
+                    SkuCode = model.SkuCode,
                     MainImageId = mainImageId
                 };
 
                 db.Product.Add(product);
+                db.SaveChanges();
                     
                 imageIds.ForEach(id => db.Image.Add(
                         new Image() { Id = id, ProductId = product.Id } ));
@@ -102,6 +95,17 @@ namespace FiveDevsShop.Controllers
             {
                 return View(model);
             }
+        }
+
+        [HttpPost]
+        public IActionResult AddProductToCart(GetProductViewModel model)
+        {
+            var product = db.Product.FirstOrDefault(p => p.Id == model.Id);
+            var productViewModel = BuildProductViewModel(product);
+
+            // TODO cart logic
+
+            return View("GetProduct", productViewModel);
         }
 
         private bool IsImageValid(IFormFile file)
@@ -146,6 +150,38 @@ namespace FiveDevsShop.Controllers
             CloudinaryClient.UploadImage(filePath, imageId);
 
             return imageId;
+        }
+
+        private GetProductViewModel BuildProductViewModel(Product product)
+        {
+            List<string> galleryImages = new List<string>();
+
+            var imagesUrls = db.Image.Where(img => img.ProductId == product.Id)
+                              .Select(img => CloudinaryClient.GetImageUrl(img.Id)).ToList();
+
+            var productViewModel = new GetProductViewModel()
+            {
+                Id = product.Id,
+                Title = product.Title,
+                Description = product.Description,
+                Price = product.Price,
+                SkuCode = product.SkuCode,
+                Discount = product.Discount,
+                MainImageUrl = CloudinaryClient.GetImageUrl(product.MainImageId),
+                GalleryImagesUrls = imagesUrls
+            };
+
+            var categories = db.Category.ToList();
+
+            var currentCategory = categories.FirstOrDefault(category => category.Id == product.CategoryId);
+
+            while (currentCategory != null)
+            {
+                productViewModel.CategoryList.Insert(0, currentCategory);
+                currentCategory = categories.FirstOrDefault(category => category.Id == currentCategory.Parent_id);
+            }
+
+            return productViewModel;
         }
     }
 
