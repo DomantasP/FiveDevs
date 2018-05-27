@@ -4,6 +4,7 @@ using FiveDevsShop.Models.DomainServices;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,16 +37,20 @@ namespace FiveDevsShop.Controllers
 
             return View(new CategoryViewModel()
             {
+                ProductCount = FindProductsInCategory(id).Count(),
                 Current = current,
                 Subcategories = subcategories,
-                Products = FindProductsInCategory(id, page),
+                Products = ShowProductsInCategory(id, page),
             });
         }
 
-        private ProductListViewModel FindProductsInCategory(int? id, int page)
+        private ProductListViewModel ShowProductsInCategory(int? id, int page)
         {
-            // TODO: currently this loads all products fitting criteria
+            return Paging.LoadPage(FindProductsInCategory(id), page);
+        }
 
+        private IQueryable<Product> FindProductsInCategory(int? id)
+        {
             IQueryable<Product> products = null;
 
             if (id == null)
@@ -67,7 +72,9 @@ namespace FiveDevsShop.Controllers
                 }
             }
 
-            return Paging.LoadPage(products, page);
+            Debug.Assert(products != null, "Product list should not be null");
+
+            return products;
         }
     }
 }

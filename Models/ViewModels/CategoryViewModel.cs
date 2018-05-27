@@ -16,6 +16,8 @@ namespace FiveDevsShop.Models
 
         public ProductListViewModel Products { get; set; }
 
+        public int ProductCount { get; set; }
+
         public bool IsAtRoot => Current == null;
     }
 }
