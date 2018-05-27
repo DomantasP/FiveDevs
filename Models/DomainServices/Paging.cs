@@ -16,7 +16,7 @@ namespace FiveDevsShop.Models.DomainServices
             int pages = Math.Max(1, (productCount + ItemsPerPage - 1) / ItemsPerPage);
             page = Math.Clamp(page, 1, pages);
 
-            var productsInPage = products.Skip((page - 1) * ItemsPerPage).Take(ItemsPerPage).Select(ProductPreviewModel.FromProduct);
+            var productsInPage = products.Skip((page - 1) * ItemsPerPage).Take(ItemsPerPage).Select(ProductPreviewModel.FromProduct).ToList();
 
             return new ProductListViewModel()
             {

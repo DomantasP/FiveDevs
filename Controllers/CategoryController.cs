@@ -60,7 +60,7 @@ namespace FiveDevsShop.Controllers
             }
             else
             {
-                var categories = db.Category;
+                var categories = db.Category.ToList();
                 var subtree = CategoryTree.CategoriesInSubtree(categories, id.Value);
                 foreach (var categoryId in subtree)
                 {
