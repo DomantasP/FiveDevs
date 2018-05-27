@@ -8,6 +8,7 @@ namespace FiveDevsShop.Models.DomainServices
         public class Node
         {
             public Category Category { get; }
+            public Node Parent { get; set; }
             public List<Node> Children { get; } = new List<Node>();
 
             public Node(Category category)
@@ -42,7 +43,11 @@ namespace FiveDevsShop.Models.DomainServices
                 if (node.Category.Parent_id == null)
                     root.Add(node);
                 else
-                    Categories[node.Category.Parent_id.Value].Children.Add(node);
+                {
+                    var parent = Categories[node.Category.Parent_id.Value];
+                    Categories[node.Category.Id].Parent = parent;
+                    parent.Children.Add(node);
+                }
             }
             RootCategories = root;
         }
