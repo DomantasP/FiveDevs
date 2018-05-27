@@ -43,6 +43,15 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                 </ul>
+                <div class="navbar-left" style="margin-top:12px;">
+                        @using (Html.BeginForm("SearchProduct", "Product", FormMethod.Post))
+                        {
+                            <ul class="nav navbar-nav">
+                                <li>@Html.TextBox("name", null,  new { placeholder = "Paieška..." , id = "searchField"})</li>
+                                <li><button type="submit" id="searchButton" disabled><span class="glyphicon glyphicon-search"></span></button></li>
+                            </ul>
+                        }
+                </div>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>

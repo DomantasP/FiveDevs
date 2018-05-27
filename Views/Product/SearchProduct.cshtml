@@ -1,0 +1,15 @@
+﻿@model IEnumerable<FiveDevsShop.Models.Product>
+@{
+    ViewData["Title"] = "SearchProduct";
+}
+
+<h2>SearchProduct</h2>
+<ul>
+    @if(Model != null)
+    {
+        foreach (var product in Model)
+        {
+        <li>@product.Title</li>
+        }
+    }
+</ul>
