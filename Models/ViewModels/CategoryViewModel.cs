@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FiveDevsShop.Models.DomainServices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +13,9 @@ namespace FiveDevsShop.Models
         /// </summary>
         public Category Current { get; set; }
 
-        public IEnumerable<Category> Subcategories { get; set; }
+        public List<CategoryTree.Node> Subtrees { get; set; }
 
         public ProductListViewModel Products { get; set; }
-
-        public int ProductCount { get; set; }
 
         public bool IsAtRoot => Current == null;
     }

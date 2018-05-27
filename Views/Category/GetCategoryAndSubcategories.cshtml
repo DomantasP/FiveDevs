@@ -1,6 +1,13 @@
 ﻿@model CategoryViewModel
 @{
-    ViewData["Title"] = "Kategorijos";
+    if (Model.IsAtRoot)
+    {
+        ViewData["Title"] = "Kategorijos";
+    }
+    else
+    {
+        ViewData["Title"] = Model.Current.Title;
+    }
 }
 
 @if (Model.IsAtRoot)
@@ -9,13 +16,34 @@
 }
 else
 {
-    <h2>@Model.Current.Title (@Model.ProductCount prekės)</h2>
-}
-<ul>
-    @foreach (var category in Model.Subcategories)
+    <h2>@Model.Current.Title</h2>
+    @if (Model.Subtrees.Any())
     {
-        <li><a asp-area="" asp-controller="Category" asp-action=@category.Id>@category.Title</a></li>
+        <h3>Subkategorijos</h3>
     }
-</ul>
+}
+
+@if (Model.Subtrees.Any())
+{
+    <div class="category-tree container">
+        @foreach (var subtreeChunk in Model.Subtrees.Chunks(6))
+        {
+            <div class="row">
+                @foreach (var subtree in subtreeChunk)
+                {
+                    <div class="top-level-subtree col-md-2">
+                        <ul>
+                            <li>
+                                @Html.Partial("/Views/Shared/Components/Category/Tree.cshtml", subtree)
+                            </li>
+                        </ul>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+
+<h3>Prekės</h3>
 
 @Html.Partial("/Views/Shared/Components/Product/ProductList.cshtml", Model.Products)

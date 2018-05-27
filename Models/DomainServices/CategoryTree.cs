@@ -5,54 +5,63 @@ namespace FiveDevsShop.Models.DomainServices
 {
     public class CategoryTree
     {
-        private Dictionary<int, Category> Categories { get; }
-        private HashSet<int> Visited { get; } = new HashSet<int>();
-        private HashSet<int> InSubtree { get; } = new HashSet<int>();
-
-        private CategoryTree(IEnumerable<Category> categories)
+        public class Node
         {
-            Categories = categories.ToDictionary(c => c.Id);
-        }
+            public Category Category { get; }
+            public List<Node> Children { get; } = new List<Node>();
 
-        private void WalkCategory(int id)
-        {
-            if (Visited.Contains(id))
-                return;
-
-            Visited.Add(id);
-
-            var parent = Categories[id].Parent_id;
-            if (parent == null)
-                return;
-
-            WalkCategory(parent.Value);
-
-            if (InSubtree.Contains(parent.Value))
-                InSubtree.Add(id);
-        }
-
-        private void WalkAll()
-        {
-            foreach (var categoryId in Categories.Keys)
+            public Node(Category category)
             {
-                WalkCategory(categoryId);
+                Category = category;
+            }
+
+            private void Dfs(List<Category> resultList)
+            {
+                resultList.Add(Category);
+                foreach (var child in Children)
+                    child.Dfs(resultList);
+            }
+
+            public List<Category> CategoriesInSubtree()
+            {
+                var list = new List<Category>();
+                Dfs(list);
+                return list;
             }
         }
 
-        /// <summary>
-        /// Find ids of categories that are descendants of
-        /// given category (including the given category).
-        /// </summary>
-        /// <param name="categories">All categories in the system</param>
-        /// <param name="subtreeRoot">Subtree root</param>
-        /// <returns></returns>
-        public static HashSet<int> CategoriesInSubtree(IEnumerable<Category> categories, int subtreeRoot)
+        private Dictionary<int, Node> Categories { get; }
+        public IEnumerable<Node> RootCategories { get; }
+
+        public CategoryTree(IEnumerable<Category> categories)
         {
-            var tree = new CategoryTree(categories);
-            tree.Visited.Add(subtreeRoot);
-            tree.InSubtree.Add(subtreeRoot);
-            tree.WalkAll();
-            return tree.InSubtree;
+            Categories = categories.Select(c => new Node(c)).ToDictionary(c => c.Category.Id);
+            var root = new List<Node>();
+            foreach (var node in Categories.Values)
+            {
+                if (node.Category.Parent_id == null)
+                    root.Add(node);
+                else
+                    Categories[node.Category.Parent_id.Value].Children.Add(node);
+            }
+            RootCategories = root;
+        }
+
+        public Node FindCategoryNode(int id)
+        {
+            return Categories[id];
+        }
+
+        public IEnumerable<Node> Subtrees(int? rootCategoryId)
+        {
+            if (rootCategoryId == null)
+            {
+                return RootCategories;
+            }
+            else
+            {
+                return Categories[rootCategoryId.Value].Children;
+            }
         }
     }
 }
