@@ -66,6 +66,20 @@
     position: relative;
 }
 
+/* product preview list */
 .product-preview-list {
     margin-top: 15px;
+}
+
+.product-preview-list .paging {
+    text-align: center;
+}
+
+.product-preview-list .paging * {
+    display: inline-block;
+}
+
+.product-preview-list .paging p {
+    margin-left: 20px;
+    margin-right: 20px;
 }

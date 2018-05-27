@@ -11,6 +11,8 @@ namespace FiveDevsShop.Controllers
 {
     public class CategoryController : Controller
     {
+        const int ItemsPerPage = 20;
+
         private readonly ApplicationDbContext db;
 
         public CategoryController(ApplicationDbContext db)
@@ -18,49 +20,54 @@ namespace FiveDevsShop.Controllers
             this.db = db;
         }
 
-        public IActionResult GetCategoryAndSubcategories(int? id)
+        public IActionResult GetCategoryAndSubcategories(int? id, int page = 1)
         {
             Category current;
-            IEnumerable<Category> subcategories;
+            IEnumerable<Category> subcategories = db.Category.Where(c => c.Parent_id == null).ToList();
 
-            if(id == null)
+            if (id == null)
             {
                 current = null;
-                subcategories = db.Category.Where(c => c.Parent_id == null).ToList();
             }
             else
             {
                 current = db.Category.Find(id);
-                subcategories = db.Category.Where(c => c.Parent_id == id);
             }
 
             return View(new CategoryViewModel()
             {
                 Current = current,
                 Subcategories = subcategories,
-                Products = FindProductsInCategory(id),
+                Products = FindProductsInCategory(id, page),
             });
         }
 
-        private IEnumerable<ProductPreviewModel> FindProductsInCategory(int? id)
+        private ProductListViewModel FindProductsInCategory(int? id, int page)
         {
             // TODO: currently this loads all products fitting criteria
+
+            IQueryable<Product> products = null;
 
             if (id == null)
             {
                 // we are at root, return all products
-                return db.Product.Select(ProductPreviewModel.FromProduct);
+                products = db.Product;
             }
-
-            var categories = db.Category;
-            var subtree = CategoryTree.CategoriesInSubtree(categories, id.Value);
-            var products = new List<ProductPreviewModel>();
-            foreach (var categoryId in subtree)
+            else
             {
-                products.AddRange(db.Product.Where(p => p.Category_id == categoryId).Select(ProductPreviewModel.FromProduct));
+                var categories = db.Category;
+                var subtree = CategoryTree.CategoriesInSubtree(categories, id.Value);
+                foreach (var categoryId in subtree)
+                {
+                    var newProducts = db.Product.Where(p => p.Category_id == categoryId);
+                    if (products == null)
+                        products = newProducts;
+                    else
+                        products = products.Union(newProducts);
+                }
             }
 
-            return products;
+            return Paging.LoadPage(products, page);
         }
     }
 }

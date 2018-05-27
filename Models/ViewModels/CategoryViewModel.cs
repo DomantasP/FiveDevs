@@ -14,7 +14,7 @@ namespace FiveDevsShop.Models
 
         public IEnumerable<Category> Subcategories { get; set; }
 
-        public IEnumerable<ProductPreviewModel> Products { get; set; }
+        public ProductListViewModel Products { get; set; }
 
         public bool IsAtRoot => Current == null;
     }

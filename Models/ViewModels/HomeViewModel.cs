@@ -7,6 +7,6 @@ namespace FiveDevsShop.Models
 {
     public class HomeViewModel
     {
-        public IEnumerable<ProductPreviewModel> Products { get; set; }
+        public ProductListViewModel Products { get; set; }
     }
 }

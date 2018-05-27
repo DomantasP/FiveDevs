@@ -1,9 +1,9 @@
-﻿@model IEnumerable<ProductPreviewModel>
+﻿@model ProductListViewModel
 @using FiveDevsShop.Extensions;
 
 
 <div class="product-preview-list container">
-    @foreach (var chunk in Model.Chunks(4))
+    @foreach (var chunk in Model.Products.Chunks(4))
     {
         <div class="row">
             @foreach (var item in chunk)
@@ -12,4 +12,16 @@
             }
         </div>
     }
+
+    <div class="paging">
+        @if (Model.CurrentPage > 1)
+        {
+            <a class="nav-button" href="?page=@(Model.CurrentPage - 1)">Previous page</a>
+        }
+        <p>Page @Model.CurrentPage of @Model.PageCount</p>
+        @if (Model.CurrentPage < Model.PageCount)
+        {
+            <a class="nav-button" href="?page=@(Model.CurrentPage + 1)">Next page</a>
+        }
+    </div>
 </div>
