@@ -1,8 +1,10 @@
 ﻿using FiveDevsShop.Data;
 using FiveDevsShop.Models;
+using FiveDevsShop.Models.DomainServices;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,25 +19,56 @@ namespace FiveDevsShop.Controllers
             this.db = db;
         }
 
-        public IActionResult GetCategoryAndSubcategories(int? id)
+        public IActionResult GetCategoryAndSubcategories(int? id, int page = 1)
         {
-            FiveDevsShop.Models.Category category;
-            List<Category> subCategories = new List<Category>();
+            Category current;
 
-            //The first element in subcategories list is a category and the later ones are its subcategories.
-            if(id == null)
+            var tree = new CategoryTree(db.Category);
+
+            if (id == null)
+                current = null;
+            else
+                current = tree.FindCategoryNode(id.Value).Category;
+
+            var subtrees = tree.Subtrees(id).ToList();
+            var products = ShowProductsInCategory(tree, id, page);
+
+            return View(new CategoryViewModel()
             {
-                subCategories = db.Category.Where(c => c.Parent_id == null).ToList();
-                subCategories.Insert(0, null);
+                Current = current,
+                Subtrees = subtrees,
+                Products = products,
+            });
+        }
+
+        private ProductListViewModel ShowProductsInCategory(CategoryTree tree, int? id, int page)
+        {
+            return Paging.LoadPage(FindProductsInCategory(tree, id), page);
+        }
+
+        // TODO: this loads all products eagerly, even though we throw away most of them
+        private List<Product> FindProductsInCategory(CategoryTree tree, int? id)
+        {
+            List<Product> products = null;
+
+            if (id == null)
+            {
+                // we are at root, return all products
+                products = db.Product.ToList();
             }
             else
             {
-                category = db.Category.Find(id);
-                subCategories = db.Category.Where(c => c.Parent_id == id).ToList();
-                subCategories.Insert(0, category);
+                products = new List<Product>();
+                var categories = db.Category.ToList();
+                var subtree = tree.FindCategoryNode(id.Value).CategoriesInSubtree();
+                foreach (var category in subtree)
+                {
+                    var newProducts = db.Product.Where(p => p.Category_id == category.Id);
+                    products.AddRange(newProducts);
+                }
             }
 
-            return View(subCategories);
+            return products;
         }
     }
 }

@@ -1,0 +1,15 @@
+﻿@model FiveDevsShop.Models.DomainServices.CategoryTree.Node
+
+
+<a href="/category/@Model.Category.Id">@Model.Category.Title</a>
+@if (Model.Children.Any())
+{
+    <ul>
+        @foreach (var child in Model.Children)
+        {
+            <li>
+                @Html.Partial("/Views/Shared/Components/Category/Tree.cshtml", child)
+            </li>
+        }
+    </ul>
+}

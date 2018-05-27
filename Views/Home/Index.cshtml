@@ -1,7 +1,9 @@
-﻿@{
+﻿@model HomeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
+<!--
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
     <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -79,19 +81,5 @@
         </ul>
     </div>
 </div>
-
-
-@Html.Partial("/Views/Shared/Components/Product/ProductList.cshtml", new[] {
-    new ProductPreviewModel() { Title = "Foobar", Price = 10.99m, Discount = 0, MainImageUrl = "http://via.placeholder.com/300" },
-    new ProductPreviewModel() { Title = "Baz", Price = 99.99m, Discount = 20, MainImageUrl = "http://via.placeholder.com/200x100" },
-    new ProductPreviewModel() { Title = "Baz", Price = 99.99m, Discount = 0, MainImageUrl = "http://via.placeholder.com/200x150" },
-    new ProductPreviewModel() { Title = "Baz", Price = 99.99m, Discount = 0, MainImageUrl = "http://via.placeholder.com/200x150" },
-    new ProductPreviewModel() { Title = "Baz", Price = 99.99m, Discount = 0, MainImageUrl = "http://via.placeholder.com/200x150" },
-    new ProductPreviewModel() { Title = "Baz", Price = 99.99m, Discount = 0, MainImageUrl = "http://via.placeholder.com/200x150" },
-    new ProductPreviewModel() { Title = "Baz", Price = 99.99m, Discount = 0, MainImageUrl = "http://via.placeholder.com/200x150" },
-    new ProductPreviewModel() { Title = "Baz", Price = 99.99m, Discount = 0, MainImageUrl = "http://via.placeholder.com/200x150" },
-    new ProductPreviewModel() { Title = "Baz", Price = 99.99m, Discount = 0, MainImageUrl = "http://via.placeholder.com/200x150" },
-    new ProductPreviewModel() { Title = "Baz", Price = 99.99m, Discount = 0, MainImageUrl = "http://via.placeholder.com/200x150" },
-    new ProductPreviewModel() { Title = "Baz", Price = 99.99m, Discount = 0, MainImageUrl = "http://via.placeholder.com/200x150" },
-})
-
+-->
+@Html.Partial("/Views/Shared/Components/Product/ProductList.cshtml", Model.Products)

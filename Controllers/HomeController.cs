@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FiveDevsShop.Models;
 using FiveDevsShop.Data;
+using FiveDevsShop.Models.DomainServices;
 
 namespace FiveDevsShop.Controllers
 {
@@ -45,6 +46,18 @@ namespace FiveDevsShop.Controllers
             return View();
         }
 
+        public IActionResult HomeProductList(int page = 1)
+        {
+            return View("Views/Home/Index.cshtml", new HomeViewModel()
+            {
+                Products = LoadProductPreviews(page),
+            });
+        }
+
+        private ProductListViewModel LoadProductPreviews(int page)
+        {
+            return Paging.LoadPage(db.Product, page);
+        }
 
         public IActionResult Error()
         {
