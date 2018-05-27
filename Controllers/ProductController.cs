@@ -39,7 +39,7 @@ namespace FiveDevsShop.Controllers
             return View(productViewModel);
         }
 
-        public IActionResult SearchProduct(string name)
+        public IActionResult SearchProduct(string name, int page = 1)
         {
             if (name != null)
             {
@@ -58,10 +58,12 @@ namespace FiveDevsShop.Controllers
                     }
                 }
 
+                var productView = Paging.LoadPage(products, page);
+                productView.AddQueryParam("name", name);
                 return View(new ProductSearchViewModel()
                 {
                     Query = name,
-                    Products = Paging.LoadPage(products, 1),
+                    Products = productView,
                 });
             }
             else
