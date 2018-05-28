@@ -18,5 +18,19 @@ namespace FiveDevsShop.Models
         //public string Email { get; set; }
 
         public int Ban_flag { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string City { get; set; }
+
+        public string Street { get; set; }
+
+        public int HouseNumber { get; set; }
+
+        public int? ApartmentNumber { get; set; }
+
+        public string PostalCode { get; set; }
     }
 }
