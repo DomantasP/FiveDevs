@@ -67,7 +67,6 @@ function loadAllTabData(orderStatus, tableBodyId, tableId, statusName) {
     }, 0);
 
     setTimeout(function () {
-        //console.log("aaaaaaaasdf(2)");
         changeTabToSales();
         loadHorizontalTabsStyle();
         appendPurchasesTableBody(loadOrders(orderStatus), tableBodyId, tableId, statusName);
