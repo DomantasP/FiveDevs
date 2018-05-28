@@ -8,7 +8,7 @@ namespace FiveDevsShop.Models.DomainServices
     public class Paging
     {
         // TODO: this should be changeable by administrator
-        public const int ItemsPerPage = 2;
+        public const int ItemsPerPage = 16;
 
         public static ProductListViewModel LoadPage(IEnumerable<Product> products, int page)
         {
