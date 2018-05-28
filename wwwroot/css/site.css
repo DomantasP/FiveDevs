@@ -214,3 +214,7 @@ address {
 #searchButton:disabled {
     color: #888;
 }
+
+h3.category-breadcrumbs .glyphicon {
+    font-size: 90%;
+}

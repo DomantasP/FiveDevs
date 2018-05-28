@@ -8,15 +8,14 @@ namespace FiveDevsShop.Models
 {
     public class CategoryViewModel
     {
-        /// <summary>
-        /// Currently viewed category. Null if we are at the root.
-        /// </summary>
-        public Category Current { get; set; }
+        public List<Category> CategoryPath { get; set; } = new List<Category>();
 
         public List<CategoryTree.Node> Subtrees { get; set; }
 
         public ProductListViewModel Products { get; set; }
 
-        public bool IsAtRoot => Current == null;
+        public bool IsAtRoot => CategoryPath.Count == 0;
+
+        public Category Current => IsAtRoot ? null : CategoryPath.Last();
     }
 }

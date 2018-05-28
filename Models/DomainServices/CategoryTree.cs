@@ -68,5 +68,20 @@ namespace FiveDevsShop.Models.DomainServices
                 return Categories[rootCategoryId.Value].Children;
             }
         }
+
+        public List<Category> FindPath(Category to)
+        {
+            var path = new List<Category>();
+            if (to == null) return path;
+
+            var node = Categories[to.Id];
+            while (node != null)
+            {
+                path.Add(node.Category);
+                node = node.Parent;
+            }
+            path.Reverse();
+            return path;
+        }
     }
 }

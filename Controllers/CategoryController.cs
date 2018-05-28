@@ -35,7 +35,7 @@ namespace FiveDevsShop.Controllers
 
             return View(new CategoryViewModel()
             {
-                Current = current,
+                CategoryPath = tree.FindPath(current),
                 Subtrees = subtrees,
                 Products = products,
             });
