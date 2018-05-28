@@ -1,5 +1,4 @@
 ﻿html, body {
-    height: 100%;
     width: 100%;
 }
 
@@ -9,7 +8,7 @@
 
 body {
     padding-top: 50px;
-    padding-bottom: 300px;
+    padding-bottom: 260px;
     height: 100%;
 }
 
@@ -60,7 +59,6 @@ footer {
     text-align: center;
     background: #ecf0f1;
     padding: 40px !important;
-    margin-top: 40px;
 }
 
 footer div {
@@ -189,6 +187,7 @@ address {
 
 .product-preview-list .paging {
     text-align: center;
+    margin-top: 20px;
 }
 
 .product-preview-list .paging * {
