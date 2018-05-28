@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using FiveDevsShop.Services;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using FiveDevsShop.Models.DomainServices;
 
 namespace FiveDevsShop.Controllers
 {
@@ -38,7 +39,7 @@ namespace FiveDevsShop.Controllers
             return View(productViewModel);
         }
 
-        public IActionResult SearchProduct(string name)
+        public IActionResult SearchProduct(string name, int page = 1)
         {
             if (name != null)
             {
@@ -57,11 +58,17 @@ namespace FiveDevsShop.Controllers
                     }
                 }
 
-                return View(products);
+                var productView = Paging.LoadPage(products, page);
+                productView.AddQueryParam("name", name);
+                return View(new ProductSearchViewModel()
+                {
+                    Query = name,
+                    Products = productView,
+                });
             }
             else
             {
-                return View();
+                return SearchProduct("");
             }   
         }
 

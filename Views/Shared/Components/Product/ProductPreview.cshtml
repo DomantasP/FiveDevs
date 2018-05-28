@@ -9,7 +9,8 @@
                 <img class="discount-icon" src="~/images/discount.png" />
             </div>
         }
-        <img class="product-image" src="@Model.MainImageUrl" />
+
+        <img class="product-image" src="@Model.MainImageUrl" onerror="this.onerror = null; this.src='/images/no-picture.png'" />
     </a>
     <p class="text-center product-title"><a href="/product/@Model.Id">@Model.Title</a></p>
     @if (Model.IsDiscounted)

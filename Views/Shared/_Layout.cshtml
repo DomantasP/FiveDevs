@@ -48,10 +48,10 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                 </ul>
                 <div class="navbar-left" style="margin-top:12px;">
-                        @using (Html.BeginForm("SearchProduct", "Product", FormMethod.Post))
+                        @using (Html.BeginForm("SearchProduct", "Product", FormMethod.Get))
                         {
                             <ul class="nav navbar-nav">
-                                <li>@Html.TextBox("name", null,  new { placeholder = "Paieška..." , id = "searchField"})</li>
+                                <li>@Html.TextBox("name", null,  new { placeholder = "Ieškoti prekių..." , id = "searchField"})</li>
                                 <li><button type="submit" id="searchButton" disabled><span class="glyphicon glyphicon-search"></span></button></li>
                             </ul>
                         }

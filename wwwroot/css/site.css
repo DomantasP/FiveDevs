@@ -203,3 +203,17 @@ address {
 .category-tree.container ul {
     margin-bottom: 0;
 }
+
+
+#searchField {
+    margin-left: 15px;
+    margin-right: 3px;
+}
+
+#searchButton:disabled {
+    color: #888;
+}
+
+h3.category-breadcrumbs .glyphicon {
+    font-size: 90%;
+}
