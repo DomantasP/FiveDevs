@@ -16,6 +16,8 @@ using FluentValidation.AspNetCore;
 using FiveDevsShop.Validators;
 using FluentValidation;
 using FiveDevsShop.Models.AccountViewModels;
+using System.Net.Http;
+using FiveDevsShop.Models.Services.Payment;
 
 namespace FiveDevsShop
 {
@@ -50,6 +52,9 @@ namespace FiveDevsShop
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+
+            services.AddSingleton(new HttpClient());
+            services.AddSingleton<PaymentProcessor>();
 
             services.AddMvc().AddFluentValidation();
 

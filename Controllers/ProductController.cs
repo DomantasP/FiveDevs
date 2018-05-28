@@ -4,8 +4,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using FiveDevsShop.Data;
 using FiveDevsShop.Models;
-using System.Net.Http;
-using System.Threading.Tasks;
 using FiveDevsShop.Services;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
@@ -21,8 +19,6 @@ namespace FiveDevsShop.Controllers
     public class ProductController : Controller
     {
 		private readonly ApplicationDbContext db;
-        // Only one should be instantiated throughout the whole application
-		private static readonly HttpClient client = new HttpClient();
 
         public ProductController(ApplicationDbContext db)
         {
