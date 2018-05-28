@@ -28,14 +28,18 @@ namespace FiveDevsShop.Controllers
             if (id == null)
                 current = null;
             else
-                current = tree.FindCategoryNode(id.Value).Category;
+            {
+                current = tree.FindCategoryNode(id.Value)?.Category;
+                if (current == null)
+                    return View("NotFound");
+            }
 
             var subtrees = tree.Subtrees(id).ToList();
             var products = ShowProductsInCategory(tree, id, page);
 
             return View(new CategoryViewModel()
             {
-                Current = current,
+                CategoryPath = tree.FindPath(current),
                 Subtrees = subtrees,
                 Products = products,
             });
@@ -63,7 +67,7 @@ namespace FiveDevsShop.Controllers
                 var subtree = tree.FindCategoryNode(id.Value).CategoriesInSubtree();
                 foreach (var category in subtree)
                 {
-                    var newProducts = db.Product.Where(p => p.Category_id == category.Id);
+                    var newProducts = db.Product.Where(p => p.CategoryId == category.Id);
                     products.AddRange(newProducts);
                 }
             }

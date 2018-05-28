@@ -12,7 +12,9 @@ using FiveDevsShop.Data;
 using FiveDevsShop.Models;
 using FiveDevsShop.Services;
 using Microsoft.AspNetCore.Routing.Constraints;
-
+using FluentValidation.AspNetCore;
+using FiveDevsShop.Validators;
+using FluentValidation;
 
 namespace FiveDevsShop
 {
@@ -39,7 +41,9 @@ namespace FiveDevsShop
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddMvc();
+            services.AddMvc().AddFluentValidation();
+
+            services.AddTransient<IValidator<GetProductViewModel>, GetProductViewModelValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,7 +67,7 @@ namespace FiveDevsShop
                 routes.MapRoute(
                     name: "home",
                     template: "",
-                    defaults: new { controller = "Home", action = "HomeProductList" });
+                    defaults: new { controller = "Category", action = "GetCategoryAndSubcategories" });
 
                 routes.MapRoute(
                     name: "default",
