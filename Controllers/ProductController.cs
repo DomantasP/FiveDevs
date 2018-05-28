@@ -105,10 +105,7 @@ namespace FiveDevsShop.Controllers
                 }
 
                 db.Product.Add(product);
-<<<<<<< HEAD
-=======
 
->>>>>>> Fixing style conflicts
                 imageIds.ForEach(id => db.Image.Add(
                         new Image() { Id = id, ProductId = product.Id } ));
 
