@@ -105,20 +105,25 @@
         //
 
         // Activate: this event is called when a tab is selected
-        this.$element.bind('tabs-click', function(e, oTab) {
+        this.$element.bind('tabs-click', function (e, oTab) {
+            //console.log("tabas pasirenkamasss");
             _this.options.click.call(this, e, oTab);
         });
 
         // Activate: this event is called when a tab is selected
-        this.$element.bind('tabs-activate', function(e, oTab) {
+        this.$element.bind('tabs-activate', function (e, oTab) {
+            //console.log("aktyvuojaaa");
             _this.options.activate.call(this, e, oTab);
+            //app.setLocation('#Neissiusti');
         });
         // Deactivate: this event is called when a tab is closed
-        this.$element.bind('tabs-deactivate', function(e, oTab) {
+        this.$element.bind('tabs-deactivate', function (e, oTab) {
+            //console.log("isjungiaaa");
             _this.options.deactivate.call(this, e, oTab);
         });
         // Activate State: this event is called when the plugin switches states
-        this.$element.bind('tabs-activate-state', function(e, state) {
+        this.$element.bind('tabs-activate-state', function (e, state) {
+            //console.log("pakeiciama busenaaa");
             _this.options.activateState.call(this, e, state);
         });
 
@@ -352,7 +357,7 @@
         if(stopRotation && this.rotateInterval > 0) {
             this.stopRotation();
         }
-
+        //console.log("aaaaaaaasdf(1)");
         // Set this tab to active
         oTab.active = true;
         // Set active classes to the tab button and accordion tab button

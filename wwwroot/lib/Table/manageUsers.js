@@ -53,6 +53,13 @@ function banUser(usernamee) {
                 icon: '<img src="/./lib/Messages/images/paper_plane.png" alt = "sėkmė"/>',
                 message: "Naudotojas buvo sėkmingai užblokuotas."
             });
+            app.run("#/Naudotojai");
+            changeTabWithSpinner(changeTabToUser);
+            //app.run("#/Naudotojai");
+            //location.reload();
+            /*cell = $("#" + user[0].username).parent();
+            cell.empty();
+            cell.append("<a href='#/Naudotojai/Atblokuoti' class='ban' id=" + user[0].username + " onclick='unblockUser(this)'><img src='../lib/Table/images/unblock_green.png' alt='atblokuoti' height='30' width='30' /></a>");*/
 
         }
     });
@@ -116,6 +123,7 @@ function unbanFunction(usernamee) {
                 icon: '<img src="/./lib/Messages/images/paper_plane.png" alt = "sėkmė"/>',
                 message: "Naudotojas buvo sėkmingai atblokuotas."
             });
+            changeTabWithSpinner(changeTabToUser);
 
         }
     });

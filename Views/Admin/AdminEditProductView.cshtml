@@ -1,94 +1,166 @@
 ﻿
-@{
-    ViewData["Title"] = "AdminEditProductView";
-}
+<hr />
+<div id="page-wrapper" class="editForm">
 
-<head>
-    <title>Form Validation</title>
-    <link rel="stylesheet" href="~/lib/ProductForm/productForm.css">
-    <script src="~/lib/ProductForm/jquery-validate.js"></script>
-    <script src="~/lib/ProductForm/jquery-validate.min.js"></script>
+    <h2 class="editProductView">Prekės redagavimo langas</h2>
+    <form name="myForm" class="form-horizontal" id="myForm"
+          action="#" method="POST" enctype="multipart/form-data">
+        <div class="panel panel-info">
+            <div class="panel-heading">Įvedimo laukai</div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="detailsPart">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-md-4">ID</label>
+                                    <div class="col-md-6">
+                                        <input id="Id" type="text" class="form-control" name="Sku_code" disabled />
 
-
-    <link rel="stylesheet" href="~/lib/Messages/css/jquery.notify.css">
-    <script src="~/lib/Messages/js/jquery.notify.min.js"></script>
-
-</head>
-
-
-<body>
-    <hr />
-    <div id="page-wrapper" class="editForm">
-        <div class="container">
-
-            <h2 class="editProductView">Prekės redagavimo langas</h2>
-            <form name="myForm" class="form-horizontal" id="myForm"
-                  action="#" method="POST" enctype="multipart/form-data">
-                <div class="panel panel-info">
-                    <div class="panel-heading">Form validation</div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="col-md-4">ID</label>
-                                        <div class="col-md-6">
-                                            <input id="Id" type="text" class="form-control" name="Sku_code" disabled />
-
-                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="col-md-4">SKU kodas</label>
-                                        <div class="col-md-6">
-                                            <input id="Sku_code" type="text" class="form-control" name="Sku_code" required />
-                                        </div>
-                                    </div>
-                                    <div class="form-group  ">
-                                        <label class="col-md-4">Kategorija</label>
-                                        <div class="col-md-6">
-                                            <input id="Category" type="text" class="form-control" name="Category" required />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-4">Pavadinimas</label>
-                                        <div class="col-md-6">
-                                            <input id="Title" type="text" class="form-control" name="Title" required />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-4">Kaina</label>
-                                        <div class="col-md-6">
-                                            <input id="Price" type="text" class="form-control" name="Price" required />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-4">Aprašymas</label>
-                                        <div class="col-md-6">
-                                            <input id="Description" type="text" class="form-control" name="Description" required />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-4">Nuolaida</label>
-                                        <div class="col-md-6">
-                                            <input id="Discount" type="text" class="form-control" name="Discount" required />
-                                        </div>
-                                    </div>
-
-
                                 </div>
-                                <!-- end div -->
-                            </div>
-                            <!-- end div -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-md-offset-4" style="margin-bottom: 50px;">
-                    <center>
-                        <input type="button" onclick="submitForm()" class="btn btn-primary" value="Koreguoti" />
-                    </center>
-                </div>
-            </form>
-        </div>
-    </div>
+                                <div class="form-group">
+                                    <label class="col-md-4">SKU kodas</label>
+                                    <div class="col-md-6">
+                                        <input id="Sku_code" type="text" class="form-control" name="Sku_code" required />
+                                    </div>
+                                </div>
+                                <div class="form-group categoriesAll">
+                                    <label class="col-md-4">Kategorija</label>
+                                    <div class="col-md-6">
 
-</body>
+                                        <div class="btn-group hierarchy-select" data-resize="auto" id="example-one">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                <span class="selected-label pull-left">&nbsp;</span>
+                                                <span class="caret"></span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <div class="dropdown-menu open">
+                                                <div class="hs-searchbox">
+                                                    <input type="text" class="form-control" autocomplete="off">
+                                                </div>
+                                                <ul class="dropdown-menu inner categoriesList" role="menu">
+                                                    <li data-value="" data-level="1" data-default-selected="">
+                                                        <a href="#">Pasirinkite kategoriją</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <input class="hidden hidden-field" name="example_one" readonly="readonly" aria-hidden="true" type="text" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-group categoryHidden" hidden>
+                                    <label class="col-md-4"></label>
+                                    <div class="col-md-6">
+                                        <input id="Category_new" type="text" class="form-control" name="Category_new" placeholder="Įveskite pavadinimą" />
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group subCategories_categories" hidden>
+                                    <label class="col-md-4"></label>
+                                    <div class="col-md-6">
+                                        <div class="btn-group hierarchy-select" data-resize="auto" id="example-two">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                <span class="selected-label pull-left">&nbsp;</span>
+                                                <span class="caret"></span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <div class="dropdown-menu open">
+                                                <div class="hs-searchbox">
+                                                    <input type="text" class="form-control" autocomplete="off">
+                                                </div>
+                                                <ul class="dropdown-menu inner rootCategoriesList" role="menu">
+                                                    <li data-value="" data-level="1" data-default-selected="">
+                                                        <a href="#">Pasirinkite kategoriją</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <input class="hidden hidden-field" name="example_two" readonly="readonly" aria-hidden="true" type="text" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group subcategoryCategoryHidden" hidden>
+                                    <label class="col-md-4"></label>
+                                    <div class="col-md-6">
+                                        <input id="subCategory_newCategory" type="text" class="form-control" name="subCategory_newCategory" placeholder="Įveskite kategoriją" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group subcategoryHidden" hidden>
+                                    <label class="col-md-4"></label>
+                                    <div class="col-md-6">
+                                        <input id="subCategory_new" type="text" class="form-control" name="subCategory_new" placeholder="Įveskite subkategoriją" />
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="form-group">
+                                    <label class="col-md-4">Pavadinimas</label>
+                                    <div class="col-md-6">
+                                        <input id="Title" type="text" class="form-control" name="Title" required />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4">Kaina, €</label>
+                                    <div class="col-md-6">
+                                        <input id="Price" type="text" class="form-control" name="Price" required />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4">Nuolaida, %</label>
+                                    <div class="col-md-6">
+                                        <input id="Discount" type="text" class="form-control" name="Discount" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label class="col-md-4">    </label>
+                                    <label class="col-md-44">Aprašymas</label>
+                                    <div class="col-md-6">
+                                        <!-- <input type="text" class="form-control" name="Description" required />-->
+                                        <textarea name="description" id="Description" form="descform" class="form-control" style="width:220%;" rows="12"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- details part end -->
+                        <!-- end div -->
+                    </div>
+                    <div class="ImagePart">
+            
+
+                    </div>
+        <!-- end div -->
+                    </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-md-offset-4" style="margin-bottom: 50px;">
+            <center>
+                <input type="button" onclick="submitForm()" class="btn btn-primary" value="Koreguoti" />
+            </center>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example-one').hierarchySelect({
+            width: 205
+        });
+
+        $('#example-two').hierarchySelect({
+            width: 205
+        });
+    });
+</script>
+
+
+    

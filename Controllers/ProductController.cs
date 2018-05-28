@@ -113,12 +113,11 @@ namespace FiveDevsShop.Controllers
                     CategoryId = model.CategoryId,
                     Discount = model.Discount,
                     SkuCode = model.SkuCode,
-                    MainImageId = mainImageId
+                    MainImageId = mainImageId,
                 };
 
                 db.Product.Add(product);
                 db.SaveChanges();
-                    
                 imageIds.ForEach(id => db.Image.Add(
                         new Image() { Id = id, ProductId = product.Id } ));
 
