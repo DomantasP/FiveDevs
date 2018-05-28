@@ -1,0 +1,23 @@
+﻿@model ProductPreviewModel
+
+
+<div class="product-preview col-md-3">
+    <a class="product-image-container" href="/product/@Model.Id">
+        @if (Model.IsDiscounted)
+        {
+            <div class="discount-icon-container">
+                <img class="discount-icon" src="~/images/discount.png" />
+            </div>
+        }
+        <img class="product-image" src="@Model.MainImageUrl" />
+    </a>
+    <p class="text-center product-title"><a href="/product/@Model.Id">@Model.Title</a></p>
+    @if (Model.IsDiscounted)
+    {
+        <p class="text-center product-price"><span class="old-price">@Model.Price &euro;</span> @Model.RealPrice &euro;</p>
+    }
+    else
+    {
+        <p class="text-center product-price">@Model.RealPrice &euro;</p>
+    }
+</div>

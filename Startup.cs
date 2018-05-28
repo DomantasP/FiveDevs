@@ -65,9 +65,13 @@ namespace FiveDevsShop
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    name: "home",
+                    template: "",
+                    defaults: new { controller = "Home", action = "HomeProductList" });
+
+                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-
 
                 routes.MapRoute(
                     name: "category",
@@ -84,7 +88,11 @@ namespace FiveDevsShop
                     template: "product/{id?}",
                     constraints: new { id = new IntRouteConstraint() },
                     defaults: new { controller = "Product", action = "GetProduct" });
-                
+
+                routes.MapRoute(
+                    name: "index",
+                    template: "index",
+                    defaults: new { controller = "Home", action = "HomeProductList" });
             });
         }
 

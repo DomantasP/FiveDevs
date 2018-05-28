@@ -146,3 +146,58 @@ address {
     text-align: center;
     padding: 53px;
 }
+
+/* product preview styles */
+.product-preview .product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+}
+
+.product-preview .product-title {
+    margin-top: 10px;
+}
+
+.product-preview .product-title a {
+    color: inherit;
+}
+
+.product-preview .old-price {
+    color: gray;
+    text-decoration: line-through;
+}
+
+.product-preview .discount-icon {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.product-preview .discount-icon-container {
+    position: relative;
+}
+
+/* product preview list */
+.product-preview-list {
+    margin-top: 15px;
+}
+
+.product-preview-list .paging {
+    text-align: center;
+}
+
+.product-preview-list .paging * {
+    display: inline-block;
+}
+
+.product-preview-list .paging p {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* category tree */
+.category-tree.container ul {
+    margin-bottom: 0;
+}
