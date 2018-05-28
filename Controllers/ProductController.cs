@@ -117,7 +117,6 @@ namespace FiveDevsShop.Controllers
                 };
 
                 db.Product.Add(product);
-                db.SaveChanges();
                 imageIds.ForEach(id => db.Image.Add(
                         new Image() { Id = id, ProductId = product.Id } ));
 
