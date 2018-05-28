@@ -54,7 +54,7 @@ namespace FiveDevsShop.Models.DomainServices
 
         public Node FindCategoryNode(int id)
         {
-            return Categories[id];
+            return Categories.GetValueOrDefault(id, null);
         }
 
         public IEnumerable<Node> Subtrees(int? rootCategoryId)
