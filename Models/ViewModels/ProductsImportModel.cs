@@ -13,7 +13,7 @@ namespace FiveDevsShop.Models
         public String SkuCode { get; set; }
 
         [Required]
-        public List<String> Categories { get; set; }
+        public List<String> Categories { get; set; } = new List<String>();
 
         [Required]
         public String Title { get; set; }
@@ -30,9 +30,11 @@ namespace FiveDevsShop.Models
         [Required]
         public int Discount { get; set; } = 0;
 
-        public List<String> Images { get; set; }
+        public List<String> Images { get; set; } = new List<String>();
 
-        public List<ProductProperty> Properties { get; set; }
+        public List<String> PropertiesKey { get; set; } = new List<String>();
+
+        public List<String> PropertiesValue { get; set; } = new List<String>();
 
 
 
