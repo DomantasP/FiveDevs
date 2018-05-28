@@ -65,7 +65,7 @@ namespace FiveDevsShop.Controllers
             }   
         }
 
-        public IActionResult AddProduct(ProductViewModel model)
+
         [HttpPost]
         public IActionResult AddProduct(AddProductViewModel model)
         {

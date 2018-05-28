@@ -63,7 +63,7 @@ namespace FiveDevsShop.Controllers
                 var subtree = tree.FindCategoryNode(id.Value).CategoriesInSubtree();
                 foreach (var category in subtree)
                 {
-                    var newProducts = db.Product.Where(p => p.Category_id == category.Id);
+                    var newProducts = db.Product.Where(p => p.CategoryId == category.Id);
                     products.AddRange(newProducts);
                 }
             }
