@@ -14,7 +14,7 @@ namespace FiveDevsShop.Data
 
         public DbSet<Category> Category { get; set; }
         public DbSet<Product> Product { get; set; }
-        public DbSet<Photo> Photo { get; set; }
+        public DbSet<ProductProperty> ProductProperty { get; set; }
         public DbSet<ApplicationUser> User { get; set; }
         public DbSet<Purchase> Purchase { get; set; }
         public DbSet<User_order> User_order { get; set; }

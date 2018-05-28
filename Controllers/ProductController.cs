@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using FiveDevsShop.Services;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using System.Diagnostics;
+using OfficeOpenXml;
 
 namespace FiveDevsShop.Controllers
 {
@@ -21,6 +23,69 @@ namespace FiveDevsShop.Controllers
         public ProductController(ApplicationDbContext db)
         {
             this.db = db;
+        }
+
+        [HttpPost]
+        public IActionResult UploadProductByExcel(IFormFile file)
+        {
+            if (file == null) return null;
+            if (!IsExcelFile(file)) return null;
+
+            var filePath = Path.GetTempFileName();
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            FileInfo fileInfo = new FileInfo(filePath);
+
+            using (ExcelPackage package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                int rowCount = worksheet.Dimension.Rows;
+                int ColCount = worksheet.Dimension.Columns;
+
+                Debug.WriteLine(rowCount + " " + ColCount);
+
+                var rawText = string.Empty;
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    ProductsImportModel product = new ProductsImportModel();
+                    product.Title = worksheet.Cells[row, 1].Text.Trim();
+                    product.ShortDescription = worksheet.Cells[row, 2].Text.Trim();
+
+                    Decimal price;
+                    if (!Decimal.TryParse(worksheet.Cells[row, 3].Text.Trim(), out price)) return null;
+                    product.Price = price;
+                    
+                    product.Images = worksheet.Cells[row, 4].Text.Trim().Split(' ').ToList();
+                    product.SkuCode = worksheet.Cells[row, 5].Text.Trim();
+                    product.Description = worksheet.Cells[row, 6].Text.Trim();
+
+                    product.Categories = worksheet.Cells[row, 7].Text.Trim().Split('/').ToList();
+                    if (product.Categories.Count > 3) return null;
+                    /*for (int col = 1; col <= ColCount; col++)
+                    {
+                        if(worksheet.Cells[row, col].Value != null) Debug.WriteLine(worksheet.Cells[row, col].Text);//rawText += worksheet.Cells[row, col].Value.ToString() + "\t";
+                    }*/
+                    //rawText += "\r\n";
+                }
+                //_logger.LogInformation(rawText);
+                //Debug.WriteLine(rawText);
+            }
+
+
+            return Json(filePath);
+        }
+
+        private Boolean IsExcelFile(IFormFile file)
+        {
+            if (file.ContentType.ToLower() != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                return false;
+            }
+            return true;
         }
 
         public IActionResult GetProduct(int id)
