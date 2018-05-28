@@ -23,7 +23,7 @@ namespace FiveDevsShop.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<Purchase>().HasKey(c => new { c.Order_id, c.Item_id });
+            builder.Entity<Purchase>().HasKey(c => new { c.Order_id, c.Sku_code });
         }
             
         

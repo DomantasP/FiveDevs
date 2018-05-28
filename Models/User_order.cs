@@ -29,5 +29,8 @@ namespace FiveDevsShop.Models
 
         public string Address { get; set; }
 
+        public int Stars { get; set; }
+        public String Comment { get; set; }
+
     }
 }

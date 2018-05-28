@@ -74,5 +74,34 @@ namespace FiveDevsShop.Controllers
 
             return products;
         }
+        [HttpPost]
+        public JsonResult DeleteCategory(String categoryName)
+        {
+            if (categoryName == null) return null;
+            var category = db.Category.FirstOrDefault(c=>c.Title == categoryName);
+            if (category == null) return null;
+            //
+            List<Category> allCategories = new List<Category>();
+            allCategories.Add(category);
+            for(int i = 0; i < allCategories.Count; i++)
+            {
+                Category certainCat = allCategories[i];
+                List<Category> tempCatList = db.Category.Where(c => c.Parent_id == certainCat.Id).ToList();
+                allCategories.AddRange(tempCatList);
+            }
+
+
+            foreach (var c in allCategories)
+            {
+                Product product = db.Product.FirstOrDefault(p => p.CategoryId == c.Id);
+                if(product != null) Debug.WriteLine(product.Title);
+                //means that category or its subcat is assigned to some item(s)
+                if (product != null) return null;
+            }
+            db.Category.RemoveRange(allCategories);
+            db.SaveChanges();
+            return Json(1);
+
+        }
     }
 }

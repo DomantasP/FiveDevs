@@ -16,11 +16,15 @@ namespace FiveDevsShop.Models
 
         /*[Key]
         [Column(Order = 2)]*/
-        public int Item_id { get; set; }
+        public String Sku_code { get; set; }
 
         public int Quantity { get; set; }
 
         public decimal Price { get; set; }
+
+        public String Title { get; set; }
+
+        public String Category { get; set; }
 
     }
 }
