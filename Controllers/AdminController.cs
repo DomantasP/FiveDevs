@@ -84,12 +84,11 @@ namespace FiveDevsShop.Controllers
                             select new
                             {
                                 product_id = i.Id,
-                                sku_code = i.Sku_code,
+                                sku_code = i.SkuCode,
                                 title = i.Title,
                                 price = p.Price,
                                 quantity = p.Quantity,
-                                category = i.Category_id
-
+                                category = i.CategoryId
                             };
 
             return Json(purchases);
@@ -240,8 +239,8 @@ namespace FiveDevsShop.Controllers
             using (var transaction = db.Database.BeginTransaction())
             {
                     item.Id = id;
-                    item.Sku_code = sku_code;
-                    item.Category_id = category_id;
+                    item.SkuCode = sku_code;
+                    item.CategoryId = category_id;
                     item.Title = title;
                     item.Price = price;
                     item.Description = description;
