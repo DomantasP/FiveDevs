@@ -22,8 +22,7 @@ namespace FiveDevsShop.Models.Services.Payment
             {
                 RequestUri = new Uri(PaymentUrl),
                 Method = HttpMethod.Post,
-                // TODO: this is ba64 encoded "technologines:platformos", don't hardcode this?
-                Headers = { { HttpRequestHeader.Authorization.ToString(), "Basic dGVjaG5vbG9naW5lczpwbGF0Zm9ybW9z" } },
+                Headers = { { HttpRequestHeader.Authorization.ToString(), $"Basic {GetAuthToken()}" } },
                 Content = MakeContent(data),
             };
 
@@ -51,6 +50,13 @@ namespace FiveDevsShop.Models.Services.Payment
                 default:
                     throw new UnknownErrorException();
             }
+        }
+
+        private string GetAuthToken()
+        {
+            var contents = $"{AppSettingsProvider.PaymentUsername}:{AppSettingsProvider.PaymentPassword}";
+            var bytes = System.Text.Encoding.UTF8.GetBytes(contents);
+            return Convert.ToBase64String(bytes);
         }
 
         private HttpContent MakeContent(PaymentData data)

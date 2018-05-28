@@ -119,6 +119,8 @@ namespace FiveDevsShop
             AppSettingsProvider.CloudinaryCloud = Configuration["CloudinaryCredentials:Cloud"];
             AppSettingsProvider.CloudinaryApiKey = Configuration["CloudinaryCredentials:ApiKey"];
             AppSettingsProvider.CloudinarytSecret = Configuration["CloudinaryCredentials:Secret"];
+            AppSettingsProvider.PaymentUsername = Configuration["PaymentCredentials:Username"];
+            AppSettingsProvider.PaymentPassword = Configuration["PaymentCredentials:Password"];
         }
     }
 }
