@@ -77,9 +77,9 @@ namespace FiveDevsShop.Controllers
                     Title = model.Title,
                     Description = model.Description,
                     Price = model.Price,
-                    Category_id = model.CategoryId,
+                    CategoryId = model.CategoryId,
                     Discount = model.Discount,
-                    Sku_code = model.SkuCode
+                    SkuCode = model.SkuCode
                 };
 
                 foreach (var formFile in model.Images)
@@ -105,7 +105,10 @@ namespace FiveDevsShop.Controllers
                 }
 
                 db.Product.Add(product);
-                    
+<<<<<<< HEAD
+=======
+
+>>>>>>> Fixing style conflicts
                 imageIds.ForEach(id => db.Image.Add(
                         new Image() { Id = id, ProductId = product.Id } ));
 

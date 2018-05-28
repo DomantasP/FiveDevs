@@ -7,6 +7,8 @@ using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using FiveDevsShop.Models;
 using FiveDevsShop.Data;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace FiveDevsShop.Controllers
 {
@@ -49,6 +51,48 @@ namespace FiveDevsShop.Controllers
 
             return PartialView(items);
         }
+
+        
+
+        [HttpPost]
+        public JsonResult GetSubcategoriesInBatches() //Id - order Id
+        {
+            var rootCategories = from c in db.Category.ToList()
+                                 where c.Parent_id == null
+                                 select c;
+
+            var categories = from c in db.Category.ToList()
+                             orderby c.Title
+                             select c;
+
+            var categoriesWithNoSub = (from rc in rootCategories
+                                      join c in categories
+                                      on rc.Id equals c.Parent_id into g
+                                      select new
+                                      {
+                                          parentID = rc.Id,
+                                          parentTitle = rc.Title,
+                                          subCatIds = g.Select(s => s.Id),
+                                          subCatTitles = g.Select(s => s.Title)
+                                      }).OrderBy(t => t.parentTitle);
+
+
+            return Json(categoriesWithNoSub);
+        }
+        [HttpPost]
+        public JsonResult GetRootCategories() //Id - order Id
+        {
+            var rootCats = from r in db.Category.ToList()
+                           where r.Parent_id == null
+                           select new
+                           {
+                               id = r.Id,
+                               title = r.Title
+                           };
+
+            return Json(rootCats);
+        }
+
         [HttpPost]
         public JsonResult ConfirmOrder(int orderId) //Id - order Id
         {
@@ -58,37 +102,25 @@ namespace FiveDevsShop.Controllers
             {
                 order.Status += 1;
 
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch
-                {
-                    return null;
-                }
-                    transaction.Commit();
+                try{db.SaveChanges();}
+                catch{return null;}
+                transaction.Commit();
             }
 
             return Json(order.Id);
         }
-
         [HttpPost]
         public JsonResult GetOrderItems(int Id) //Id - order Id
         {
-            //var purchases = db.Purchase.Select(p => p.Order_id == Id);
-
             var purchases = from p in db.Purchase
-                            join i in db.Product
-                            on p.Item_id equals i.Id
                             where p.Order_id == Id
                             select new
                             {
-                                product_id = i.Id,
-                                sku_code = i.Sku_code,
-                                title = i.Title,
+                                sku_code = p.Sku_code,
+                                title = p.Title,
                                 price = p.Price,
                                 quantity = p.Quantity,
-                                category = i.Category_id
+                                category = p.Category
 
                             };
 
@@ -111,7 +143,9 @@ namespace FiveDevsShop.Controllers
                 User = user.UserName,
                 Address = order.Address,
                 Cost = cost,
-                Status = order.Status
+                Status = order.Status,
+                Stars = order.Stars,
+                Comment = order.Comment
             };
                              
             return Json(returnData);
@@ -206,7 +240,18 @@ namespace FiveDevsShop.Controllers
         [HttpPost]
         public IActionResult AdminGetModel()
         {
-            List<Product> items = db.Product.ToList();
+            var items = from i in db.Product.ToList()
+                        join c in db.Category.ToList()
+                        on i.CategoryId equals c.Id
+                        select new
+                        {
+                            id = i.Id,
+                            sku_code = i.SkuCode,
+                            price = i.Price,
+                            title = i.Title,
+                            discount = i.Discount,
+                            category = c.Title
+                        };
 
             return Json(items);
         }
@@ -214,51 +259,138 @@ namespace FiveDevsShop.Controllers
         [HttpPost]
         public IActionResult AdminGetProductById(int id)
         {
-            Product item = db.Product.First(p => p.Id == id);
             ViewData["Message"] = "Redaguoti prekę";
+            Product item = db.Product.First(p => p.Id == id);
+            Category category = db.Category.First(c => c.Id == item.CategoryId);
 
-            return Json(item);
+            var itemWithNamedCategory =
+            new
+            {
+                id = item.Id,
+                sku_code = item.SkuCode,
+                price = item.Price,
+                title = item.Title,
+                description = item.Description,
+                discount = item.Discount,
+                category = category.Title,
+                categoryid = category.Id
+            };
+            
+
+            return Json(itemWithNamedCategory);
         }
+        private bool IsImageListValid(List<IFormFile> files)
+        {
 
-        [HttpPost]
-        public IActionResult AdminUpdateProduct(String idS, String sku_code, String category_idS, String title, String priceS, String description, String discountS)
+            foreach (var file in files)
+            {
+                int ImageMinimumBytes = 512;
+
+                if (file.ContentType.ToLower() != "image/jpg" &&
+                    file.ContentType.ToLower() != "image/jpeg" &&
+                    file.ContentType.ToLower() != "image/pjpeg" &&
+                    file.ContentType.ToLower() != "image/gif" &&
+                    file.ContentType.ToLower() != "image/x-png" &&
+                    file.ContentType.ToLower() != "image/png")
+                {
+                    return false;
+                }
+
+                if (Path.GetExtension(file.FileName).ToLower() != ".jpg" &&
+                    Path.GetExtension(file.FileName).ToLower() != ".png" &&
+                    Path.GetExtension(file.FileName).ToLower() != ".gif" &&
+                    Path.GetExtension(file.FileName).ToLower() != ".jpeg")
+                {
+                    return false;
+                }
+
+                if (file.Length < ImageMinimumBytes)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        [HttpPost]//ProductsViewModel product
+        public IActionResult AdminUpdateProduct(ProductsViewModel product)//(String idS, String sku_code, String categoryS, String title, String priceS, String description, String discountS, String subCategoryS)
         {
             ViewData["Message"] = "Atnaujinti prekę";
 
             int id;
-            int category_id;
             decimal price;
             int discount;
-            priceS = priceS.Replace(",", ".");
+            
+            product.priceS = (product.priceS).Replace(",", ".");
 
-            if (!Int32.TryParse(idS, out id)) return null;
+            Debug.WriteLine(product.priceS + "Turi buti taskas");
+      
+            if (!Int32.TryParse(product.idS, out id)) return null;
             Product item = db.Product.FirstOrDefault(p => p.Id == id);
             if (item == null) return null;
-            if (!Int32.TryParse(category_idS, out category_id)) return null;
-            if (!Decimal.TryParse(priceS, NumberStyles.Number, CultureInfo.InvariantCulture, out price)) return null;
-            if (!Int32.TryParse(discountS, out discount)) return null;
+            if (!Decimal.TryParse(product.priceS, NumberStyles.Number, CultureInfo.InvariantCulture, out price)) return null;
+            //price = Convert.ToDecimal(product.priceS, new CultureInfo("en-US"));
+            //price = decimal.Parse(product.priceS, new NumberFormatInfo() { NumberDecimalSeparator = "." });
+
+
+            //if (!decimal.TryParse(product.priceS, out price)) return null;
+            if (!Int32.TryParse(product.discountS, out discount)) return null;
+            Debug.WriteLine(price);
+           
+
+
+            Category category;
+            int setCategory = -1;
+            category = db.Category.ToList().FirstOrDefault(c => c.Title == product.categoryS.Trim());
+            if (category != null) setCategory = category.Id;
+
+            if (category == null)
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    category = new Category();
+                    category.Title = product.categoryS.Trim();
+                    category.Parent_id = null;
+                    db.Category.Add(category);
+                    try { db.SaveChanges(); }
+                    catch { return null; }
+                    transaction.Commit();
+                }
+                setCategory = (db.Category.ToList().FirstOrDefault(c => c.Title == product.categoryS.Trim())).Id;
+            }
+            Category subcategory = null;
+            if (product.subCategoryS != null) subcategory = db.Category.ToList().FirstOrDefault(c => c.Title == product.subCategoryS.Trim());
+            if(subcategory != null) setCategory = category.Id;
+            if (product.subCategoryS != null && subcategory == null)
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    Category newCategory = new Category();
+                    newCategory.Title = product.subCategoryS.Trim();
+                    newCategory.Parent_id = category.Id;
+                    db.Category.Add(newCategory);
+                    try { db.SaveChanges(); }
+                    catch { return null; }
+                    transaction.Commit();
+                    setCategory = (db.Category.ToList().FirstOrDefault(c => c.Title == product.subCategoryS.Trim())).Id;
+                }
+            }
+
             using (var transaction = db.Database.BeginTransaction())
             {
                     item.Id = id;
-                    item.Sku_code = sku_code;
-                    item.Category_id = category_id;
-                    item.Title = title;
+                    item.SkuCode = product.sku_code;
+                    item.CategoryId = setCategory;
+                    item.Title = product.title;
                     item.Price = price;
-                    item.Description = description;
+                    item.Description = product.description;
                     item.Discount = discount;
 
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch
-                {
-                    return null;
-                }
+                try{db.SaveChanges();}
+                catch{return null;}
                     transaction.Commit();
                     return Json(item);
             }  
-
         }
 
         public IActionResult Error()

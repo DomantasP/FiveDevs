@@ -3,12 +3,18 @@
     ViewData["Title"] = "SalesView";
 }
 
-<h2>SalesView</h2>
+<h2>Pardavimų valdymas</h2>
 <body>
     <div id="order">
         <!--Horizontal Tab-->
+        <style>
+            #horizontalTab .headerTabs {
+                background: #111e6c !important;
+                border: 0px;
+            }
+        </style>
         <div id="horizontalTab">
-            <ul>
+            <ul class="headerTabs">
                 <li><a href="#Nepatvirtinti">Nepatvirtintos siuntos</a></li>
                 <li><a href="#Neissiusti">Patvirtintos siuntos</a></li>
                 <li><a href="#Nepristatyti">Išsiųstos siuntos</a></li>
@@ -18,7 +24,7 @@
             <div id="Nepatvirtinti">
                 <table id="purchasesTable" class="display orderTable" style="width:100%">
                     <thead>
-                        @Html.Partial("~/Views/Shared/orderPurchaseHeader.cshtml")  
+                        @Html.Partial("~/Views/Shared/orderPurchaseHeader.cshtml")
                     </thead>
                     <tbody id="purchasesTableBody" class="orderTableBody"></tbody>
                     <tfoot>
@@ -66,6 +72,7 @@
             .AllOrderData {
                 font-size: 15px;
             }
+
             table#orderDataTable {
                 border-collapse: separate;
                 border-spacing: 16px;
@@ -96,6 +103,14 @@
                         <td class="AllOrderData"><b>Užsakymo vertė:</b></td>
                         <td class="AllOrderData orderValue"></td>
                     </tr>
+                    <tr>
+                        <td class="AllOrderData"><b>Įvertinimas:</b></td>
+                        <td class="AllOrderData orderStars">Nėra</td>
+                    </tr>
+                    <tr hidden id="orderCommentSection">
+                        <td class="AllOrderData"><b>Pirkėjo komentaras:</b></td>
+                        <td id="orderComment" hidden class="AllOrderData orderComment">Nėra</td>
+                    </tr>
                 </table>
             </div>
             <br />
@@ -103,7 +118,6 @@
                 <table id="productsTable" class="display" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Prekės ID</th>
                             <th>SKU kodas</th>
                             <th>Kategorija</th>
                             <th>Pavadinimas</th>
@@ -114,7 +128,6 @@
                     <tbody id="productsTableBody"></tbody>
                     <tfoot>
                         <tr>
-                            <th>Prekės ID</th>
                             <th>SKU kodas</th>
                             <th>Kategorija</th>
                             <th>Pavadinimas</th>
@@ -129,7 +142,21 @@
                         <input type="button" onclick="confirmOrder(this)" class="btn btn-primary" value="Patvirtinti" />
                     </center>
                 </div>
+                
             </div>
-        </div>
+            
+            </div>
     </div>
+    <script>
+                $(document).ready(function () {
+                    $('#horizontalTab').tabs({
+                        select: function (ev, ui) {
+                            location.href = "#/ui.tabs/"
+                                + $(this).attr("id")
+                                + "/" + ui.index;
+                            return true;
+                        }
+                    });
+                });
+    </script>
 </body>

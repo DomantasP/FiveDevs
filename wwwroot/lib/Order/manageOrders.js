@@ -15,12 +15,22 @@ function calcOrderData(data) {
 
     orderData = loadOrder(data.id);
     $('#orderMoreInformation').find("*").show();
+    if (orderData.status == 3 && orderData.comment != "") {
+        console.log(orderData);
+        $('#orderCommentSection').find("*").show();
+        $('#orderComment').empty();
+        $('#orderComment').append("<span id = buyerComment>" + orderData.comment + "</span>");
+
+    } else $('#orderCommentSection').find("*").hide();
 
     $('.orderDate').text(orderData.date);
     $('.orderId').text(orderData.id);
     $('.orderUsername').text(orderData.user);
     $('.orderAdress').text(orderData.address);
     $('.orderValue').text(orderData.cost + " €");
+    if (orderData.stars >= 1 && orderData.stars <= 5) {
+        $('.orderStars').text(orderData.stars + "/5");
+    } else $('.orderStars').text("Nėra");
 
     $('.btn-primary').attr('id', data.id);
     switch (orderData.status) {
@@ -49,7 +59,6 @@ function appendOrderItemsBody(data) {
     for (var i = 0; i < data.length; i++) {
         record = data[i];
         $("#productsTableBody").append("<tr id = " + record.id + ">\
-                    <td>"+ record.product_id + "</td>\
                     <td>"+ record.sku_code + "</td>\
                     <td>"+ record.category + "</td>\
                     <td>"+ record.title + "</td>\
@@ -149,6 +158,9 @@ function changeOrderStatus(orderId) {
                 icon: '<img src="/./lib/Messages/images/paper_plane.png" alt = "sėkmė"/>',
                 message: "Siuntos būsena buvo sėkmingai atnaujinta"
             });
+            
+            $('.orderTable').DataTable().row("#" + someData).remove().draw();
+            $('#orderMoreInformation').hide();
 
         }
     });
