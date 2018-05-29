@@ -13,6 +13,7 @@ using System.Diagnostics;
 using OfficeOpenXml;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Threading;
 
 namespace FiveDevsShop.Controllers
 {
@@ -68,8 +69,12 @@ namespace FiveDevsShop.Controllers
 
                         Decimal price;
                         if (!Regex.IsMatch(worksheet.Cells[row, 3].Text.Trim(), @"^[0-9]{1,8}[,.][0-9]{2}$")) return null;
-                        if (!Decimal.TryParse(worksheet.Cells[row, 3].Text.Trim().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out price)) return null;
+
+                        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
+                        if (!Decimal.TryParse(worksheet.Cells[row, 3].Text.Trim().Replace(',', '.'), NumberStyles.Number, CultureInfo.InvariantCulture, out price)) return null;
                         product.Price = price;
+                        Debug.WriteLine(product.Price + "PO konvertinimo");
 
                         product.Images = worksheet.Cells[row, 4].Text.Trim().Split(' ').ToList();
 
@@ -78,7 +83,6 @@ namespace FiveDevsShop.Controllers
                         product.Description = worksheet.Cells[row, 6].Text.Trim();
 
                         product.Categories = worksheet.Cells[row, 7].Text.Trim().Split('/').ToList();
-                        product.Categories = DeleteEmpty(product.Categories);
                         if (product.Categories.Count > 3) return null;
 
                         if (worksheet.Cells[row, 8].Text.Trim() != "" && worksheet.Cells[row, 9].Text.Trim() != "")
@@ -87,27 +91,140 @@ namespace FiveDevsShop.Controllers
                             product.PropertiesValue.Add(worksheet.Cells[row, 9].Text.Trim());
                         }
                         if(!IsProductValid(product)) return null;
+                        if (!IsValidWithDB(product)) return null;
                         importProducts.Add(product);
                     }
                     else return null;
-                    /*for (int col = 1; col <= ColCount; col++)
-                    {
-                        if(worksheet.Cells[row, col].Value != null) Debug.WriteLine(worksheet.Cells[row, col].Text);//rawText += worksheet.Cells[row, col].Value.ToString() + "\t";
-                    }*/
-                    //rawText += "\r\n";
-                }
-                //_logger.LogInformation(rawText);
-                //Debug.WriteLine(rawText);
+                }        
             }
+            AddProducts(importProducts);
             Debug.WriteLine("OK. WORKS FINE");
-            for(int i = 0; i < importProducts.Count; i++)
+            /*for(int i = 0; i < importProducts.Count; i++)
             {
                 Debug.WriteLine(importProducts[i].Categories.Count);
-            }
+            }*/
+            //Write(importProducts[0]);
 
             return Json(filePath);
         }
 
+        private Boolean AddProducts(List<ProductsImportModel> excelProducts)
+        {
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                Category parentCategory = new Category();
+                for (int i = 0; i < excelProducts.Count; i++)
+                {
+                    Debug.WriteLine("WWWWWWWWWWWW1");
+                    ProductsImportModel excelProduct = excelProducts[i];
+                    try
+                    {
+                        Debug.WriteLine("WWWWWWWWWWWW2");
+                        Category category = new Category();
+                        for (int j = 0; j < excelProduct.Categories.Count; j++)
+                        {
+                            Debug.WriteLine("CATEGORY1");
+                            category = db.Category.FirstOrDefault(c => c.Title == excelProduct.Categories[j]);
+                            if (category != null)
+                            {
+
+                            }
+                            else if (category == null && j == 0) /*Root category*/
+                            {
+                                category = new Category();
+                                category.Title = excelProduct.Categories[j];
+                                db.Category.Add(category);
+                            }
+                            else if (category == null)
+                            {
+                                category = new Category();
+                                category.Title = excelProduct.Categories[j];
+                                category.Parent_id = parentCategory.Id;
+                                db.Category.Add(category);
+                            }
+                            parentCategory = category;
+                            db.SaveChanges();
+                            Debug.WriteLine("CATEGORY");
+                        }
+                    }
+                    catch (Exception ex) { transaction.Rollback(); Debug.WriteLine("CATEGORY"); }
+                    Product product = new Product();
+                    product.SkuCode = excelProduct.SkuCode;
+                    product.Price = excelProduct.Price;
+                    product.Title = excelProduct.Title;
+                    product.Discount = excelProduct.Discount;
+                    product.Description = excelProduct.Description;
+                    product.CategoryId = db.Category.FirstOrDefault(c=>c.Title == excelProduct.Categories[excelProduct.Categories.Count-1]).Id;
+
+                    try
+                    {
+                        db.Product.Add(product);
+                        db.SaveChanges();
+                    }
+                    catch (Exception ex) { transaction.Rollback(); Debug.WriteLine("PRODUCT"); }
+
+                    try
+                    {
+                        for (int j = 0; j < excelProduct.Images.Count; j++)
+                        {
+                            Debug.WriteLine("IMAGES");
+                            Image image = new Image();
+                            image.Id = Guid.NewGuid().ToString();
+                            image.ProductId = product.Id;
+                            db.Image.Add(image);
+                            if (j == 0) product.MainImageId = image.Id;
+                        }
+                        db.SaveChanges();
+                    }
+                    catch (Exception ex) { transaction.Rollback(); Debug.WriteLine("IMAGES"); }
+
+                    try
+                    {
+                        for (int j = 0; j < excelProduct.PropertiesKey.Count; j++)
+                        {
+                            Debug.WriteLine("PROPERTIES");
+                            ProductProperty property = new ProductProperty();
+                            property.Name = excelProduct.PropertiesKey[j];
+                            property.Value = excelProduct.PropertiesValue[j];
+                            property.ProductId = product.Id;
+                            db.ProductProperty.Add(property);
+                        }
+                        db.SaveChanges();
+                    }
+                    catch (Exception ex) { transaction.Rollback(); Debug.WriteLine("PROPERTIES"); }
+                }
+                transaction.Commit();
+            }
+            return true;
+        }
+
+        private Boolean IsValidWithDB(ProductsImportModel excelProduct)
+        {
+            if (db.Product.FirstOrDefault(p => p.SkuCode == excelProduct.SkuCode) != null) return false;
+
+            /*Checking if Hierarchy in DB is correct*/
+            int status = 0;
+            for(int i = excelProduct.Categories.Count - 1; i >= 0 ; i--)
+            {
+                String CategoryName = excelProduct.Categories[i];
+                Category category = db.Category.FirstOrDefault(c => c.Title == CategoryName);
+                if (category == null && status == 1) return false;
+                else if (category == null && status == 0) continue;
+                else if(category != null && status == 0) status = 1;  
+            }
+            for (int i = excelProduct.Categories.Count - 1; i >= 1; i--)
+            {
+                String CategoryName = excelProduct.Categories[i];
+                Category category = db.Category.FirstOrDefault(c => c.Title == CategoryName);
+                if (category == null) continue;
+                Category parentCategory = db.Category.FirstOrDefault(c => c.Title == excelProduct.Categories[i-1]);
+                if (category.Parent_id != parentCategory.Id) return false;
+            }
+
+                return true;
+        }
+
+    
         private List<String> DeleteEmpty(List<String> texts)
         {
             for(int i = 0; i < texts.Count; i++)
@@ -119,7 +236,7 @@ namespace FiveDevsShop.Controllers
 
         private Boolean IsProductValid(ProductsImportModel product)
         {
-            //Debug.WriteLine("0000000000000");
+            Debug.WriteLine("0000000000000");
             if (!Regex.IsMatch(product.Title, @"^.{1,45}$")) return false;
             //Debug.WriteLine("1111111111");
             if (!Regex.IsMatch(product.ShortDescription, @"^.{1,400}$")) return false;
@@ -132,7 +249,7 @@ namespace FiveDevsShop.Controllers
             {
                 if (!Regex.IsMatch(product.Images[i], @"(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*\.(?:jpg|gif|png|jpe|jpeg|pjpeg|x-png))(?:\?([^#]*))?(?:#(.*))?")) return false;
             }
-            //Debug.WriteLine("44444444444");
+            Debug.WriteLine("44444444444");
 
             if (!Regex.IsMatch(product.SkuCode, @"^.{1,20}$")) return false;
             if (!Regex.IsMatch(product.Description, @"^.{1,16383}$")) return false;
@@ -143,7 +260,7 @@ namespace FiveDevsShop.Controllers
                 if (!Regex.IsMatch(product.Categories[i], @"^.{1,45}$")) return false;
                 if (product.Categories.Count(a => a == product.Categories[i]) > 1) return false;
             }
-            //Debug.WriteLine("66666666666");
+            Debug.WriteLine("66666666666");
 
             for (int i = 0; i < product.PropertiesKey.Count; i++)
             {
@@ -151,7 +268,7 @@ namespace FiveDevsShop.Controllers
                 if (!Regex.IsMatch(product.PropertiesKey[i], @"^.{1,40}$")) return false;
                 if (product.PropertiesKey.Count(a => a == product.PropertiesKey[i]) > 1) return false;
             }
-            
+            Debug.WriteLine("7777777777777");
 
             return true;
         }

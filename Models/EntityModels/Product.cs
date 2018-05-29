@@ -15,5 +15,7 @@
         public string Description { get; set; }
 
         public int Discount { get; set; }
+
+        public string MainImageId { get; set; }
     }
 }
