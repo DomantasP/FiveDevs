@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Threading;
 using FiveDevsShop.Models.DomainServices;
+using FiveDevsShop.Extensions;
 
 namespace FiveDevsShop.Controllers
 {
@@ -304,6 +305,10 @@ namespace FiveDevsShop.Controllers
             }   
         }
 
+        public IActionResult ViewCart()
+        {
+            return View("/Views/User/Cart.cshtml", this.UserShoppingCart());
+        }
 
         [HttpPost]
         public IActionResult AddProduct(AddProductViewModel model)
@@ -368,7 +373,9 @@ namespace FiveDevsShop.Controllers
             var product = db.Product.FirstOrDefault(p => p.Id == model.Id);
             var productViewModel = BuildProductViewModel(product);
 
-            // TODO cart logic
+            var cart = this.UserShoppingCart();
+            cart.AddProduct(product, model.ProductCount);
+            this.SaveCart(cart);
 
             return View("GetProduct", productViewModel);
         }

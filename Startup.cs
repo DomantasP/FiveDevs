@@ -56,13 +56,19 @@ namespace FiveDevsShop
             services.AddSingleton(new HttpClient());
             services.AddSingleton<PaymentProcessor>();
 
-            services.AddMvc().AddFluentValidation();
+            services.AddMvc().AddFluentValidation().AddSessionStateTempDataProvider();
 
             services.AddTransient<IValidator<GetProductViewModel>, GetProductViewModelValidator>();
             services.AddTransient<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
             services.AddTransient<IValidator<LoginViewModel>, LoginViewModelValidator>();
             services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
             services.AddTransient<IValidator<PaymentViewModel>, PaymentViewModelValidator>();
+
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +86,7 @@ namespace FiveDevsShop
 
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {
@@ -87,6 +94,11 @@ namespace FiveDevsShop
                     name: "payment",
                     template: "payment",
                     defaults: new { controller = "Payment", action = "StartPayment" });
+
+                routes.MapRoute(
+                    name: "cart",
+                    template: "cart",
+                    defaults: new { controller = "Product", action = "ViewCart" });
 
                 routes.MapRoute(
                     name: "home",

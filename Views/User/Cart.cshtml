@@ -1,0 +1,12 @@
+﻿@model ShoppingCart
+@{
+    ViewData["Title"] = "Krepšelis";
+}
+
+<h2>Krepšelis</h2>
+
+@foreach (var entry in Model.Entries.Values)
+{
+    @Html.Partial("/Views/Shared/Components/Cart/CartEntry.cshtml", entry)
+}
+
