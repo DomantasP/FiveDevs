@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Routing.Constraints;
 using FluentValidation.AspNetCore;
 using FiveDevsShop.Validators;
 using FluentValidation;
+using FiveDevsShop.Models.AccountViewModels;
 
 namespace FiveDevsShop
 {
@@ -34,7 +35,16 @@ namespace FiveDevsShop
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                var allowed = options.User.AllowedUserNameCharacters + "ĄąČčĘęĖėĮįŠšŲųŪūŽž";
+                options.User.AllowedUserNameCharacters = allowed;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 1;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -44,6 +54,7 @@ namespace FiveDevsShop
             services.AddMvc().AddFluentValidation();
 
             services.AddTransient<IValidator<GetProductViewModel>, GetProductViewModelValidator>();
+            services.AddTransient<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
