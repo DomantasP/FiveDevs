@@ -1,0 +1,45 @@
+﻿@model PaymentViewModel
+@{
+    ViewData["Title"] = "Apmokėjimas";
+}
+
+<h2>Apmokėjimas</h2>
+
+<div class="col-md-4">
+    <form asp-controller="Payment" asp-action="Pay" method="post">
+        <div class="form-group">
+            <!-- TODO: amount must be calculated in server, also maybe we should display shopping cart here? -->
+            <label for="title">Suma:</label>
+            <input type="text" class="form-control" id="amount" placeholder="Suma" asp-for="Amount" />
+            <p><span asp-validation-for="Amount" class="text-danger"></span></p>
+        </div>
+        <div class="form-group">
+            <label for="description">Kortelės nr.:</label>
+            <input type="text" class="form-control" id="number" placeholder="Įveskite numerį" asp-for="Number" />
+            <p><span asp-validation-for="Number" class="text-danger"></span></p>
+        </div>
+        <div class="form-group">
+            <label for="price">Vardas, pavardė:</label>
+            <input type="text" class="form-control" id="name" placeholder="Įveskite vardą ir pavardę" asp-for="Name" />
+            <p><span asp-validation-for="Name" class="text-danger"></span></p>
+        </div>
+        <div class="form-group">
+            <label for="discount">Galiojimo metai:</label>
+            <input type="number" class="form-control" id="exp-year" placeholder="Įveskite galiojimo metus" asp-for="ExpYear" />
+            <p><span asp-validation-for="ExpYear" class="text-danger"></span></p>
+        </div>
+        <div class="form-group">
+            <label for="skuCode">Galiojimo mėnuo:</label>
+            <select class="form-control" id="exp-month" placeholder="Įveskite galiojimo mėnesį" asp-for="ExpMonth" />
+            <p><span asp-validation-for="ExpMonth" class="text-danger"></span></p>
+        </div>
+        <div class="form-group">
+            <label for="skuCode">Sku code:</label>
+            <input type="text" class="form-control" id="ccv" placeholder="Įveskite CCV" asp-for="CCV" />
+            <p><span asp-validation-for="CCV" class="text-danger"></span></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Mokėti</button>
+    </form>
+</div>
+

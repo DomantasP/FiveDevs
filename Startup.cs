@@ -62,6 +62,7 @@ namespace FiveDevsShop
             services.AddTransient<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
             services.AddTransient<IValidator<LoginViewModel>, LoginViewModelValidator>();
             services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
+            services.AddTransient<IValidator<PaymentViewModel>, PaymentViewModelValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,6 +83,11 @@ namespace FiveDevsShop
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute(
+                    name: "payment",
+                    template: "payment",
+                    defaults: new { controller = "Payment", action = "StartPayment" });
+
                 routes.MapRoute(
                     name: "home",
                     template: "",
