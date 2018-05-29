@@ -8,8 +8,7 @@ namespace FiveDevsShop.Models.AccountViewModels
 {
     public class ForgotPasswordViewModel
     {
-        [Required]
-        [EmailAddress]
+        [Display(Name = "El. paštas")]
         public string Email { get; set; }
     }
 }

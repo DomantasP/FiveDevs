@@ -55,6 +55,8 @@ namespace FiveDevsShop
 
             services.AddTransient<IValidator<GetProductViewModel>, GetProductViewModelValidator>();
             services.AddTransient<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
+            services.AddTransient<IValidator<LoginViewModel>, LoginViewModelValidator>();
+            services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

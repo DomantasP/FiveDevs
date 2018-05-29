@@ -63,7 +63,12 @@ namespace FiveDevsShop.Controllers
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
 
                 var user = _userManager.FindByEmailAsync(model.Email);
-                
+                if (user.Result.Ban_flag == 1)
+                {
+                    ModelState.AddModelError(string.Empty, "Prisijungti nepavyko. Ši paskyra užblokuota.");
+                    return View(model);
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(user.Result.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
