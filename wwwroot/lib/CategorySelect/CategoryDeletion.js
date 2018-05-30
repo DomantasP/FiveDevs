@@ -1,5 +1,4 @@
 ﻿function deleteCategory() {
-    //console.log($(".selected-label").text());
     setTimeout(function () {
         $('.html-spinner').show();
     }, 0);
@@ -11,7 +10,6 @@
 }
 
 function doDeleteCategory() {
-    //console.log($(".selected-label").text());
     aaa = $(function () {
         $.confirm.show({
             "message": "Ar tikrai norite ištrinti pasirinktą kategoriją? Kartu bus ištrintos ir jos subkategorijos",
@@ -88,7 +86,6 @@ function doDeleteCategoryMethod(categoryName) {
 
 function appendCategories(categoriesData) {
     count = 1;
-    console.log(categoriesData);
     for (var i = 0; i < categoriesData.length; i++) {
         var categoryBatch = categoriesData[i];
         var parentId = categoryBatch.parentID;
