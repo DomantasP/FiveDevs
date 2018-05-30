@@ -7,9 +7,12 @@
 <h2>Prekių valdymas</h2>
 <body>
     <button id="addProduct" type="button">Pridėti prekę</button>
-    <button id="deleteCategory" type="button">Pašalinti kategoriją</button>
+    <button id="deleteCategory" type="button" onclick="deleteCategoryBar()">Pašalinti kategoriją</button>
 
-    
+    <button id="addProductExcel" type="button" onclick="uploadExcel()">Pridėti prekes Excel formatu</button>
+    <input type="file" id="excelUpload" />
+
+
     <div id="CategoryDeletionBlock" hidden>
         <hr />
         <h3>Pasirinkite kategoriją, kurią norite pašalinti</h3>
@@ -23,52 +26,20 @@
                 <div class="hs-searchbox">
                     <input type="text" class="form-control" autocomplete="off">
                 </div>
-                <ul class="dropdown-menu inner deletionCategoriesList" role="menu">
-                    
-                </ul>
+                <ul class="dropdown-menu inner deletionCategoriesList" role="menu"></ul>
             </div>
         </div>
-        <a id="deleteSign" href ="#/" onclick="deleteCategory()"><img src="../lib/Table/cross_red.png" height="30" width="30" alt="šalinti" /></a>
+        <a id="deleteSign" href="#/" onclick="deleteCategory()"><img src="../lib/Table/cross_red.png" height="30" width="30" alt="šalinti" /></a>
         <br />
         <hr />
     </div>
-    
+
     <style>
-        #addProduct, #deleteCategory {
+        #addProduct, #deleteCategory #addProductExcel {
             color: white;
         }
     </style>
-    <script>
 
-        $(document).ready(function () {
-        $("#deleteCategory").click(function () {
-            setTimeout(function () {
-                $('.html-spinner').show();
-            }, 0);
-
-            setTimeout(function () {
-                if ($("#CategoryDeletionBlock").is(":visible")) {
-                    $("#CategoryDeletionBlock").hide();
-                    $(".deletionCategoriesList").empty();
-                } else {
-                    $("#CategoryDeletionBlock").show();
-                    $(".selected-label").text('Pasirinkite kategoriją');
-                    categoriesData = loadActionData("GetSubcategoriesInBatches");
-                    appendCategories(categoriesData);
-                }
-                $('.html-spinner').hide();
-            }, 100);
-            });
-        });
-
-        $(document).ready(function () {
-            $('#categoriesForDeletion').hierarchySelect({
-                width: 205
-            });
-        });
-
-        
-    </script>
 
 
     <table id="example" class="display" style="width:100%">
@@ -101,6 +72,7 @@
 
     </div>
 </body>
+
 
 
 

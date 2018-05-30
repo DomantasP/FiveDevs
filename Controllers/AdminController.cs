@@ -100,6 +100,7 @@ namespace FiveDevsShop.Controllers
             Debug.WriteLine(orderId);
             
                 order.Status += 1;
+
                 try{db.SaveChanges();}
                 catch{return null;}
      
@@ -116,7 +117,7 @@ namespace FiveDevsShop.Controllers
                                 title = p.Title,
                                 price = p.Price,
                                 quantity = p.Quantity,
-                                category = p.Category,
+                                category = p.Category
                             };
 
             return Json(purchases);
@@ -259,8 +260,7 @@ namespace FiveDevsShop.Controllers
                 category = category.Title,
                 categoryid = category.Id
             };
-            
-
+  
             return Json(itemWithNamedCategory);
         }
         
@@ -298,14 +298,14 @@ namespace FiveDevsShop.Controllers
 
             if (category == null)
             {
-                
+
                     category = new Category();
                     category.Title = product.categoryS.Trim();
                     category.Parent_id = null;
                     db.Category.Add(category);
                     try { db.SaveChanges(); }
                     catch { return null; }
-                
+
                 setCategory = (db.Category.ToList().FirstOrDefault(c => c.Title == product.categoryS.Trim())).Id;
             }
             Category subcategory = null;
@@ -335,6 +335,7 @@ namespace FiveDevsShop.Controllers
 
                 try{db.SaveChanges();}
                 catch{return null;}
+
                     return Json(item);
             
         }

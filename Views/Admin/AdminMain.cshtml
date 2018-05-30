@@ -25,11 +25,13 @@
 
             <div class="user-dashboard" id="main">
 
-
             </div>
+
         </div>
     </div>
 </div>
+
+
 
 
 <div hidden class="html-spinner">
@@ -66,6 +68,64 @@
         $(document).ready(function () {
             var table1 = $('#example').DataTable();
         });
+
+            function deleteCategoryBar() {
+                setTimeout(function () {
+                    $('.html-spinner').show();
+                }, 0);
+
+                setTimeout(function () {
+                    if ($("#CategoryDeletionBlock").is(":visible")) {
+                        $("#CategoryDeletionBlock").hide();
+                        $(".deletionCategoriesList").empty();
+                    } else {
+                        $("#CategoryDeletionBlock").show();
+                        $(".selected-label").text('Pasirinkite kategoriją');
+                        categoriesData = loadActionData("GetSubcategoriesInBatches");
+                        appendCategories(categoriesData);
+                    }
+                    $('.html-spinner').hide();
+                }, 100);
+            }
+        
+
+        $(document).ready(function () {
+            $('#categoriesForDeletion').hierarchySelect({
+                width: 205
+            });
+        });
+
+ 
+        function uploadExcel() {
+            var formData = new FormData();
+
+            var fileSelect = document.getElementById('excelUpload');
+            if (fileSelect != null) {
+                var files = fileSelect.files;
+
+                formData.append('file', files[0]);
+                console.log(files[0]);
+            }
+
+
+            $.ajax({
+                url: '/Product/UploadProductByExcel',
+                type: 'POST',
+                async: false,
+                cache: false,
+                timeout: 30000,
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,
+                error: function () {
+                    return true;
+                },
+                success: function (product) {
+                }
+            });
+
+        }
+    
     </script>
 
     <script src="~/lib/ChangeTab/sammy.js"></script>
@@ -85,4 +145,5 @@
     <script src="~/lib/Order/manageOrders.js" type="text/javascript"></script>
     <script src="~/lib/CategorySelect/hierarchy-select.min.js" type="text/javascript"></script>
 }
+
 
