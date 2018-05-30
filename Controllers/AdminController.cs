@@ -100,18 +100,10 @@ namespace FiveDevsShop.Controllers
             Debug.WriteLine(orderId);
             
                 order.Status += 1;
-<<<<<<< HEAD
 
-                try{db.SaveChanges();}
-                catch{return null;}
-                transaction.Commit();
-            }
-
-=======
                 try{db.SaveChanges();}
                 catch{return null;}
      
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
             return Json(order.Id);
         }
         [HttpPost]
@@ -125,12 +117,7 @@ namespace FiveDevsShop.Controllers
                                 title = p.Title,
                                 price = p.Price,
                                 quantity = p.Quantity,
-<<<<<<< HEAD
                                 category = p.Category
-
-=======
-                                category = p.Category,
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
                             };
 
             return Json(purchases);
@@ -273,50 +260,10 @@ namespace FiveDevsShop.Controllers
                 category = category.Title,
                 categoryid = category.Id
             };
-            
-<<<<<<< HEAD
-
-            return Json(itemWithNamedCategory);
-        }
-        private bool IsImageListValid(List<IFormFile> files)
-        {
-
-            foreach (var file in files)
-            {
-                int ImageMinimumBytes = 512;
-
-                if (file.ContentType.ToLower() != "image/jpg" &&
-                    file.ContentType.ToLower() != "image/jpeg" &&
-                    file.ContentType.ToLower() != "image/pjpeg" &&
-                    file.ContentType.ToLower() != "image/gif" &&
-                    file.ContentType.ToLower() != "image/x-png" &&
-                    file.ContentType.ToLower() != "image/png")
-                {
-                    return false;
-                }
-
-                if (Path.GetExtension(file.FileName).ToLower() != ".jpg" &&
-                    Path.GetExtension(file.FileName).ToLower() != ".png" &&
-                    Path.GetExtension(file.FileName).ToLower() != ".gif" &&
-                    Path.GetExtension(file.FileName).ToLower() != ".jpeg")
-                {
-                    return false;
-                }
-
-                if (file.Length < ImageMinimumBytes)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-=======
-
+  
             return Json(itemWithNamedCategory);
         }
         
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
         [HttpPost]//ProductsViewModel product
         public IActionResult AdminUpdateProduct(ProductsViewModel product)//(String idS, String sku_code, String categoryS, String title, String priceS, String description, String discountS, String subCategoryS)
         {
@@ -351,48 +298,20 @@ namespace FiveDevsShop.Controllers
 
             if (category == null)
             {
-<<<<<<< HEAD
-                using (var transaction = db.Database.BeginTransaction())
-                {
-=======
-                
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
+
                     category = new Category();
                     category.Title = product.categoryS.Trim();
                     category.Parent_id = null;
                     db.Category.Add(category);
                     try { db.SaveChanges(); }
                     catch { return null; }
-<<<<<<< HEAD
-                    transaction.Commit();
-                }
-=======
-                
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
+
                 setCategory = (db.Category.ToList().FirstOrDefault(c => c.Title == product.categoryS.Trim())).Id;
             }
             Category subcategory = null;
             if (product.subCategoryS != null) subcategory = db.Category.ToList().FirstOrDefault(c => c.Title == product.subCategoryS.Trim());
             if(subcategory != null) setCategory = category.Id;
             if (product.subCategoryS != null && subcategory == null)
-<<<<<<< HEAD
-            {
-                using (var transaction = db.Database.BeginTransaction())
-                {
-                    Category newCategory = new Category();
-                    newCategory.Title = product.subCategoryS.Trim();
-                    newCategory.Parent_id = category.Id;
-                    db.Category.Add(newCategory);
-                    try { db.SaveChanges(); }
-                    catch { return null; }
-                    transaction.Commit();
-                    setCategory = (db.Category.ToList().FirstOrDefault(c => c.Title == product.subCategoryS.Trim())).Id;
-                }
-            }
-
-            using (var transaction = db.Database.BeginTransaction())
-=======
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
             {
                 
                     Category newCategory = new Category();
@@ -416,14 +335,9 @@ namespace FiveDevsShop.Controllers
 
                 try{db.SaveChanges();}
                 catch{return null;}
-<<<<<<< HEAD
-                    transaction.Commit();
-                    return Json(item);
-            }  
-=======
+
                     return Json(item);
             
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
         }
 
         public IActionResult Error()

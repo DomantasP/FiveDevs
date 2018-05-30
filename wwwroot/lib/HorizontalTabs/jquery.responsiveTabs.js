@@ -106,36 +106,23 @@
 
         // Activate: this event is called when a tab is selected
         this.$element.bind('tabs-click', function (e, oTab) {
-<<<<<<< HEAD
-            //console.log("tabas pasirenkamasss");
-=======
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
+
             _this.options.click.call(this, e, oTab);
         });
 
         // Activate: this event is called when a tab is selected
         this.$element.bind('tabs-activate', function (e, oTab) {
-<<<<<<< HEAD
-            //console.log("aktyvuojaaa");
-=======
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
+
             _this.options.activate.call(this, e, oTab);
             //app.setLocation('#Neissiusti');
         });
         // Deactivate: this event is called when a tab is closed
         this.$element.bind('tabs-deactivate', function (e, oTab) {
-<<<<<<< HEAD
-            //console.log("isjungiaaa");
-=======
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
+
             _this.options.deactivate.call(this, e, oTab);
         });
         // Activate State: this event is called when the plugin switches states
         this.$element.bind('tabs-activate-state', function (e, state) {
-<<<<<<< HEAD
-            //console.log("pakeiciama busenaaa");
-=======
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
             _this.options.activateState.call(this, e, state);
         });
 

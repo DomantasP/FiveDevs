@@ -9,15 +9,12 @@ using System.Threading.Tasks;
 using FiveDevsShop.Services;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
-<<<<<<< HEAD
 using System.Diagnostics;
 using OfficeOpenXml;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Threading;
-=======
 using FiveDevsShop.Models.DomainServices;
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
 
 namespace FiveDevsShop.Controllers
 {
@@ -32,7 +29,6 @@ namespace FiveDevsShop.Controllers
             this.db = db;
         }
 
-<<<<<<< HEAD
         [HttpPost]
         public JsonResult UploadProductByExcel(IFormFile file)
         {
@@ -264,9 +260,7 @@ namespace FiveDevsShop.Controllers
             return true;
         }
 
-=======
         [HttpGet]
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
         public IActionResult GetProduct(int id)
         {
             var product = db.Product.FirstOrDefault(p => p.Id == id);
@@ -354,19 +348,11 @@ namespace FiveDevsShop.Controllers
                     Price = model.Price,
                     CategoryId = model.CategoryId,
                     Discount = model.Discount,
-<<<<<<< HEAD
-                    SkuCode = model.SkuCode
-=======
                     SkuCode = model.SkuCode,
                     MainImageId = mainImageId,
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
                 };
 
                 db.Product.Add(product);
-<<<<<<< HEAD
-
-=======
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
                 imageIds.ForEach(id => db.Image.Add(
                         new Image() { Id = id, ProductId = product.Id } ));
 
