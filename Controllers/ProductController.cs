@@ -50,9 +50,6 @@ namespace FiveDevsShop.Controllers
                 int rowCount = worksheet.Dimension.Rows;
                 int ColCount = worksheet.Dimension.Columns;
                 
-                Debug.WriteLine(rowCount + " " + ColCount);
-
-                //var rawText = string.Empty;
                 
                 for (int row = 2; row <= rowCount; row++)
                 {
@@ -74,7 +71,6 @@ namespace FiveDevsShop.Controllers
 
                         if (!Decimal.TryParse(worksheet.Cells[row, 3].Text.Trim().Replace(',', '.'), NumberStyles.Number, CultureInfo.InvariantCulture, out price)) return null;
                         product.Price = price;
-                        Debug.WriteLine(product.Price + "PO konvertinimo");
 
                         product.Images = worksheet.Cells[row, 4].Text.Trim().Split(' ').ToList();
 
@@ -91,21 +87,15 @@ namespace FiveDevsShop.Controllers
                             product.PropertiesValue.Add(worksheet.Cells[row, 9].Text.Trim());
                         }
                         if(!IsProductValid(product)) return null;
-                        if (!IsValidWithDB(product)) return null;
+                        if (db.Product.FirstOrDefault(p => p.SkuCode == product.SkuCode) != null) return null;
                         importProducts.Add(product);
                     }
                     else return null;
                 }        
             }
             AddProducts(importProducts);
-            Debug.WriteLine("OK. WORKS FINE");
-            /*for(int i = 0; i < importProducts.Count; i++)
-            {
-                Debug.WriteLine(importProducts[i].Categories.Count);
-            }*/
-            //Write(importProducts[0]);
 
-            return Json(filePath);
+            return Json(1);
         }
 
         private Boolean AddProducts(List<ProductsImportModel> excelProducts)
@@ -115,25 +105,22 @@ namespace FiveDevsShop.Controllers
                 Category parentCategory = new Category();
                 for (int i = 0; i < excelProducts.Count; i++)
                 {
-                    Debug.WriteLine("WWWWWWWWWWWW1");
                     ProductsImportModel excelProduct = excelProducts[i];
                     try
                     {
-                        Debug.WriteLine("WWWWWWWWWWWW2");
                         Category category = new Category();
                         for (int j = 0; j < excelProduct.Categories.Count; j++)
                         {
-                            Debug.WriteLine("CATEGORY1");
-                            category = db.Category.FirstOrDefault(c => c.Title == excelProduct.Categories[j]);
-                            if (category != null)
-                            {
+                            if(j > 0) category = db.Category.FirstOrDefault(c => c.Title == excelProduct.Categories[j] && 
+                                    c.Parent_id == parentCategory.Id);
+                            else category = db.Category.FirstOrDefault(c => c.Title == excelProduct.Categories[j]);
 
-                            }
-                            else if (category == null && j == 0) /*Root category*/
+                            if (category == null && j == 0) /*Root category*/
                             {
                                 category = new Category();
                                 category.Title = excelProduct.Categories[j];
                                 db.Category.Add(category);
+                                db.SaveChanges();
                             }
                             else if (category == null)
                             {
@@ -141,19 +128,20 @@ namespace FiveDevsShop.Controllers
                                 category.Title = excelProduct.Categories[j];
                                 category.Parent_id = parentCategory.Id;
                                 db.Category.Add(category);
+                                db.SaveChanges();
                             }
                             parentCategory = category;
-                            db.SaveChanges();
-                            Debug.WriteLine("CATEGORY");
+                            
                         }
                     }
-                    catch (Exception ex) { transaction.Rollback(); Debug.WriteLine("CATEGORY"); }
+                    catch (Exception ex) { transaction.Rollback(); }
                     Product product = new Product();
                     product.SkuCode = excelProduct.SkuCode;
                     product.Price = excelProduct.Price;
                     product.Title = excelProduct.Title;
                     product.Discount = excelProduct.Discount;
                     product.Description = excelProduct.Description;
+                    product.ShortDescription = excelProduct.ShortDescription;
                     product.CategoryId = db.Category.FirstOrDefault(c=>c.Title == excelProduct.Categories[excelProduct.Categories.Count-1]).Id;
 
                     try
@@ -161,28 +149,27 @@ namespace FiveDevsShop.Controllers
                         db.Product.Add(product);
                         db.SaveChanges();
                     }
-                    catch (Exception ex) { transaction.Rollback(); Debug.WriteLine("PRODUCT"); }
+                    catch (Exception ex) { transaction.Rollback(); }
 
                     try
                     {
                         for (int j = 0; j < excelProduct.Images.Count; j++)
                         {
-                            Debug.WriteLine("IMAGES");
                             Image image = new Image();
                             image.Id = Guid.NewGuid().ToString();
+                            image.Url = excelProduct.Images[j];
                             image.ProductId = product.Id;
                             db.Image.Add(image);
                             if (j == 0) product.MainImageId = image.Id;
                         }
                         db.SaveChanges();
                     }
-                    catch (Exception ex) { transaction.Rollback(); Debug.WriteLine("IMAGES"); }
+                    catch (Exception ex) { transaction.Rollback(); }
 
                     try
                     {
                         for (int j = 0; j < excelProduct.PropertiesKey.Count; j++)
                         {
-                            Debug.WriteLine("PROPERTIES");
                             ProductProperty property = new ProductProperty();
                             property.Name = excelProduct.PropertiesKey[j];
                             property.Value = excelProduct.PropertiesValue[j];
@@ -191,38 +178,14 @@ namespace FiveDevsShop.Controllers
                         }
                         db.SaveChanges();
                     }
-                    catch (Exception ex) { transaction.Rollback(); Debug.WriteLine("PROPERTIES"); }
+                    catch (Exception ex) { transaction.Rollback(); }
                 }
                 transaction.Commit();
             }
             return true;
         }
 
-        private Boolean IsValidWithDB(ProductsImportModel excelProduct)
-        {
-            if (db.Product.FirstOrDefault(p => p.SkuCode == excelProduct.SkuCode) != null) return false;
-
-            /*Checking if Hierarchy in DB is correct*/
-            int status = 0;
-            for(int i = excelProduct.Categories.Count - 1; i >= 0 ; i--)
-            {
-                String CategoryName = excelProduct.Categories[i];
-                Category category = db.Category.FirstOrDefault(c => c.Title == CategoryName);
-                if (category == null && status == 1) return false;
-                else if (category == null && status == 0) continue;
-                else if(category != null && status == 0) status = 1;  
-            }
-            for (int i = excelProduct.Categories.Count - 1; i >= 1; i--)
-            {
-                String CategoryName = excelProduct.Categories[i];
-                Category category = db.Category.FirstOrDefault(c => c.Title == CategoryName);
-                if (category == null) continue;
-                Category parentCategory = db.Category.FirstOrDefault(c => c.Title == excelProduct.Categories[i-1]);
-                if (category.Parent_id != parentCategory.Id) return false;
-            }
-
-                return true;
-        }
+        
 
     
         private List<String> DeleteEmpty(List<String> texts)
@@ -236,31 +199,23 @@ namespace FiveDevsShop.Controllers
 
         private Boolean IsProductValid(ProductsImportModel product)
         {
-            Debug.WriteLine("0000000000000");
             if (!Regex.IsMatch(product.Title, @"^.{1,45}$")) return false;
-            //Debug.WriteLine("1111111111");
             if (!Regex.IsMatch(product.ShortDescription, @"^.{1,400}$")) return false;
-            //Debug.WriteLine("222222222222");
 
             if (product.Price <= 0) return false;
-            //Debug.WriteLine("3333333333");
 
             for (int i = 0; i < product.Images.Count; i++)
             {
                 if (!Regex.IsMatch(product.Images[i], @"(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*\.(?:jpg|gif|png|jpe|jpeg|pjpeg|x-png))(?:\?([^#]*))?(?:#(.*))?")) return false;
             }
-            Debug.WriteLine("44444444444");
 
             if (!Regex.IsMatch(product.SkuCode, @"^.{1,20}$")) return false;
             if (!Regex.IsMatch(product.Description, @"^.{1,16383}$")) return false;
-           // Debug.WriteLine("5555555555");
 
             for (int i = 0; i < product.Categories.Count; i++)
             {
                 if (!Regex.IsMatch(product.Categories[i], @"^.{1,45}$")) return false;
-                if (product.Categories.Count(a => a == product.Categories[i]) > 1) return false;
             }
-            Debug.WriteLine("66666666666");
 
             for (int i = 0; i < product.PropertiesKey.Count; i++)
             {
@@ -268,7 +223,6 @@ namespace FiveDevsShop.Controllers
                 if (!Regex.IsMatch(product.PropertiesKey[i], @"^.{1,40}$")) return false;
                 if (product.PropertiesKey.Count(a => a == product.PropertiesKey[i]) > 1) return false;
             }
-            Debug.WriteLine("7777777777777");
 
             return true;
         }

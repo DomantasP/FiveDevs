@@ -17,5 +17,7 @@
         public int Discount { get; set; }
 
         public string MainImageId { get; set; }
+
+        public string ShortDescription { get; set; }
     }
 }
