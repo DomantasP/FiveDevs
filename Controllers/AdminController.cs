@@ -57,27 +57,45 @@ namespace FiveDevsShop.Controllers
         [HttpPost]
         public JsonResult GetSubcategoriesInBatches() //Id - order Id
         {
-            var rootCategories = from c in db.Category.ToList()
+            var rootCategories = from c in db.Category
                                  where c.Parent_id == null
                                  select c;
 
-            var categories = from c in db.Category.ToList()
+            var categories = from c in db.Category
                              orderby c.Title
                              select c;
 
+            var lookup = db.Category.ToLookup(x => x.Parent_id);
             var categoriesWithNoSub = (from rc in rootCategories
-                                      join c in categories
-                                      on rc.Id equals c.Parent_id into g
-                                      select new
-                                      {
-                                          parentID = rc.Id,
-                                          parentTitle = rc.Title,
-                                          subCatIds = g.Select(s => s.Id),
-                                          subCatTitles = g.Select(s => s.Title)
-                                      }).OrderBy(t => t.parentTitle);
+                                       join c in categories
+                                       on rc.Id equals c.Parent_id into g
+                                       select new
+                                       {
+                                           parentID = rc.Id,
+                                           parentTitle = rc.Title,
 
 
-            return Json(categoriesWithNoSub);
+                                           subCat = g.Select(w => new
+                                                                  {
+                                                                      subCatId = w.Id,
+                                                                      subCatTitles = w.Title,
+                                                                      subSubCat = from c in categories
+                                                                                    where c.Parent_id == w.Id
+                                                                                    select new
+                                                                                    {
+                                                                                        subSubCatId = c.Id,
+                                                                                        subSubCatTitle = c.Title
+                                                                                    }
+                                                                  }
+                                                             )
+
+                                       }).OrderBy(t => t.parentTitle);
+
+            Debug.WriteLine(lookup[1].Select(z => z.Id));
+           
+
+
+            return Json(categoriesWithNoSub.ToList());
         }
         [HttpPost]
         public JsonResult GetRootCategories() //Id - order Id

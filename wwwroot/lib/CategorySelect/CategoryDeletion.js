@@ -1,5 +1,4 @@
 ﻿function deleteCategory() {
-    //console.log($(".selected-label").text());
     setTimeout(function () {
         $('.html-spinner').show();
     }, 0);
@@ -11,7 +10,6 @@
 }
 
 function doDeleteCategory() {
-    //console.log($(".selected-label").text());
     aaa = $(function () {
         $.confirm.show({
             "message": "Ar tikrai norite ištrinti pasirinktą kategoriją? Kartu bus ištrintos ir jos subkategorijos",
