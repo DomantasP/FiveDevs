@@ -18,6 +18,7 @@ using FluentValidation;
 using FiveDevsShop.Models.AccountViewModels;
 using System.Net.Http;
 using FiveDevsShop.Models.Services.Payment;
+using FiveDevsShop.Models.DomainServices;
 
 namespace FiveDevsShop
 {
@@ -63,7 +64,9 @@ namespace FiveDevsShop
             services.AddTransient<IValidator<LoginViewModel>, LoginViewModelValidator>();
             services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
             services.AddTransient<IValidator<PaymentViewModel>, PaymentViewModelValidator>();
-
+            services.AddTransient<PriceCalculator>();
+            services.AddTransient<PaymentProcessor>();
+            
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
@@ -139,6 +142,7 @@ namespace FiveDevsShop
             AppSettingsProvider.CloudinarytSecret = Configuration["CloudinaryCredentials:Secret"];
             AppSettingsProvider.PaymentUsername = Configuration["PaymentCredentials:Username"];
             AppSettingsProvider.PaymentPassword = Configuration["PaymentCredentials:Password"];
+            AppSettingsProvider.PaymentServiceUrl = Configuration["PaymentCredentials:Url"];
         }
     }
 }

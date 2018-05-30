@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FiveDevsShop.Models.DomainServices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,32 +11,35 @@ namespace FiveDevsShop.Models
     {
         public Dictionary<string, CartEntry> Entries { get; set; } = new Dictionary<string, CartEntry>();
 
-        public void AddProduct(Product product, int amount)
+        public void AddProduct(Product product, int amount, string categoryName, PriceCalculator calculator)
         {
             if (Entries.ContainsKey(product.SkuCode))
             {
                 // TODO: check if this is actually the same product
-                Entries[product.SkuCode].Amount += amount;
+                var entry = Entries[product.SkuCode];
+                entry.Amount += amount;
+                entry.FinalPrice += calculator.CalculateFinalPrice(product, amount);
             }
             else
             {
                 Entries[product.SkuCode] = new CartEntry()
                 {
-                    Product = product,
+                    Id = product.Id,
+                    SkuCode = product.SkuCode,
+                    Title = product.Title,
+                    NormalPrice = product.Price,
+                    Discount = product.Discount,
+                    ImageUrl = FiveDevsShop.Services.CloudinaryClient.GetImageUrl(product.MainImageId),
                     Amount = amount,
+                    FinalPrice = calculator.CalculateFinalPrice(product, amount),
+                    Category = categoryName,
                 };
             }
         }
 
         public decimal TotalCost()
         {
-            decimal total = 0;
-            foreach (var entry in Entries.Values)
-            {
-                // TODO: discounts
-                total += entry.Product.Price * entry.Amount;
-            }
-            return total;
+            return Entries.Values.Sum(entry => entry.FinalPrice);
         }
     }
 }

@@ -20,10 +20,12 @@ namespace FiveDevsShop.Controllers
     public class ProductController : Controller
     {
 		private readonly ApplicationDbContext db;
+        private readonly PriceCalculator priceCalculator;
 
-        public ProductController(ApplicationDbContext db)
+        public ProductController(ApplicationDbContext db, PriceCalculator priceCalculator)
         {
             this.db = db;
+            this.priceCalculator = priceCalculator;
         }
 
         [HttpPost]
@@ -371,10 +373,14 @@ namespace FiveDevsShop.Controllers
         public IActionResult AddProductToCart(GetProductViewModel model)
         {
             var product = db.Product.FirstOrDefault(p => p.Id == model.Id);
+            if (product == null)
+                return View("NotFound");
+
             var productViewModel = BuildProductViewModel(product);
+            var category = db.Category.First(c => c.Id == product.CategoryId);
 
             var cart = this.UserShoppingCart();
-            cart.AddProduct(product, model.ProductCount);
+            cart.AddProduct(product, model.ProductCount, category.Title, priceCalculator);
             this.SaveCart(cart);
 
             return View("GetProduct", productViewModel);

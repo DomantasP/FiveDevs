@@ -8,7 +8,6 @@ namespace FiveDevsShop.Models.Services.Payment
 {
     public class PaymentProcessor
     {
-        private const string PaymentUrl = "";
         private readonly HttpClient httpClient;
 
         public PaymentProcessor(HttpClient httpClient)
@@ -16,18 +15,23 @@ namespace FiveDevsShop.Models.Services.Payment
             this.httpClient = httpClient;
         }
 
-        public async Task<PaymentResponse> Pay(PaymentData data)
+        public PaymentResponse Pay(PaymentData data)
         {
+            var requestContent = MakeContent(data);
             var request = new HttpRequestMessage()
             {
-                RequestUri = new Uri(PaymentUrl),
+                RequestUri = new Uri(AppSettingsProvider.PaymentServiceUrl),
                 Method = HttpMethod.Post,
                 Headers = { { HttpRequestHeader.Authorization.ToString(), $"Basic {GetAuthToken()}" } },
-                Content = MakeContent(data),
+                Content = requestContent,
             };
 
-            var response = await httpClient.SendAsync(request);
-            var content = await response.Content.ReadAsStringAsync();
+            var responseTask = httpClient.SendAsync(request);
+            responseTask.Wait();
+            var response = responseTask.Result;
+            var contentTask = response.Content.ReadAsStringAsync();
+            contentTask.Wait();
+            var content = contentTask.Result;
 
             switch ((int)response.StatusCode)
             {

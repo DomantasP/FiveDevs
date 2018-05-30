@@ -19,7 +19,7 @@ namespace FiveDevsShop.Models.Services.Payment
         [JsonProperty(PropertyName = "exp_month")]
         public int ExpirationMonth { get; set; }
 
-        [JsonProperty(PropertyName = "ccv")]
-        public string Ccv { get; set; }
+        [JsonProperty(PropertyName = "cvv")]
+        public string Cvv { get; set; }
     }
 }

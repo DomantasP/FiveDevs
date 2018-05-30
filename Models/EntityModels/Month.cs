@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FiveDevsShop.Models.EntityModels
+namespace FiveDevsShop.Models
 {
     public class Month
     {

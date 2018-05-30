@@ -8,5 +8,6 @@
 
         public static string PaymentUsername;
         public static string PaymentPassword;
+        public static string PaymentServiceUrl;
     }
 }
