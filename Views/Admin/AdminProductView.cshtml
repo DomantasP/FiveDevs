@@ -7,18 +7,13 @@
 <h2>Prekių valdymas</h2>
 <body>
     <button id="addProduct" type="button">Pridėti prekę</button>
-    <button id="deleteCategory" type="button">Pašalinti kategoriją</button>
+    <button id="deleteCategory" type="button" onclick="deleteCategoryBar()">Pašalinti kategoriją</button>
 
-    <button id="addProductExcel" type="button">Pridėti prekes Excel formatu</button>
+    <button id="addProductExcel" type="button" onclick="uploadExcel()">Pridėti prekes Excel formatu</button>
     <input type="file" id="excelUpload" />
 
     <script>
-        $(document).ready(function () {
-                $("#addProductExcel").click(function () {
-                    uploadExcel();
-                }
-            );
-        });
+        
     </script>
 
     <div id="CategoryDeletionBlock" hidden>
@@ -34,7 +29,6 @@
                 <div class="hs-searchbox">
                     <input type="text" class="form-control" autocomplete="off">
                 </div>
-<<<<<<< HEAD
                 <ul class="dropdown-menu inner deletionCategoriesList" role="menu"></ul>
             </div>
         </div>
@@ -45,78 +39,10 @@
 
     <style>
         #addProduct, #deleteCategory #addProductExcel {
-=======
-                <ul class="dropdown-menu inner deletionCategoriesList" role="menu">
-                    
-                </ul>
-            </div>
-        </div>
-        <a id="deleteSign" href ="#/" onclick="deleteCategory()"><img src="../lib/Table/cross_red.png" height="30" width="30" alt="šalinti" /></a>
-        <br />
-        <hr />
-    </div>
-    
-    <style>
-        #addProduct, #deleteCategory {
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
             color: white;
         }
     </style>
-    <script>
 
-        $(document).ready(function () {
-<<<<<<< HEAD
-            $("#deleteCategory").click(function () {
-                setTimeout(function () {
-                    $('.html-spinner').show();
-                }, 0);
-
-                setTimeout(function () {
-                    if ($("#CategoryDeletionBlock").is(":visible")) {
-                        $("#CategoryDeletionBlock").hide();
-                        $(".deletionCategoriesList").empty();
-                    } else {
-                        $("#CategoryDeletionBlock").show();
-                        $(".selected-label").text('Pasirinkite kategoriją');
-                        categoriesData = loadActionData("GetSubcategoriesInBatches");
-                        appendCategories(categoriesData);
-                    }
-                    $('.html-spinner').hide();
-                }, 100);
-=======
-        $("#deleteCategory").click(function () {
-            setTimeout(function () {
-                $('.html-spinner').show();
-            }, 0);
-
-            setTimeout(function () {
-                if ($("#CategoryDeletionBlock").is(":visible")) {
-                    $("#CategoryDeletionBlock").hide();
-                    $(".deletionCategoriesList").empty();
-                } else {
-                    $("#CategoryDeletionBlock").show();
-                    $(".selected-label").text('Pasirinkite kategoriją');
-                    categoriesData = loadActionData("GetSubcategoriesInBatches");
-                    appendCategories(categoriesData);
-                }
-                $('.html-spinner').hide();
-            }, 100);
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
-            });
-        });
-
-        $(document).ready(function () {
-            $('#categoriesForDeletion').hierarchySelect({
-                width: 205
-            });
-        });
-
-<<<<<<< HEAD
-
-=======
-        
->>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
-    </script>
 
 
     <table id="example" class="display" style="width:100%">
@@ -149,6 +75,7 @@
 
     </div>
 </body>
+
 
 
 
