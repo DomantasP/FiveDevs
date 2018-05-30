@@ -88,6 +88,7 @@ function doDeleteCategoryMethod(categoryName) {
 
 function appendCategories(categoriesData) {
     count = 1;
+    console.log(categoriesData);
     for (var i = 0; i < categoriesData.length; i++) {
         var categoryBatch = categoriesData[i];
         var parentId = categoryBatch.parentID;
