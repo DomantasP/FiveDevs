@@ -1,28 +1,34 @@
-﻿@model CartViewModel
+﻿@model ShoppingCart
 @{
     ViewData["Title"] = "Krepšelis";
 }
-
-<h2>Krepšelis</h2>
-
-@if (Model.Cart.Entries.Count == 0)
-{
-    <p>Jūsų krepšelis šiuo metu yra tuščias.</p>
-}
-else
-{
-    @foreach (var entry in Model.Cart.Entries.Values)
+<div class="shopping-cart">
+    <h2>Krepšelis</h2>
+    @if (Model.Entries.Count == 0)
     {
-        @Html.Partial("/Views/Shared/Components/Cart/CartEntry.cshtml", entry)
-    }
+        <p>Jūs neturite prekių krepšelyje.</p>
 
-    @if (Model.LoggedIn)
-    {
-        <a href="/payment">Apmokėti</a>
     }
     else
     {
-        <p>Norėdami užsakyti prekes, <a href="/">prisijunkite.</a></p>
-    }
-}
 
+
+
+
+        @foreach (var entry in Model.Entries.Values)
+        {
+
+            @Html.Partial("/Views/Shared/Components/Cart/CartEntry.cshtml", entry)
+
+        }
+        <table>
+            <tr>
+                <td>
+                    <p>Iš viso: @Model.TotalCost() Eur</p>
+                </td>
+            </tr>
+        </table>
+        <a href="/payment">Apmokėti</a>
+    }
+
+</div>

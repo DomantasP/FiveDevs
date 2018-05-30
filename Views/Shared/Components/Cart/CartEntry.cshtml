@@ -1,8 +1,29 @@
 ﻿@model CartEntry
 
 
+
 <div class="cart-entry">
-    <p>@Model.Title</p>
-    <p>Kiekis: @Model.Amount</p>
-    <p>Kaina: @Model.FinalPrice Eur</p>
+    <div class="s-buttons">
+        <span class="glyphicon glyphicon-remove"></span>    
+    </div>
+
+    <div class="s-image">
+        <img src=@Model.ImageUrl alt="" />
+    </div>
+
+    <div class="description">
+        <span>@Model.Title</span>
+    </div>
+
+    <div class="quantity">
+        <button class="plus-btn" type="button" name="button">
+            <span class="glyphicon glyphicon-plus"></span>
+        </button>
+        <input type="text" name="name" value=@Model.Amount/>
+        <button class="minus-btn" type="button" name="button">
+            <span class="glyphicon glyphicon-minus"></span>
+        </button>
+    </div>
+
+    <div class="total-price">@Model.FinalPrice</div>
 </div>
