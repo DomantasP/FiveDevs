@@ -36,7 +36,26 @@ namespace FiveDevsShop.Models
                 };
             }
         }
+        public void increaseAmountByOne(String skuCode)
+        {
+            if (Entries.ContainsKey(skuCode))
+            {
+                Entries[skuCode].Amount++;
+            }
 
+        }
+        public void decreaseAmountByOne(String skuCode)
+        {
+            if (Entries.ContainsKey(skuCode))
+            {
+                if (Entries[skuCode].Amount > 1) Entries[skuCode].Amount--;
+                else removeFromCart(skuCode);
+            }
+        }
+        public void removeFromCart(String skuCode)
+        {
+            if (Entries.ContainsKey(skuCode)) Entries.Remove(skuCode);
+        }
         public decimal TotalCost()
         {
             return Entries.Values.Sum(entry => entry.FinalPrice);

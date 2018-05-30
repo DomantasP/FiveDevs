@@ -4,26 +4,27 @@
 
 <div class="cart-entry">
     <div class="s-buttons">
-        <span class="glyphicon glyphicon-remove"></span>    
+        <a href="@Url.Action("RemoveProduct","CartController", (new { skuCode = Model.SkuCode }))"><span class="glyphicon glyphicon-remove"></span></a>
     </div>
 
     <div class="s-image">
-        <img src=@Model.ImageUrl alt="" />
+        <img width="200px" src=@Model.ImageUrl alt="" />
     </div>
 
-    <div class="description">
+    <div class="s-description">
         <span>@Model.Title</span>
     </div>
 
-    <div class="quantity">
-        <button class="plus-btn" type="button" name="button">
-            <span class="glyphicon glyphicon-plus"></span>
-        </button>
-        <input type="text" name="name" value=@Model.Amount/>
-        <button class="minus-btn" type="button" name="button">
+
+    <div class="s-quantity">
+        <button class="minus-sbtn" type="button" name="button">
             <span class="glyphicon glyphicon-minus"></span>
+        </button>
+        <input type="text" name="name" size="5" value=@Model.Amount />
+        <button class="plus-sbtn" type="button" name="button">
+            <span class="glyphicon glyphicon-plus"></span>
         </button>
     </div>
 
-    <div class="total-price">@Model.FinalPrice</div>
+    <div class="total-price">@Model.FinalPrice€</div>
 </div>
