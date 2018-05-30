@@ -9,9 +9,11 @@ using FiveDevsShop.Models;
 using FiveDevsShop.Data;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FiveDevsShop.Controllers
-{
+{        
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -24,26 +26,29 @@ namespace FiveDevsShop.Controllers
         public IActionResult AdminMain()
         {
             List<Product> items = db.Product.ToList();
-            ViewData["Message"] = "Administratoriaus pultas";
 
             return View(items);
         }
+        
         public IActionResult UserManagementView()
         {
             ViewData["Message"] = "Naudotojų peržiūra";
             return PartialView();
         }
+        
         public IActionResult SalesView()
         {
             ViewData["Message"] = "Pardavimų peržiūra";
             return PartialView();
         }
+        
         public IActionResult AdminProductView()
         {
             ViewData["Message"] = "Prekių apžvalga";
 
             return PartialView();
         }
+        
         public IActionResult AdminEditProductView()
         {
             List<Product> items = db.Product.ToList();
@@ -51,8 +56,6 @@ namespace FiveDevsShop.Controllers
 
             return PartialView(items);
         }
-
-        
 
         [HttpPost]
         public JsonResult GetSubcategoriesInBatches() //Id - order Id
@@ -90,13 +93,12 @@ namespace FiveDevsShop.Controllers
                                                              )
 
                                        }).OrderBy(t => t.parentTitle);
-
-            Debug.WriteLine(lookup[1].Select(z => z.Id));
            
 
 
             return Json(categoriesWithNoSub.ToList());
         }
+        
         [HttpPost]
         public JsonResult GetRootCategories() //Id - order Id
         {
@@ -124,6 +126,7 @@ namespace FiveDevsShop.Controllers
      
             return Json(order.Id);
         }
+        
         [HttpPost]
         public JsonResult GetOrderItems(int Id) //Id - order Id
         {
@@ -140,6 +143,7 @@ namespace FiveDevsShop.Controllers
 
             return Json(purchases);
         }
+        
         [HttpPost]
         public JsonResult GetOrder(int Id)
         {
@@ -164,7 +168,6 @@ namespace FiveDevsShop.Controllers
                              
             return Json(returnData);
         }
-
         
         [HttpPost]
         public JsonResult GetOrders(int status)
@@ -240,7 +243,9 @@ namespace FiveDevsShop.Controllers
 
             return Json(usersAdminData);
         }
+        
         [HttpPost]
+        
         public IActionResult AdminGetModel()
         {
             var items = from i in db.Product.ToList()
@@ -282,7 +287,7 @@ namespace FiveDevsShop.Controllers
             return Json(itemWithNamedCategory);
         }
         
-        [HttpPost]//ProductsViewModel product
+        [HttpPost]
         public IActionResult AdminUpdateProduct(ProductsViewModel product)//(String idS, String sku_code, String categoryS, String title, String priceS, String description, String discountS, String subCategoryS)
         {
             ViewData["Message"] = "Atnaujinti prekę";

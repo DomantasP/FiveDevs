@@ -136,6 +136,12 @@ namespace FiveDevsShop
                     name: "index",
                     template: "index",
                     defaults: new { controller = "Home", action = "HomeProductList" });
+                
+                                
+                routes.MapRoute(
+                    name: "admin",
+                    template: "admin",
+                    defaults: new { controller = "Admin", action = "AdminMain" });
             });
         }
 

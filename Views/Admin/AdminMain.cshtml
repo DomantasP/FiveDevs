@@ -1,149 +1,23 @@
-﻿@{
-    ViewData["Title"] = "Administratoriaus pultas";
-}
+﻿<div class="col-md-12 admin-panel">
 
-
-<h2>Administratorius</h2>
-<div class="container-fluid display-table">
-    <div class="row display-table-row">
-        <div class="col-md-2 col-sm-1 hidden-xs display-table-cell v-align box" id="navigation">
-            <div class="logo">
-                <a hef="home.html">
-                    <img src="~/images/admin/admin_logo.png" alt="merkery_logo" class="hidden-xs hidden-sm">
-                    <img src="~/images/admin/circle_purple.svg" alt="merkery_logo" class="visible-xs visible-sm circle-logo">
-                </a>
-            </div>
-            <div class="navi">
-                <ul>
-                    <li id="productsTab"><a href="#/"><i class="fa fa-home" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Prekės</span></a></li>
-                    <li id="usersTab"><a href="#/Naudotojai"><i class="fa fa-users" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Naudotojai</span></a></li>
-                    <li id="salesTab"><a href="#Nepatvirtinti"><i class="fa fa-bar-chart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Pardavimai</span></a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-md-10 col-sm-11 display-table-cell v-align">
-
-            <div class="user-dashboard" id="main">
-
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-
-
-<div hidden class="html-spinner">
-    <img class="spinnerGif" src="~/lib/LoadingSpinner/spinner2.gif" width="80" height="80" />
-    <div class="spinnerText">Prašome palaukti...</div>
-</div>
-
-<style>
-    .html-spinner {
-        position: fixed;
-        left: 50%;
-        top: 40%;
-        background-color: white;
-        border-radius: 25px;
-        height: 150px;
-        width: 150px;
-    }
-
-    img.spinnerGif {
-        position: absolute;
-        left: 35px;
-        top: 20px;
-    }
-
-    .spinnerText {
-        position: absolute;
-        left: 30px;
-        top: 110px;
-    }
-</style>
-
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            var table1 = $('#example').DataTable();
-        });
-
-            function deleteCategoryBar() {
-                setTimeout(function () {
-                    $('.html-spinner').show();
-                }, 0);
-
-                setTimeout(function () {
-                    if ($("#CategoryDeletionBlock").is(":visible")) {
-                        $("#CategoryDeletionBlock").hide();
-                        $(".deletionCategoriesList").empty();
-                    } else {
-                        $("#CategoryDeletionBlock").show();
-                        $(".selected-label").text('Pasirinkite kategoriją');
-                        categoriesData = loadActionData("GetSubcategoriesInBatches");
-                        appendCategories(categoriesData);
-                    }
-                    $('.html-spinner').hide();
-                }, 100);
-            }
-        
-
-        $(document).ready(function () {
-            $('#categoriesForDeletion').hierarchySelect({
-                width: 205
-            });
-        });
-
- 
-        function uploadExcel() {
-            var formData = new FormData();
-
-            var fileSelect = document.getElementById('excelUpload');
-            if (fileSelect != null) {
-                var files = fileSelect.files;
-
-                formData.append('file', files[0]);
-                console.log(files[0]);
-            }
-
-
-            $.ajax({
-                url: '/Product/UploadProductByExcel',
-                type: 'POST',
-                async: false,
-                cache: false,
-                timeout: 30000,
-                data: formData,
-                processData: false,  // tell jQuery not to process the data
-                contentType: false,
-                error: function () {
-                    return true;
-                },
-                success: function (product) {
-                }
-            });
-
-        }
+    <a class="col-md-4 admin-panel-item" class="product-image-container" href="/admin/categories">
+        <img src="~/images/categories-icon.svg"class="not-found-icon" />
+        <span class="row">Kategorijos</span>
+    </a>
     
-    </script>
+    <a class="col-md-4 admin-panel-item" class="product-image-container" href="/admin/product">
+        <img src="~/images/product-icon.svg" class="not-found-icon" />
+        <span class="row">Produktai</span>
+    </a>
+    
+    <a class="col-md-4 admin-panel-item" class="product-image-container" href="/product/orders">
+        <img src="~/images/order-icon.svg" class="not-found-icon" />
+        <span class="row">Užsakymai</span>
+    </a>
 
-    <script src="~/lib/ChangeTab/sammy.js"></script>
-    <script src="~/lib/ChangeTab/manageTabs.js"></script>
-    <script src="~/lib/CategorySelect/CategoryDeletion.js" type="text/javascript"></script>
-    <script src="~/lib/Table/jquery.dataTables.js"></script>
-    <script id="dtb1" src="~/lib/Table/dataTables.jquerui.js"></script>
-    <script id="dtb2" src="~/lib/Table/dataTable.js"></script>
-    <script src="~/lib/Table/editProduct.js"></script>
-    <script src="~/lib/Messages/js/jquery.notify.min.js"></script>
-    <script src="~/lib/Table/manageUsers.js"></script>
-    <script src="~/lib/Table/dataTablesTest.js"></script>
-    <script src="~/lib/ConfirmationDialog/H-confirm-alert.js"></script>
-    <script src="~/lib/ConfirmationDialog/ad.js"></script>
-    <script src="~/lib/HorizontalTabs/jquery.responsiveTabs.js" type="text/javascript"></script>
-    <script src="~/lib/HorizontalTabs/horizontalTabs.js" type="text/javascript"></script>
-    <script src="~/lib/Order/manageOrders.js" type="text/javascript"></script>
-    <script src="~/lib/CategorySelect/hierarchy-select.min.js" type="text/javascript"></script>
-}
-
+    <a class="col-md-4 admin-panel-item" class="product-image-container" href="/product/users">
+        <img src="~/images/user-icon.svg" class="not-found-icon" />
+        <span class="row">Vartotojai</span>
+    </a>
+</div>
 

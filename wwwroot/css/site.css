@@ -219,7 +219,6 @@ h3.category-breadcrumbs .glyphicon {
 }
 
 
-
 .shopping-cart {
     width: 1200px;
     margin: 80px auto;
@@ -347,5 +346,27 @@ button[class*=sbtn] {
 }
 
 
+.admin-panel {
+    padding: 100px 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
 
-	
+.admin-panel-item {
+    color: white;
+    background: #333333;
+    text-align: center;
+    margin: 20px;
+    min-width: 140px;
+}
+
+.admin-panel-item img{
+    height: 150px;
+    width: 150px;
+}
+
+.admin-panel-item:hover {
+    text-decoration: none;
+    color: lightgreen;
+}
