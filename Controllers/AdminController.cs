@@ -10,6 +10,9 @@ using FiveDevsShop.Data;
 using FiveDevsShop.Models.DomainServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FiveDevsShop.Controllers
 {        
@@ -43,8 +46,7 @@ namespace FiveDevsShop.Controllers
                 CategoryPath = tree.FindPath(null),
                 Subtrees = subtrees
             });
-        }
-       
+        }       
         
         public IActionResult Product(int page = 1)
         {
