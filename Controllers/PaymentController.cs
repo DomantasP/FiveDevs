@@ -60,13 +60,19 @@ namespace FiveDevsShop.Controllers
 
             using (var transaction = db.Database.BeginTransaction())
             {
+                string address;
+                if (!string.IsNullOrEmpty(user.ApartmentNumber))
+                    address = $"{user.Street} g. {user.HouseNumber}-{user.ApartmentNumber}, LT-{user.PostalCode} {user.City}";
+                else
+                    address = $"{user.Street} g. {user.HouseNumber}, LT-{user.PostalCode} {user.City}";
+
                 var date = DateTime.UtcNow.ToString("yyyy-MM-dd");
                 var orderEntry = db.User_order.Add(new User_order()
                 {
                     User_id = user.Id,
                     Date = date,
                     Status = 0,
-                    Address = "where the fuck am i supposed to get this from",
+                    Address = address,
                     Stars = -1,
                     Comment = "",
                 });
