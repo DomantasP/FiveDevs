@@ -217,3 +217,28 @@ address {
 h3.category-breadcrumbs .glyphicon {
     font-size: 90%;
 }
+
+.admin-panel {
+    padding: 100px 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.admin-panel-item {
+    color: white;
+    background: #333333;
+    text-align: center;
+    margin: 20px;
+    min-width: 140px;
+}
+
+.admin-panel-item img{
+    height: 150px;
+    width: 150px;
+}
+
+.admin-panel-item:hover {
+    text-decoration: none;
+    color: lightgreen;
+}
