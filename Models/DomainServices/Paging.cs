@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FiveDevsShop.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +11,14 @@ namespace FiveDevsShop.Models.DomainServices
         // TODO: this should be changeable by administrator
         public const int ItemsPerPage = 16;
 
-        public static ProductListViewModel LoadPage(IEnumerable<Product> products, int page)
+        private readonly IImageUploader uploader;
+
+        public Paging(IImageUploader uploader)
+        {
+            this.uploader = uploader;
+        }
+
+        public ProductListViewModel LoadPage(IEnumerable<Product> products, int page)
         {
             var productCount = products.Count();
             int pages = Math.Max(1, (productCount + ItemsPerPage - 1) / ItemsPerPage);
@@ -20,7 +28,7 @@ namespace FiveDevsShop.Models.DomainServices
                 .OrderBy(p => p.Title)
                 .Skip((page - 1) * ItemsPerPage)
                 .Take(ItemsPerPage)
-                .Select(ProductPreviewModel.FromProduct)
+                .Select(p => new ProductPreviewModel(p, uploader))
                 .ToList();
 
             return new ProductListViewModel()

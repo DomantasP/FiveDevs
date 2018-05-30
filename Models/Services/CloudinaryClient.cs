@@ -3,35 +3,33 @@ using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Configuration;
 
 namespace FiveDevsShop.Services
- {
-     public static class CloudinaryClient
-     {
-         private static readonly Account account = new Account(
-             AppSettingsProvider.CloudinaryCloud,
-             AppSettingsProvider.CloudinaryApiKey,
-             AppSettingsProvider.CloudinarytSecret);
-             
-         private static readonly Cloudinary cloudinary = new Cloudinary(account);
+{
+    public class CloudinaryClient : IImageUploader
+    {
+        private static readonly Account account = new Account(
+            AppSettingsProvider.CloudinaryCloud,
+            AppSettingsProvider.CloudinaryApiKey,
+            AppSettingsProvider.CloudinarytSecret);
 
-         private static string baseUrl= "http://res.cloudinary.com/five-devs-shop/image/upload/";
-         private static string imgType = ".jpg";
-         
-         public static void UploadImage(string filePath, string imageId)
-         {
-             var uploadParams = new ImageUploadParams()
-             {
-                 File = new FileDescription(filePath),
-                 PublicId = imageId
-             };
-     
-             var uploadResult = cloudinary.Upload(uploadParams);
-         }
+        private static readonly Cloudinary cloudinary = new Cloudinary(account);
 
-        public static string GetImageUrl(string imageId)
+        private static string baseUrl = "http://res.cloudinary.com/five-devs-shop/image/upload/";
+        private static string imgType = ".jpg";
+
+        public void UploadImage(string filePath, string imageId)
+        {
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription(filePath),
+                PublicId = imageId
+            };
+
+            var uploadResult = cloudinary.Upload(uploadParams);
+        }
+
+        public string GetImageUrl(string imageId)
         {
             return baseUrl + imageId + imgType;
         }
-     }
-     
-
- }
+    }
+}

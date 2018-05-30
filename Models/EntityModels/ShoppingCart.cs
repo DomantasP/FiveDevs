@@ -1,4 +1,5 @@
 ﻿using FiveDevsShop.Models.DomainServices;
+using FiveDevsShop.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace FiveDevsShop.Models
     {
         public Dictionary<string, CartEntry> Entries { get; set; } = new Dictionary<string, CartEntry>();
 
-        public void AddProduct(Product product, int amount, string categoryName, PriceCalculator calculator)
+        public void AddProduct(Product product, int amount, string categoryName, IImageUploader uploader, PriceCalculator calculator)
         {
             if (Entries.ContainsKey(product.SkuCode))
             {
@@ -29,7 +30,7 @@ namespace FiveDevsShop.Models
                     Title = product.Title,
                     NormalPrice = product.Price,
                     Discount = product.Discount,
-                    ImageUrl = FiveDevsShop.Services.CloudinaryClient.GetImageUrl(product.MainImageId),
+                    ImageUrl = uploader.GetImageUrl(product.MainImageId),
                     Amount = amount,
                     FinalPrice = calculator.CalculateFinalPrice(product, amount),
                     Category = categoryName,

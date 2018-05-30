@@ -66,6 +66,8 @@ namespace FiveDevsShop
             services.AddTransient<IValidator<PaymentViewModel>, PaymentViewModelValidator>();
             services.AddTransient<PriceCalculator>();
             services.AddTransient<PaymentProcessor>();
+            services.AddTransient<IImageUploader, CloudinaryClient>();
+            services.AddTransient<Paging>();
             
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
