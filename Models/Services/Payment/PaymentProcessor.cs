@@ -15,7 +15,7 @@ namespace FiveDevsShop.Models.Services.Payment
             this.httpClient = httpClient;
         }
 
-        public PaymentResponse Pay(PaymentData data)
+        public async Task<PaymentResponse> Pay(PaymentData data)
         {
             var requestContent = MakeContent(data);
             var request = new HttpRequestMessage()
@@ -26,12 +26,8 @@ namespace FiveDevsShop.Models.Services.Payment
                 Content = requestContent,
             };
 
-            var responseTask = httpClient.SendAsync(request);
-            responseTask.Wait();
-            var response = responseTask.Result;
-            var contentTask = response.Content.ReadAsStringAsync();
-            contentTask.Wait();
-            var content = contentTask.Result;
+            var response = await httpClient.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
 
             switch ((int)response.StatusCode)
             {

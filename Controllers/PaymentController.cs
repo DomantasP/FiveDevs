@@ -2,6 +2,7 @@
 using FiveDevsShop.Extensions;
 using FiveDevsShop.Models;
 using FiveDevsShop.Models.Services.Payment;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -16,15 +17,23 @@ namespace FiveDevsShop.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly PaymentProcessor paymentProcessor;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public PaymentController(ApplicationDbContext db, PaymentProcessor paymentProcessor)
+        public PaymentController(ApplicationDbContext db, PaymentProcessor paymentProcessor, UserManager<ApplicationUser> userManager)
         {
             this.db = db;
             this.paymentProcessor = paymentProcessor;
+            this.userManager = userManager;
         }
 
-        public IActionResult StartPayment()
+        public async Task<IActionResult> StartPayment()
         {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return View("/Views/Account/AccessDenied.cshtml");
+            }
+
             var cart = this.UserShoppingCart();
             var amount = (int)Math.Round(cart.TotalCost() * 100);
             return View("/Views/User/Payment.cshtml", new PaymentViewModel()
@@ -35,7 +44,7 @@ namespace FiveDevsShop.Controllers
         }
 
         [HttpPost]
-        public IActionResult Pay(PaymentViewModel args)
+        public async Task<IActionResult> Pay(PaymentViewModel args)
         {
             args.ErrorMessage = null;
             if (!ModelState.IsValid)
@@ -43,16 +52,22 @@ namespace FiveDevsShop.Controllers
 
             var cart = JsonConvert.DeserializeObject<ShoppingCart>(args.ShoppingCart);
 
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return View("/Views/Account/AccessDenied.cshtml");
+            }
+
             using (var transaction = db.Database.BeginTransaction())
             {
                 var date = DateTime.UtcNow.ToString("yyyy-MM-dd");
                 var orderEntry = db.User_order.Add(new User_order()
                 {
-                    User_id = "?",
+                    User_id = user.Id,
                     Date = date,
                     Status = 0,
-                    Address = "?",
-                    Stars = 0,
+                    Address = "where the fuck am i supposed to get this from",
+                    Stars = -1,
                     Comment = "",
                 });
                 db.SaveChanges();
@@ -72,7 +87,7 @@ namespace FiveDevsShop.Controllers
 
                 try
                 {
-                    paymentProcessor.Pay(new PaymentData()
+                    await paymentProcessor.Pay(new PaymentData()
                     {
                         Amount = (int)Math.Round(totalPrice * 100),
                         CardNumber = args.Number,

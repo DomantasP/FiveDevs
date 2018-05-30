@@ -14,6 +14,8 @@ using System.Globalization;
 using System.Threading;
 using FiveDevsShop.Models.DomainServices;
 using FiveDevsShop.Extensions;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace FiveDevsShop.Controllers
 {
@@ -21,11 +23,13 @@ namespace FiveDevsShop.Controllers
     {
 		private readonly ApplicationDbContext db;
         private readonly PriceCalculator priceCalculator;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ProductController(ApplicationDbContext db, PriceCalculator priceCalculator)
+        public ProductController(ApplicationDbContext db, PriceCalculator priceCalculator, UserManager<ApplicationUser> userManager)
         {
             this.db = db;
             this.priceCalculator = priceCalculator;
+            this.userManager = userManager;
         }
 
         [HttpPost]
@@ -307,9 +311,15 @@ namespace FiveDevsShop.Controllers
             }   
         }
 
-        public IActionResult ViewCart()
+        public async Task<IActionResult> ViewCart()
         {
-            return View("/Views/User/Cart.cshtml", this.UserShoppingCart());
+            var user = await userManager.GetUserAsync(User);
+            var cart = this.UserShoppingCart();
+            return View("/Views/User/Cart.cshtml", new CartViewModel()
+            {
+                Cart = cart,
+                LoggedIn = user != null,
+            });
         }
 
         [HttpPost]
