@@ -37,6 +37,7 @@ namespace FiveDevsShop.Controllers
         [HttpPost]
         public IActionResult Pay(PaymentViewModel args)
         {
+            args.ErrorMessage = null;
             if (!ModelState.IsValid)
                 return View("/Views/User/Payment.cshtml", args);
 
@@ -69,27 +70,51 @@ namespace FiveDevsShop.Controllers
                     });
                 }
 
-                //try
-                //{
-                paymentProcessor.Pay(new PaymentData()
+                try
                 {
-                    Amount = (int)Math.Round(totalPrice * 100),
-                    CardNumber = args.Number,
-                    Holder = args.Name,
-                    ExpirationYear = args.ExpYear,
-                    ExpirationMonth = args.ExpMonth,
-                    Cvv = args.CCV,
-                });
+                    paymentProcessor.Pay(new PaymentData()
+                    {
+                        Amount = (int)Math.Round(totalPrice * 100),
+                        CardNumber = args.Number,
+                        Holder = args.Name,
+                        ExpirationYear = args.ExpYear,
+                        ExpirationMonth = args.ExpMonth,
+                        Cvv = args.CCV,
+                    });
 
                     db.SaveChanges();
                     transaction.Commit();
-                /*}
+                }
+                catch (ValidationException e)
+                {
+                    transaction.Rollback();
+                    args.ErrorMessage = $"Blogi duomenys: {e.Message}";
+                    return View("/Views/User/Payment.cshtml", args);
+                }
+                catch (CardExpiredException e)
+                {
+                    transaction.Rollback();
+                    args.ErrorMessage = "Nepavyko apmokėti: kortelės galiojimo laikas baigėsi";
+                    return View("/Views/User/Payment.cshtml", args);
+                }
+                catch (OutOfFundsException e)
+                {
+                    transaction.Rollback();
+                    args.ErrorMessage = "Nepavyko apmokėti: nepakanka pinigų";
+                    return View("/Views/User/Payment.cshtml", args);
+                }
+                catch (UnknownErrorException e)
+                {
+                    transaction.Rollback();
+                    args.ErrorMessage = $"Nepavyko apmokėti: nežinoma klaida: {e.Message}";
+                    return View("/Views/User/Payment.cshtml", args);
+                }
                 catch (Exception e)
                 {
-                   Debug.WriteLine("Payment failed:");
-                    Debug.WriteLine(e);
                     transaction.Rollback();
-                }*/
+                    args.ErrorMessage = $"Nepavyko apmokėti: vidinė klaida: {e.Message}";
+                    return View("/Views/User/Payment.cshtml", args);
+                }
             }
 
             return View("/Views/User/PaymentDone.cshtml");

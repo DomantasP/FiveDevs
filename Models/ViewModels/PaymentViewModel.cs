@@ -14,5 +14,7 @@ namespace FiveDevsShop.Models
         public int ExpYear { get; set; }
         public int ExpMonth { get; set; }
         public string CCV { get; set; }
+
+        public string ErrorMessage { get; set; }
     }
 }
