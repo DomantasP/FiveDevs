@@ -107,9 +107,9 @@ namespace FiveDevsShop.Controllers
                 for (int i = 0; i < excelProducts.Count; i++)
                 {
                     ProductsImportModel excelProduct = excelProducts[i];
+                    Category category = new Category();
                     try
-                    {
-                        Category category = new Category();
+                    { 
                         for (int j = 0; j < excelProduct.Categories.Count; j++)
                         {
                             if(j > 0) category = db.Category.FirstOrDefault(c => c.Title == excelProduct.Categories[j] && 
@@ -143,7 +143,7 @@ namespace FiveDevsShop.Controllers
                     product.Discount = excelProduct.Discount;
                     product.Description = excelProduct.Description;
                     product.ShortDescription = excelProduct.ShortDescription;
-                    product.CategoryId = db.Category.FirstOrDefault(c=>c.Title == excelProduct.Categories[excelProduct.Categories.Count-1]).Id;
+                    product.CategoryId = category.Id;//db.Category.FirstOrDefault(c=>c.Title == excelProduct.Categories[excelProduct.Categories.Count-1]).Id;
 
                     try
                     {
