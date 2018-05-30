@@ -8,15 +8,14 @@ namespace FiveDevsShop.Models.AccountViewModels
 {
     public class LoginViewModel
     {
-        [Required]
-        [EmailAddress]
+        [Display(Name = "El. paštas")]
         public string Email { get; set; }
 
-        [Required]
         [DataType(DataType.Password)]
+        [Display(Name = "Slaptažodis")]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Prisiminti mane")]
         public bool RememberMe { get; set; }
     }
 }

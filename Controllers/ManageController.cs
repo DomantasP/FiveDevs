@@ -102,7 +102,7 @@ namespace FiveDevsShop.Controllers
                 }
             }
 
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Paskyra atnaujinta sėkmingai.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -173,9 +173,15 @@ namespace FiveDevsShop.Controllers
 
             await _signInManager.SignInAsync(user, isPersistent: false);
             _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
+            StatusMessage = "Slaptažodis pakeistas sėkmingai.";
 
             return RedirectToAction(nameof(ChangePassword));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PurchaseHistory()
+        {
+            return View();
         }
 
         [HttpGet]

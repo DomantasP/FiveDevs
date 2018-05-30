@@ -10,13 +10,20 @@ namespace FiveDevsShop.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-        //public string Id { get; set; }
-
-        /*[Column("UserName")]
-        public string Username { get; set; }*/
-
-        //public string Email { get; set; }
-
         public int Ban_flag { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string City { get; set; }
+
+        public string Street { get; set; }
+
+        public string HouseNumber { get; set; }
+
+        public string ApartmentNumber { get; set; }
+
+        public string PostalCode { get; set; }
     }
 }

@@ -61,7 +61,23 @@ namespace FiveDevsShop.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+                var user = _userManager.FindByEmailAsync(model.Email);
+                if(user.Result != null)
+                {
+                    if (user.Result.Ban_flag == 1)
+                    {
+                        ModelState.AddModelError(string.Empty, "Prisijungti nepavyko. Ši paskyra užblokuota.");
+                        return View(model);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Prisijungti nepavyko.");
+                    return View(model);
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(user.Result.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -78,7 +94,7 @@ namespace FiveDevsShop.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Prisijungti nepavyko.");
                     return View(model);
                 }
             }
@@ -220,7 +236,31 @@ namespace FiveDevsShop.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    City = model.City,
+                    Street = model.Street,
+                    HouseNumber = model.HouseNumber,
+                    ApartmentNumber = model.ApartmentNumber,
+                    PostalCode = model.PostalCode
+                };
+
+                if (_userManager.FindByEmailAsync(model.Email).Result != null)
+                {
+                    ModelState.AddModelError(string.Empty, "El. paštas '" + model.Email + "' užimtas.");
+                    return View(model);
+                }
+
+                if (_userManager.FindByNameAsync(model.UserName).Result != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Vartotojo vardas '" + model.UserName + "' užimtas.");
+                    return View(model);
+                }
+
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
