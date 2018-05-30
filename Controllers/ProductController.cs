@@ -9,11 +9,15 @@ using System.Threading.Tasks;
 using FiveDevsShop.Services;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+<<<<<<< HEAD
 using System.Diagnostics;
 using OfficeOpenXml;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Threading;
+=======
+using FiveDevsShop.Models.DomainServices;
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
 
 namespace FiveDevsShop.Controllers
 {
@@ -28,6 +32,7 @@ namespace FiveDevsShop.Controllers
             this.db = db;
         }
 
+<<<<<<< HEAD
         [HttpPost]
         public JsonResult UploadProductByExcel(IFormFile file)
         {
@@ -259,14 +264,24 @@ namespace FiveDevsShop.Controllers
             return true;
         }
 
+=======
+        [HttpGet]
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
         public IActionResult GetProduct(int id)
         {
             var product = db.Product.FirstOrDefault(p => p.Id == id);
 
-            return View(product);
+            if (product == null)
+                return View("NotFound");
+
+            var productViewModel = BuildProductViewModel(product);
+
+            // TODO: handle not found item
+
+            return View(productViewModel);
         }
 
-        public IActionResult SearchProduct(string name)
+        public IActionResult SearchProduct(string name, int page = 1)
         {
             if (name != null)
             {
@@ -285,28 +300,52 @@ namespace FiveDevsShop.Controllers
                     }
                 }
 
-                return View(products);
+                var productView = Paging.LoadPage(products, page);
+                productView.AddQueryParam("name", name);
+                return View(new ProductSearchViewModel()
+                {
+                    Query = name,
+                    Products = productView,
+                });
             }
             else
             {
-                return View();
+                return SearchProduct("");
             }   
         }
 
-        public IActionResult AddProduct(ProductViewModel model)
+
+        [HttpPost]
+        public IActionResult AddProduct(AddProductViewModel model)
         {
             model.Categories = db.Category.ToList();
 
             if (ModelState.IsValid)
             {
-                if (!IsImageListValid(model.Images))
-                {
-                    // Show error that only images allowed
+                //Show error
+                if(!IsImageValid(model.MainImageFile))
                     return View(model);
+
+                foreach (var image in model.Images)
+                {
+                    var valid = IsImageValid(image);
+                    if(!valid)
+                    {
+                        // Show error that only images allowed
+                        return View(model);
+                    }
                 }
 
                 var filePath = Path.GetTempFileName();
                 var imageIds = new List<String>();
+
+                foreach (var formFile in model.Images)
+                {
+                    var imageId = UploadImage(formFile, filePath);
+                    imageIds.Add(imageId);
+                }
+
+                var mainImageId = UploadImage(model.MainImageFile, filePath);
 
                 var product = new Product()
                 {
@@ -315,33 +354,19 @@ namespace FiveDevsShop.Controllers
                     Price = model.Price,
                     CategoryId = model.CategoryId,
                     Discount = model.Discount,
+<<<<<<< HEAD
                     SkuCode = model.SkuCode
+=======
+                    SkuCode = model.SkuCode,
+                    MainImageId = mainImageId,
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
                 };
 
-                foreach (var formFile in model.Images)
-                {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        formFile.CopyTo(stream);
-                    }
-
-                    var imageId = Guid.NewGuid().ToString();
-
-                    try
-                    {
-                        CloudinaryClient.UploadImage(filePath, imageId);
-                    }
-                    catch (Exception)
-                    {
-                        // Return message that file upload failed
-                        return View(model);
-                    }
-
-                    imageIds.Add(imageId);
-                }
-
                 db.Product.Add(product);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
                 imageIds.ForEach(id => db.Image.Add(
                         new Image() { Id = id, ProductId = product.Id } ));
 
@@ -355,38 +380,91 @@ namespace FiveDevsShop.Controllers
             }
         }
 
-        private bool IsImageListValid(List<IFormFile> files)
+        [HttpPost]
+        public IActionResult AddProductToCart(GetProductViewModel model)
         {
+            var product = db.Product.FirstOrDefault(p => p.Id == model.Id);
+            var productViewModel = BuildProductViewModel(product);
 
-            foreach (var file in files)
+            // TODO cart logic
+
+            return View("GetProduct", productViewModel);
+        }
+
+        private bool IsImageValid(IFormFile file)
+        {
+            int ImageMinimumBytes = 512;
+
+            if (file.ContentType.ToLower() != "image/jpg" &&
+                file.ContentType.ToLower() != "image/jpeg" &&
+                file.ContentType.ToLower() != "image/pjpeg" &&
+                file.ContentType.ToLower() != "image/gif" &&
+                file.ContentType.ToLower() != "image/x-png" &&
+                file.ContentType.ToLower() != "image/png")
             {
-                int ImageMinimumBytes = 512;
+                return false;
+            }
 
-                if (file.ContentType.ToLower() != "image/jpg" &&
-                    file.ContentType.ToLower() != "image/jpeg" &&
-                    file.ContentType.ToLower() != "image/pjpeg" &&
-                    file.ContentType.ToLower() != "image/gif" &&
-                    file.ContentType.ToLower() != "image/x-png" &&
-                    file.ContentType.ToLower() != "image/png")
-                {
-                    return false;
-                }
+            if (Path.GetExtension(file.FileName).ToLower() != ".jpg" &&
+                Path.GetExtension(file.FileName).ToLower() != ".png" &&
+                Path.GetExtension(file.FileName).ToLower() != ".gif" &&
+                Path.GetExtension(file.FileName).ToLower() != ".jpeg")
+            {
+                return false;
+            }
 
-                if (Path.GetExtension(file.FileName).ToLower() != ".jpg" &&
-                    Path.GetExtension(file.FileName).ToLower() != ".png" &&
-                    Path.GetExtension(file.FileName).ToLower() != ".gif" &&
-                    Path.GetExtension(file.FileName).ToLower() != ".jpeg")
-                {
-                    return false;
-                }
-
-                if (file.Length < ImageMinimumBytes)
-                {
-                    return false;
-                }
+            if (file.Length < ImageMinimumBytes)
+            {
+                return false;
             }
 
             return true;
+        }
+
+        private string UploadImage(IFormFile formFile, string filePath)
+        {
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                formFile.CopyTo(stream);
+            }
+
+            var imageId = Guid.NewGuid().ToString();
+
+            CloudinaryClient.UploadImage(filePath, imageId);
+
+            return imageId;
+        }
+
+        private GetProductViewModel BuildProductViewModel(Product product)
+        {
+            List<string> galleryImages = new List<string>();
+
+            var imagesUrls = db.Image.Where(img => img.ProductId == product.Id)
+                              .Select(img => CloudinaryClient.GetImageUrl(img.Id)).ToList();
+
+            var productViewModel = new GetProductViewModel()
+            {
+                Id = product.Id,
+                Title = product.Title,
+                Description = product.Description,
+                Price = product.Price,
+                SkuCode = product.SkuCode,
+                Discount = product.Discount,
+                MainImageUrl = CloudinaryClient.GetImageUrl(product.MainImageId),
+                GalleryImagesUrls = imagesUrls
+            };
+
+            var categories = db.Category.ToList();
+
+            var currentCategory = categories.FirstOrDefault(category => category.Id == product.CategoryId);
+
+            while (currentCategory != null)
+            {
+                productViewModel.CategoryList.Insert(0, currentCategory);
+                currentCategory = categories.FirstOrDefault(category => category.Id == currentCategory.Parent_id);
+            }
+
+            return productViewModel;
         }
     }
 

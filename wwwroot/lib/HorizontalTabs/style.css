@@ -88,7 +88,11 @@ body {
 }
 
 /* Buttons */
+<<<<<<< HEAD
 #addProduct, #deleteCategory, #addProductExcel {
+=======
+#addProduct, #deleteCategory {
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
     display: inline-block;
     margin-top: 10px;
     margin-right: 10px;

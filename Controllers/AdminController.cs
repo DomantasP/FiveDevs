@@ -98,15 +98,20 @@ namespace FiveDevsShop.Controllers
         {
             User_order order = db.User_order.FirstOrDefault(o => o.Id == orderId);
             Debug.WriteLine(orderId);
-            using (var transaction = db.Database.BeginTransaction())
-            {
+            
                 order.Status += 1;
+<<<<<<< HEAD
 
                 try{db.SaveChanges();}
                 catch{return null;}
                 transaction.Commit();
             }
 
+=======
+                try{db.SaveChanges();}
+                catch{return null;}
+     
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
             return Json(order.Id);
         }
         [HttpPost]
@@ -120,8 +125,12 @@ namespace FiveDevsShop.Controllers
                                 title = p.Title,
                                 price = p.Price,
                                 quantity = p.Quantity,
+<<<<<<< HEAD
                                 category = p.Category
 
+=======
+                                category = p.Category,
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
                             };
 
             return Json(purchases);
@@ -187,21 +196,10 @@ namespace FiveDevsShop.Controllers
         {
             ApplicationUser user = db.User.FirstOrDefault(p => p.UserName == username);
 
-
-            using (var transaction = db.Database.BeginTransaction())
-            {
                 user.Ban_flag = status;
-
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch
-                {
-                    return null;
-                }
-                transaction.Commit();
-            }
+                try{db.SaveChanges();}
+                catch{return null;}
+            
             var userSpecialData = from c in db.User.ToList()
                                   where c.UserName == username
                                   select new
@@ -276,6 +274,7 @@ namespace FiveDevsShop.Controllers
                 categoryid = category.Id
             };
             
+<<<<<<< HEAD
 
             return Json(itemWithNamedCategory);
         }
@@ -312,6 +311,12 @@ namespace FiveDevsShop.Controllers
 
             return true;
         }
+=======
+
+            return Json(itemWithNamedCategory);
+        }
+        
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
         [HttpPost]//ProductsViewModel product
         public IActionResult AdminUpdateProduct(ProductsViewModel product)//(String idS, String sku_code, String categoryS, String title, String priceS, String description, String discountS, String subCategoryS)
         {
@@ -346,22 +351,31 @@ namespace FiveDevsShop.Controllers
 
             if (category == null)
             {
+<<<<<<< HEAD
                 using (var transaction = db.Database.BeginTransaction())
                 {
+=======
+                
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
                     category = new Category();
                     category.Title = product.categoryS.Trim();
                     category.Parent_id = null;
                     db.Category.Add(category);
                     try { db.SaveChanges(); }
                     catch { return null; }
+<<<<<<< HEAD
                     transaction.Commit();
                 }
+=======
+                
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
                 setCategory = (db.Category.ToList().FirstOrDefault(c => c.Title == product.categoryS.Trim())).Id;
             }
             Category subcategory = null;
             if (product.subCategoryS != null) subcategory = db.Category.ToList().FirstOrDefault(c => c.Title == product.subCategoryS.Trim());
             if(subcategory != null) setCategory = category.Id;
             if (product.subCategoryS != null && subcategory == null)
+<<<<<<< HEAD
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
@@ -377,7 +391,21 @@ namespace FiveDevsShop.Controllers
             }
 
             using (var transaction = db.Database.BeginTransaction())
+=======
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
             {
+                
+                    Category newCategory = new Category();
+                    newCategory.Title = product.subCategoryS.Trim();
+                    newCategory.Parent_id = category.Id;
+                    db.Category.Add(newCategory);
+                    try { db.SaveChanges(); }
+                    catch { return null; }
+                    setCategory = (db.Category.ToList().FirstOrDefault(c => c.Title == product.subCategoryS.Trim())).Id;
+                
+            }
+
+            
                     item.Id = id;
                     item.SkuCode = product.sku_code;
                     item.CategoryId = setCategory;
@@ -388,9 +416,14 @@ namespace FiveDevsShop.Controllers
 
                 try{db.SaveChanges();}
                 catch{return null;}
+<<<<<<< HEAD
                     transaction.Commit();
                     return Json(item);
             }  
+=======
+                    return Json(item);
+            
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
         }
 
         public IActionResult Error()

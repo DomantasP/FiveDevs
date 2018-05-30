@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FiveDevsShop.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace FiveDevsShop.Models
                 Title = product.Title,
                 Price = product.Price,
                 Discount = product.Discount,
-                MainImageUrl = "http://via.placeholder.com/200x150",
+                MainImageUrl = CloudinaryClient.GetImageUrl(product.MainImageId),
             };
         }
     }

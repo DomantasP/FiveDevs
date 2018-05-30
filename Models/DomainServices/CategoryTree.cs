@@ -54,7 +54,7 @@ namespace FiveDevsShop.Models.DomainServices
 
         public Node FindCategoryNode(int id)
         {
-            return Categories[id];
+            return Categories.GetValueOrDefault(id, null);
         }
 
         public IEnumerable<Node> Subtrees(int? rootCategoryId)
@@ -67,6 +67,21 @@ namespace FiveDevsShop.Models.DomainServices
             {
                 return Categories[rootCategoryId.Value].Children;
             }
+        }
+
+        public List<Category> FindPath(Category to)
+        {
+            var path = new List<Category>();
+            if (to == null) return path;
+
+            var node = Categories[to.Id];
+            while (node != null)
+            {
+                path.Add(node.Category);
+                node = node.Parent;
+            }
+            path.Reverse();
+            return path;
         }
     }
 }

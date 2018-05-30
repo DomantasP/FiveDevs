@@ -1,15 +1,8 @@
-﻿@model IEnumerable<FiveDevsShop.Models.Product>
+﻿@model ProductSearchViewModel
 @{
     ViewData["Title"] = "SearchProduct";
 }
 
-<h2>SearchProduct</h2>
-<ul>
-    @if(Model != null)
-    {
-        foreach (var product in Model)
-        {
-        <li>@product.Title</li>
-        }
-    }
-</ul>
+<h2>Paieškos rezultatai: @Model.Query</h2>
+
+@Html.Partial("/Views/Shared/Components/Product/ProductList.cshtml", Model.Products)

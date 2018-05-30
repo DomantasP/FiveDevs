@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Administratoriaus pultas";
 }
+<<<<<<< HEAD
 <head id="headers">
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script>
@@ -85,18 +86,52 @@
                         <li id="salesTab"><a href="#Nepatvirtinti"><i class="fa fa-bar-chart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Pardavimai</span></a></li>
                     </ul>
                 </div>
+=======
+
+
+<h2>Administratorius</h2>
+<div class="container-fluid display-table">
+    <div class="row display-table-row">
+        <div class="col-md-2 col-sm-1 hidden-xs display-table-cell v-align box" id="navigation">
+            <div class="logo">
+                <a hef="home.html">
+                    <img src="~/images/admin/admin_logo.png" alt="merkery_logo" class="hidden-xs hidden-sm">
+                    <img src="~/images/admin/circle_purple.svg" alt="merkery_logo" class="visible-xs visible-sm circle-logo">
+                </a>
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
             </div>
-            <div class="col-md-10 col-sm-11 display-table-cell v-align">
+            <div class="navi">
+                <ul>
+                    <li id="productsTab"><a href="#/"><i class="fa fa-home" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Prekės</span></a></li>
+                    <li id="usersTab"><a href="#/Naudotojai"><i class="fa fa-users" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Naudotojai</span></a></li>
+                    <li id="salesTab"><a href="#Nepatvirtinti"><i class="fa fa-bar-chart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Pardavimai</span></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-10 col-sm-11 display-table-cell v-align">
 
-                <div class="user-dashboard" id="main">
+            <div class="user-dashboard" id="main">
 
-
+<<<<<<< HEAD
                 </div>
+=======
+
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
             </div>
         </div>
     </div>
+</div>
 
+<<<<<<< HEAD
 </body>
+=======
+
+<div hidden class="html-spinner">
+    <img class="spinnerGif" src="~/lib/LoadingSpinner/spinner2.gif" width="80" height="80" />
+    <div class="spinnerText">Prašome palaukti...</div>
+</div>
+
+>>>>>>> 5bfb1ee16766b05ad8ec61324eef8fe193e9eae9
 <style>
     .html-spinner {
         position: fixed;
@@ -120,7 +155,29 @@
         top: 110px;
     }
 </style>
-<div hidden class="html-spinner">
-    <img class="spinnerGif" src="~/lib/LoadingSpinner/spinner2.gif" width="80" height="80" />
-    <div class="spinnerText">Prašome palaukti...</div>
-</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var table1 = $('#example').DataTable();
+        });
+    </script>
+
+    <script src="~/lib/ChangeTab/sammy.js"></script>
+    <script src="~/lib/ChangeTab/manageTabs.js"></script>
+    <script src="~/lib/CategorySelect/CategoryDeletion.js" type="text/javascript"></script>
+    <script src="~/lib/Table/jquery.dataTables.js"></script>
+    <script id="dtb1" src="~/lib/Table/dataTables.jquerui.js"></script>
+    <script id="dtb2" src="~/lib/Table/dataTable.js"></script>
+    <script src="~/lib/Table/editProduct.js"></script>
+    <script src="~/lib/Messages/js/jquery.notify.min.js"></script>
+    <script src="~/lib/Table/manageUsers.js"></script>
+    <script src="~/lib/Table/dataTablesTest.js"></script>
+    <script src="~/lib/ConfirmationDialog/H-confirm-alert.js"></script>
+    <script src="~/lib/ConfirmationDialog/ad.js"></script>
+    <script src="~/lib/HorizontalTabs/jquery.responsiveTabs.js" type="text/javascript"></script>
+    <script src="~/lib/HorizontalTabs/horizontalTabs.js" type="text/javascript"></script>
+    <script src="~/lib/Order/manageOrders.js" type="text/javascript"></script>
+    <script src="~/lib/CategorySelect/hierarchy-select.min.js" type="text/javascript"></script>
+}
+
