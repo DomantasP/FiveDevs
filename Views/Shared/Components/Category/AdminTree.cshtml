@@ -1,0 +1,29 @@
+﻿@model FiveDevsShop.Models.DomainServices.CategoryTree.Node
+
+
+<h4>@Model.Category.Title</h4>
+@if(!Model.Children.Any())
+{
+    @Html.Partial("/Views/Shared/Components/Category/DeleteCategoryForm.cshtml", new CategoryDeleteViewModel()
+    {
+        Id = Model.Category.Id,
+        Title =  Model.Category.Title
+    })
+    
+    @Html.Partial("/Views/Shared/Components/Category/AddCategoryForm.cshtml", new CategoryAddViewModel()
+    {
+        ParentId = Model.Category.Id   
+    })
+    
+}
+@if (Model.Children.Any())
+{
+    <ul>
+        @foreach (var child in Model.Children)
+        {
+            <li >
+                @Html.Partial("/Views/Shared/Components/Category/AdminTree.cshtml", child)
+            </li>
+        }
+    </ul>
+}

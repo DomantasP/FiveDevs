@@ -1,0 +1,77 @@
+﻿@model AddProductViewModel
+
+@{
+    ViewData["Title"] = "Pridėti prekę";
+}
+
+<div class="col-md-12 admin-panel">
+    <h2 class="col-md-6">Įveskite prekės duomenis</h2>
+    
+
+    <form asp-controller="Product" asp-action="AddProduct" method="post" class="col-md-6" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">Pavadinimas:</label>
+            <input type="text" class="form-control" id="title" placeholder="Įveskite pavadinimą" asp-for="Title" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="description">Aprašymas:</label>
+            <textarea class="form-control" id="description" placeholder="Įveskite aprašymą" asp-for="Description"> </textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="description">Trumpasis aprašymas:</label>
+            <textarea class="form-control" id="description" placeholder="Įveskite trumpajį aprašymą" asp-for="ShortDescription"> </textarea>
+            <span asp-validation-for="ShortDescription" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="price">Kaina:</label>
+            <input type="number" class="form-control" id="price" placeholder="Įveskite kainą" asp-for="Price" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="discount">Nuolaida:</label>
+            <input type="number" class="form-control" id="discount" placeholder="Įveskite nuolaidą" asp-for="Discount" />
+            <span asp-validation-for="Discount" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="skuCode">Sku kodas:</label>
+            <input type="text" class="form-control" id="sku-code" placeholder="Įveskite sku kodą" asp-for="SkuCode" />
+            <span asp-validation-for="SkuCode" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="category">Kategorija:</label>
+            <select asp-for="CategoryId"
+                    asp-items="@(new SelectList(Model.Categories, "Id", "Title"))">
+                <option>Pasirinkite vieną kategoriją</option>
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="url">Pasirinkitę pagrindinę prekės nuotrauką</label>
+            <label class="btn btn-default">
+                <input type="file" id="url" asp-for="MainImageFile"/>
+            </label>
+            <span asp-validation-for="MainImageId" class="text-danger col-md-12"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="url">Pasirinkite kitas prekės nuotraukas:</label>
+            <label class="btn btn-default">
+                <input type="file" id="url" asp-for="Images" multiple />
+            </label>
+        </div>
+        
+        <br/>
+
+
+        <div class="col-md-12"><button type="submit" class="btn btn-default">Pridėti prekę</button></div>
+    </form>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+

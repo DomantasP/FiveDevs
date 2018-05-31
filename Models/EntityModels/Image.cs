@@ -8,7 +8,7 @@ namespace FiveDevsShop.Models
     public class Image
     {
         public string Id { get; set; }
-
+        
         public int ProductId { get; set; }
 
         public string Url { get; set; }

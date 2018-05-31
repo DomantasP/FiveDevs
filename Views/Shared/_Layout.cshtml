@@ -12,102 +12,97 @@
         <link rel='stylesheet' href='~/lib/unitegallery/themes/default/ug-theme-default.css' type='text/css' />
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script type='text/javascript' src='~/lib/unitegallery/themes/compact/ug-theme-compact.js'></script>
-        <link href="~/lib/ConfirmationDialog/DialogStyle.css" rel="stylesheet">
-        <link href="~/lib/ConfirmationDialog/H-confirm-alert.css" rel="stylesheet">
-        <link rel="stylesheet" href="~/lib/Messages/css/jquery.notify.css">
-        <link href="~/lib/Table/dataTable_1.css" rel="stylesheet">
-        <link href="~/lib/Table/dataTable_2.css" rel="stylesheet">
-        <link type="text/cs" rel="stylesheet" href="~/lib/HorizontalTabs/responsive-tabs.css" />
-        <link type="text/css" rel="stylesheet" href="~/lib/HorizontalTabs/style.css" />
-        <link rel="stylesheet" href="~/lib/CategorySelect/pygments.css">
-        <link rel="stylesheet" href="~/lib/CategorySelect/hierarchy-select.min.css">
-        <link href="~/lib/ConfirmationDialog/DialogStyle.css" rel="stylesheet">
-        <link href="~/lib/ConfirmationDialog/H-confirm-alert.css" rel="stylesheet">
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-
     </environment>
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">FiveDevsShop</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Pagrindinis puslapis</a></li>
 
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" asp-area="">
-                            Kategorijos<span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            @await Component.InvokeAsync("Category")
-                        </ul>
-                    </li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Kontaktai</a></li>
-                    <li><a asp-area="" asp-controller="Product" asp-action = "ViewCart">Krepšelis</a></li>
-                </ul>
-                <div class="navbar-left" style="margin-top:12px;">
-                        @using (Html.BeginForm("SearchProduct", "Product", FormMethod.Get))
-                        {
-                            <ul class="nav navbar-nav">
-                                <li>@Html.TextBox("name", null,  new { placeholder = "Ieškoti prekių..." , id = "searchField"})</li>
-                                <li><button type="submit" id="searchButton" disabled><span class="glyphicon glyphicon-search"></span></button></li>
-                            </ul>
-                        }
-                </div>
-                
-                @await Html.PartialAsync("_LoginPartial")
-            </div>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">FiveDevsShop</a>
         </div>
-    </nav>
-    <div class="container body-content">
-        @RenderBody()
-    </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a asp-area="" asp-controller="Home" asp-action="Index">Pagrindinis puslapis</a></li>
 
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" asp-area="">
+                        Kategorijos<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        @await Component.InvokeAsync("Category")
+                    </ul>
+                </li>
+                <li><a asp-area="" asp-controller="Home" asp-action="Contact">Kontaktai</a></li>
+                <li><a asp-area="" asp-controller="Product" asp-action = "ViewCart">Krepšelis</a></li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li><a asp-area="" asp-controller="Admin" asp-action="AdminMain">Administratoriaus panelė</a></li>
+                }
+            </ul>
+            <div class="navbar-left" style="margin-top: 12px;">
+                @using (Html.BeginForm("SearchProduct", "Product", FormMethod.Get))
+                {
+                    <ul class="nav navbar-nav">
+                        <li>@Html.TextBox("name", null, new {placeholder = "Ieškoti prekių...", id = "searchField"})</li>
+                        <li><button type="submit" id="searchButton" disabled><span class="glyphicon glyphicon-search"></span></button></li>
+                    </ul>
+                }
+            </div>
+            @await Html.PartialAsync("_LoginPartial")
+        </div>
+    </div>
+</nav>
+<div class="container body-content">
+    @RenderBody()
+</div>
+<div class="footer-wrapper">
     <footer class="col-md-12">
         <div class="col-md-12 ">
             <div class="col-md-2"></div>
-                <div class="col-md-3">
-                    <address>
-                        <strong>UAB E-shop</strong><br>
-                        <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-                        Naugarduko g. 24<br>
-                        Vilnius, Lietuva<br>
-                    </address>
-                </div>
-                <div class="col-md-3">
-                    <address>
-                        <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
-                        <strong>El. paštas </strong> info@eshop.lt<br>
-                        <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
-                        Tel.: +370123123132<br />
-                        <span class="glyphicon glyphicon-phone-alt" aria-hidden="true"></span>
-                        Tel.: +370554208987
-                    </address>
-                </div>
-                <div class="col-md-3">
-                    <span class="glyphicon glyphicon-tower" aria-hidden="true"></span>
-                    <strong>FiveDevsShop</strong>
-                </div>
-                <hr class="col-md-12" />
-                <div class="col-md-12"><p>&copy; 2018 - FiveDevsShop</p></div>
+            <div class="col-md-3">
+                <address>
+                    <strong>UAB E-shop</strong><br>
+                    <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                    Naugarduko g. 24<br>
+                    Vilnius, Lietuva<br>
+                </address>
             </div>
-</footer>
+            <div class="col-md-3">
+                <address>
+                    <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+                    <strong>El. paštas </strong> info@eshop.lt<br>
+                    <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
+                    Tel.: +370123123132<br/>
+                    <span class="glyphicon glyphicon-phone-alt" aria-hidden="true"></span>
+                    Tel.: +370554208987
+                </address>
+            </div>
+            <div class="col-md-3">
+                <span class="glyphicon glyphicon-tower" aria-hidden="true"></span>
+                <strong>FiveDevsShop</strong>
+            </div>
+            <hr class="col-md-12"/>
+            <div class="col-md-12">
+                <p>&copy; 2018 - FiveDevsShop</p></div>
+        </div>
+    </footer>
+
+</div>
+
 
     <environment include="Development">
-
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
         <script type='text/javascript' src='~/lib/unitegallery/js/unitegallery.min.js'></script>
@@ -126,9 +121,8 @@
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
-        <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     </environment>
 
-    @RenderSection("Scripts", required: false)
+@RenderSection("Scripts", required: false)
 </body>
 </html>

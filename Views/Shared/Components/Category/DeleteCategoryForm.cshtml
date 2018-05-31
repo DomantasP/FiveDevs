@@ -1,0 +1,9 @@
+﻿@model CategoryDeleteViewModel
+
+<form asp-controller="Category" asp-action="DeleteCategory">
+    
+    @Html.HiddenFor(model => model.Id)
+
+    <button type="submit" class="btn btn-default">Trinti kategoriją "@Model.Title"</button>
+    
+</form>

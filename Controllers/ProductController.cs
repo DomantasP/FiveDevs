@@ -16,6 +16,8 @@ using FiveDevsShop.Models.DomainServices;
 using FiveDevsShop.Extensions;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace FiveDevsShop.Controllers
 {
@@ -140,7 +142,7 @@ namespace FiveDevsShop.Controllers
                             
                         }
                     }
-                    catch (Exception ex) { transaction.Rollback(); return false; }
+                    catch (Exception) { transaction.Rollback(); }
                     Product product = new Product();
                     product.SkuCode = excelProduct.SkuCode;
                     product.Price = excelProduct.Price;
@@ -156,7 +158,7 @@ namespace FiveDevsShop.Controllers
                         db.Product.Add(product);
                         db.SaveChanges();
                     }
-                    catch (Exception ex) { transaction.Rollback(); return false; }
+                    catch (Exception) { transaction.Rollback(); }
 
                     try
                     {
@@ -171,7 +173,7 @@ namespace FiveDevsShop.Controllers
                         }
                         db.SaveChanges();
                     }
-                    catch (Exception ex) { transaction.Rollback(); return false; }
+                    catch (Exception) { transaction.Rollback(); }
 
                     try
                     {
@@ -185,7 +187,7 @@ namespace FiveDevsShop.Controllers
                         }
                         db.SaveChanges();
                     }
-                    catch (Exception ex) { transaction.Rollback(); }
+                    catch (Exception) { transaction.Rollback(); }
                 }
                 transaction.Commit();
             }
@@ -324,7 +326,16 @@ namespace FiveDevsShop.Controllers
             });
         }
 
-        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public IActionResult AddProductView()
+        {
+            var model = new AddProductViewModel {Categories = db.Category.ToList()};
+
+            return View(model);
+        }
+        
+
+        [Authorize(Roles = "Admin")]
         public IActionResult AddProduct(AddProductViewModel model)
         {
             model.Categories = db.Category.ToList();
@@ -332,29 +343,39 @@ namespace FiveDevsShop.Controllers
             if (ModelState.IsValid)
             {
                 //Show error
-                if(!IsImageValid(model.MainImageFile))
-                    return View(model);
+                if(model.MainImageFile != null && !IsImageValid(model.MainImageFile))
+                    return View("AddProductView", model);
 
-                foreach (var image in model.Images)
+                if (model.Images != null)
                 {
-                    var valid = IsImageValid(image);
-                    if(!valid)
+                    foreach (var image in model.Images)
                     {
-                        // Show error that only images allowed
-                        return View(model);
-                    }
+                        var valid = IsImageValid(image);
+                        if(!valid)
+                        {
+                            // Show error that only images allowed
+                            return View("AddProductView", model);
+                        }
+                    }                    
                 }
+
 
                 var filePath = Path.GetTempFileName();
                 var imageIds = new List<String>();
 
-                foreach (var formFile in model.Images)
+                if (model.Images != null)
                 {
-                    var imageId = UploadImage(formFile, filePath);
-                    imageIds.Add(imageId);
+                    foreach (var formFile in model.Images)
+                    {
+                        var imageId = UploadImage(formFile, filePath);
+                        imageIds.Add(imageId);
+                    }                    
                 }
 
-                var mainImageId = UploadImage(model.MainImageFile, filePath);
+                string mainImageId = "";
+                
+                if(model.MainImageFile != null)
+                    mainImageId = UploadImage(model.MainImageFile, filePath);
 
                 var product = new Product()
                 {
@@ -365,6 +386,7 @@ namespace FiveDevsShop.Controllers
                     Discount = model.Discount,
                     SkuCode = model.SkuCode,
                     MainImageId = mainImageId,
+                    ShortDescription = model.ShortDescription
                 };
 
                 db.Product.Add(product);
@@ -373,14 +395,110 @@ namespace FiveDevsShop.Controllers
 
                 db.SaveChanges();
 
-                return View(model);
+                return View("AddProductView", model);
             }
             else
             {
-                return View(model);
+                return View("AddProductView", model);
             }
         }
 
+        [Authorize(Roles = "Admin")]
+        public IActionResult EditProductView(int id)
+        {
+            var product = db.Product.FirstOrDefault(p => p.Id == id);
+            
+            var model = new AddProductViewModel
+            {
+                Id = product.Id,
+                Title = product.Title,
+                Price = product.Price,
+                Description =  product.Description,
+                ShortDescription =  product.ShortDescription,
+                Discount = product.Discount,
+                SkuCode = product.SkuCode,
+                Categories = db.Category.ToList(),
+                CategoryId = product.CategoryId,
+            };
+
+            return View(model);
+        }
+        
+        [Authorize(Roles = "Admin")]
+        public IActionResult EditProduct(AddProductViewModel model)
+        {
+            model.Categories = db.Category.ToList();
+
+            if (ModelState.IsValid)
+            {
+                //Show error
+                if(model.MainImageFile != null && !IsImageValid(model.MainImageFile))
+                    return View("EditProductView", model);
+
+                if (model.Images != null)
+                {
+                    foreach (var image in model.Images)
+                    {
+                        var valid = IsImageValid(image);
+                        if(!valid)
+                        {
+                            // Show error that only images allowed
+                            return View("EditProductView", model);
+                        }
+                    }                    
+                }
+
+
+                var filePath = Path.GetTempFileName();
+                var imageIds = new List<String>();
+
+                if (model.Images != null)
+                {
+                    foreach (var formFile in model.Images)
+                    {
+                        var imageId = UploadImage(formFile, filePath);
+                        imageIds.Add(imageId);
+                    }                    
+                }
+
+                string mainImageId = "";
+                
+                if(model.MainImageFile != null)
+                    mainImageId = UploadImage(model.MainImageFile, filePath);
+                
+                var product = db.Product.Find(model.Id);
+                product.Title = model.Title;
+                product.Description = model.Description;
+                product.Price = model.Price;
+                product.CategoryId = model.CategoryId;
+                product.Discount = model.Discount;
+                product.SkuCode = model.SkuCode;
+                product.MainImageId = mainImageId;
+                product.ShortDescription = model.ShortDescription;
+                
+                imageIds.ForEach(id => db.Image.Add(
+                        new Image() { Id = id, ProductId = product.Id } ));
+
+                db.SaveChangesAsync();
+
+                return View("EditProductView", model);
+            }
+            else
+            {
+                return View("EditProductView", model);
+            }
+        }
+        
+        [Authorize(Roles = "Admin")]
+        public IActionResult DeleteProduct(int id)
+        {
+            var product = db.Product.Find(id);
+            db.Product.Remove(product);
+            db.SaveChangesAsync();
+
+            return RedirectToAction("Product", "Admin");
+        }
+        
         [HttpPost]
         public IActionResult AddProductToCart(GetProductViewModel model)
         {

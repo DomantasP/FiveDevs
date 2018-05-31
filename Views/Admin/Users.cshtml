@@ -1,0 +1,55 @@
+﻿@model List<ApplicationUser>
+
+@{
+    ViewData["Title"] = "Paskyrų valdymas";
+}
+
+<div class="col-md-12 admin-panel">
+    <h2 class="col-md-12">Paskyrų valdymas</h2>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Vartotojo vardas</th>
+            <th scope="col">El. paštas</th>
+            <th scope="col">Vardas</th>
+            <th scope="col">Pavardė</th>
+            <th scope="col">Miestas</th>
+            <th scope="col">Gatvė</th>
+            <th scope="col">Namo nr.</th>
+            <th scope="col">Statusas</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <th scope="row">@user.UserName</th>
+                <td>@user.Email</td>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.City</td>
+                <td>@user.Street</td>
+                <td>@user.HouseNumber</td>
+                
+                @if (user.LockoutEnabled)
+                {
+                    <td>Blokuojamas</td>
+                }
+                else
+                {
+                    <td>Neblokuojamas</td>
+                }
+
+                <td><a href="/admin/lockout-user/@user.Id"><button>Blokuoti</button></a></td>
+                <td>
+                    <td><a href="/admin/unlock-user/@user.Id"><button>Atblokuoti</button></a></td>
+                </td>
+            </tr>
+        }
+
+        </tbody>
+    </table>
+
+</div>
+

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -76,6 +73,7 @@ namespace FiveDevsShop
             {
                 options.IdleTimeout = TimeSpan.FromHours(1);
             });
+            services.AddTransient<IValidator<AddProductViewModel>, AddProductViewModelValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -122,9 +120,21 @@ namespace FiveDevsShop
                     defaults: new { controller = "Category", action = "GetCategoryAndSubcategories" });
                 
                 routes.MapRoute(
-                    name: "product",
+                    name: "product_add",
                     template: "product/add",
-                    defaults: new { controller = "Product", action = "AddProduct" });
+                    defaults: new { controller = "Product", action = "AddProductView" });
+                
+                routes.MapRoute(
+                    name: "product_edit",
+                    template: "product/edit/{id?}",
+                    constraints: new { id = new IntRouteConstraint() },
+                    defaults: new { controller = "Product", action = "EditProductView" });
+
+                routes.MapRoute(
+                    name: "product_delete",
+                    template: "product/delete/{id?}",
+                    constraints: new { id = new IntRouteConstraint() },
+                    defaults: new { controller = "Product", action = "DeleteProduct" });
 
                 routes.MapRoute(
                     name: "get_product",
@@ -136,6 +146,62 @@ namespace FiveDevsShop
                     name: "index",
                     template: "index",
                     defaults: new { controller = "Home", action = "HomeProductList" });
+                                
+                routes.MapRoute(
+                    name: "admin",
+                    template: "admin",
+                    defaults: new { controller = "Admin", action = "AdminMain" });
+                
+                routes.MapRoute(
+                    name: "admin_categories",
+                    template: "admin/categories",
+                    defaults: new { controller = "Admin", action = "Categories" });
+                
+                routes.MapRoute(
+                    name: "admin_product",
+                    template: "admin/product",
+                    defaults: new { controller = "Admin", action = "Product" });
+                
+                routes.MapRoute(
+                    name: "admin_orders",
+                    template: "admin/orders",
+                    defaults: new { controller = "Admin", action = "Orders" });
+                
+                routes.MapRoute(
+                    name: "admin_users",
+                    template: "admin/users",
+                    defaults: new { controller = "Admin", action = "Users" });
+                
+                routes.MapRoute(
+                    name: "lockout",
+                    template: "admin/lockout-user/{id?}",
+                    defaults: new { controller = "Admin", action = "LockoutUser" });
+                
+                routes.MapRoute(
+                    name: "unlock",
+                    template: "admin/unlock-user/{id?}",
+                    defaults: new { controller = "Admin", action = "UnlockUser" });
+                
+                routes.MapRoute(
+                    name: "confirm",
+                    template: "admin/confirm-order/{id?}",
+                    defaults: new { controller = "Admin", action = "UpdateOrderStatus" });
+                
+                routes.MapRoute(
+                    name: "send",
+                    template: "admin/send-order/{id?}",
+                    defaults: new { controller = "Admin", action = "UpdateOrderStatus" });
+                
+                routes.MapRoute(
+                    name: "ship",
+                    template: "admin/ship-order/{id?}",
+                    defaults: new { controller = "Admin", action = "UpdateOrderStatus" });
+                
+                routes.MapRoute(
+                    "NotFound",
+                    "{*url}",
+                    new { controller = "Home", action = "NotFound" }
+                );
             });
         }
 

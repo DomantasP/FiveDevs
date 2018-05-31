@@ -1,4 +1,5 @@
-﻿using CloudinaryDotNet;
+﻿using System.Threading.Tasks;
+using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Configuration;
 
