@@ -192,7 +192,7 @@ namespace FiveDevsShop.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> PurchaseHistory()
+        public IActionResult PurchaseHistory()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)

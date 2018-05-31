@@ -1,4 +1,5 @@
-﻿using CloudinaryDotNet;
+﻿using System.Threading.Tasks;
+using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Configuration;
 
@@ -10,6 +11,7 @@ namespace FiveDevsShop.Services
             AppSettingsProvider.CloudinaryCloud,
             AppSettingsProvider.CloudinaryApiKey,
             AppSettingsProvider.CloudinarytSecret);
+
 
         private static readonly Cloudinary cloudinary = new Cloudinary(account);
 
