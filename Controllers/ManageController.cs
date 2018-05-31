@@ -59,7 +59,14 @@ namespace FiveDevsShop.Controllers
             {
                 Username = user.UserName,
                 Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
+                City = user.City,
+                Street = user.Street,
+                HouseNumber = user.HouseNumber,
+                ApartmentNumber = user.ApartmentNumber,
+                PostalCode = user.PostalCode,
                 IsEmailConfirmed = user.EmailConfirmed,
                 StatusMessage = StatusMessage
             };
@@ -82,27 +89,25 @@ namespace FiveDevsShop.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var email = user.Email;
-            if (model.Email != email)
+            user.Email = model.Email;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.City = model.City;
+            user.Street = model.Street;
+            user.HouseNumber = model.HouseNumber;
+            user.ApartmentNumber = model.ApartmentNumber;
+            user.PostalCode = model.PostalCode;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
             {
-                var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
-                if (!setEmailResult.Succeeded)
-                {
-                    throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
-                }
+                _logger.LogInformation("User successfully updated his account.");
+
+                StatusMessage = "Paskyra atnaujinta sėkmingai.";
+                return RedirectToAction(nameof(Index));
             }
 
-            var phoneNumber = user.PhoneNumber;
-            if (model.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
-                }
-            }
-
-            StatusMessage = "Paskyra atnaujinta sėkmingai.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -167,6 +172,10 @@ namespace FiveDevsShop.Controllers
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
             if (!changePasswordResult.Succeeded)
             {
+                if (changePasswordResult.Errors.Any(e => e.Description == "Incorrect password."))
+                {
+                    changePasswordResult.Errors.First(e => e.Description == "Incorrect password.").Description = "Dabartinis slaptažodis neteisingas.";
+                }
                 AddErrors(changePasswordResult);
                 return View(model);
             }

@@ -16,6 +16,7 @@ using FluentValidation.AspNetCore;
 using FiveDevsShop.Validators;
 using FluentValidation;
 using FiveDevsShop.Models.AccountViewModels;
+using FiveDevsShop.Models.ManageViewModels;
 
 namespace FiveDevsShop
 {
@@ -57,6 +58,8 @@ namespace FiveDevsShop
             services.AddTransient<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
             services.AddTransient<IValidator<LoginViewModel>, LoginViewModelValidator>();
             services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
+            services.AddTransient<IValidator<IndexViewModel>, IndexViewModelValidator>();
+            services.AddTransient<IValidator<ChangePasswordViewModel>, ChangePasswordViewModelValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
