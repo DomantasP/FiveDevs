@@ -27,7 +27,8 @@
         <tr>
             @if (index == 0)
             {
-                <th scope="row" rowspan="@order.Items.Count">@order.Date</th>
+                var dateEndsAt = order.Date.IndexOf(" ");
+                <th scope="row" rowspan="@order.Items.Count">@order.Date.Substring(0, dateEndsAt)</th>
 
                 @if (order.Status == 0)
                 {
