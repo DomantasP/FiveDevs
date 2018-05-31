@@ -10,9 +10,14 @@ using FiveDevsShop.Data;
 using FiveDevsShop.Models.DomainServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
+=======
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+>>>>>>> Implemented order management
 
 namespace FiveDevsShop.Controllers
 {        
@@ -59,26 +64,38 @@ namespace FiveDevsShop.Controllers
 
         public IActionResult Orders()
         {
-            // implement order loading
+            var orders = db.User_order
+                .Select(m => new OrderViewModel()
+                {
+                    Id = m.Id,
+                    Date = m.Date,
+                    Status = m.Status
+                })
+                .OrderBy(m => m.Date)
+                .ToList();
+
+
+            orders.ForEach(order => 
+                order.Items = db.Purchase
+                    .Where(p => p.Order_id == order.Id)
+                    .ToList()
+                );
             
-            return View();
+            return View(orders);
         }
 
-        
-        [HttpPost]
-        public IActionResult ConfirmOrder(int orderId)
+        public IActionResult UpdateOrderStatus(int id)
         {
-            User_order order = db.User_order.FirstOrDefault(o => o.Id == orderId);
-
-            //STATUS ENUM
+            var order = db.User_order.Find(id);
             
-            order.Status = 3;
+            if(order.Status > 3)
+                return RedirectToAction("Orders");
 
+            order.Status++;
             db.SaveChanges();
 
-            return View("Orders");
+            return RedirectToAction("Orders");
         }
-
         
         public IActionResult Users()
         {

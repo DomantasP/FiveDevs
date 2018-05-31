@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -185,6 +182,21 @@ namespace FiveDevsShop
                     name: "unlock",
                     template: "admin/unlock-user/{id?}",
                     defaults: new { controller = "Admin", action = "UnlockUser" });
+                
+                routes.MapRoute(
+                    name: "confirm",
+                    template: "admin/confirm-order/{id?}",
+                    defaults: new { controller = "Admin", action = "UpdateOrderStatus" });
+                
+                routes.MapRoute(
+                    name: "send",
+                    template: "admin/send-order/{id?}",
+                    defaults: new { controller = "Admin", action = "UpdateOrderStatus" });
+                
+                routes.MapRoute(
+                    name: "ship",
+                    template: "admin/ship-order/{id?}",
+                    defaults: new { controller = "Admin", action = "UpdateOrderStatus" });
                 
                 routes.MapRoute(
                     "NotFound",
