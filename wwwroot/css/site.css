@@ -401,34 +401,3 @@ button[class*='sbtn'] {
   margin-bottom: 20px;
   display: block;
 }
-======= .categories-panel {
-  padding: 50px;
-  display: flex;
-  flex-direction: column;
-}
-
-.categories-panel-list {
-  margin-top: 20px;
-  padding: 50px;
-  height: 100%;
-}
-
-.categories-panel-list ul li button {
-  margin: 2px;
-}
-
-.categories-panel-list ul li {
-  list-style: none;
-  border-left: 1px solid dodgerblue;
-  padding: 20px;
-  border-top: 1px solid dodgerblue;
-}
-
-.categories-panel-list h4 {
-  font-weight: 500;
-}
-
-.new-product-link {
-  margin-bottom: 20px;
-  display: block;
-}
