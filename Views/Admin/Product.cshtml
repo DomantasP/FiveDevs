@@ -1,4 +1,5 @@
-﻿@model ProductListViewModel
+﻿@using Microsoft.AspNetCore.Http.Internal
+@model ProductListViewModel
 
 @{
     ViewData["Title"] = "Prekių valdymas";
@@ -7,7 +8,8 @@
 <div class="col-md-12 admin-panel">
     <h2 class="col-md-12">Pridėkite, redaguokite arba pašalinkite prekes</h2>
     <a class="col-md-12 new-product-link" href="/product/add"><h4 >Pridėti naują produktą</h4></a>
-
+    @Html.Partial("/Views/Shared/Components/Product/ProductImportForm.cshtml", new ProductImportFormViewModel())
+    <br/>
     <table class="table">
         <thead>
         <tr>

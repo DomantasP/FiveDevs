@@ -1,0 +1,9 @@
+﻿@model ProductImportFormViewModel
+
+<form asp-controller="Product" asp-action="UploadProductByExcel" method="post" class="col-md-12" enctype="multipart/form-data">
+    <label for="url">Importuoti prekę iš failo:</label>
+    <label class="btn btn-default">
+        <input type="file" id="url" asp-for="File" multiple />
+    </label>
+    <button type="submit" class="btn btn-default">Pridėti prekę</button>
+</form>

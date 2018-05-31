@@ -39,10 +39,10 @@ namespace FiveDevsShop.Controllers
         }
 
         [HttpPost]
-        public JsonResult UploadProductByExcel(IFormFile file)
+        public IActionResult UploadProductByExcel(IFormFile file)
         {
-            if (file == null) return null;
-            if (!IsExcelFile(file)) return null;
+            if (file == null) return RedirectToAction("Product","Admin");;
+            if (!IsExcelFile(file)) return RedirectToAction("Product","Admin");;
 
             var filePath = Path.GetTempFileName();
 
@@ -75,11 +75,11 @@ namespace FiveDevsShop.Controllers
                         product.Title = worksheet.Cells[row, 1].Text.Trim();
                         product.ShortDescription = worksheet.Cells[row, 2].Text.Trim();
                         Decimal price;
-                        if (!Regex.IsMatch(worksheet.Cells[row, 3].Text.Trim().Replace('.', ','), @"^\d{0,8}(,\d{1,2})?$")) return null; //@"^[0-9]{1,8}[,.][0-9]{2}$"
+                        if (!Regex.IsMatch(worksheet.Cells[row, 3].Text.Trim().Replace('.', ','), @"^\d{0,8}(,\d{1,2})?$")) return RedirectToAction("Product","Admin"); //@"^[0-9]{1,8}[,.][0-9]{2}$"
 
                         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 
-                        if (!Decimal.TryParse(worksheet.Cells[row, 3].Text.Trim().Replace(',', '.'), NumberStyles.Number, CultureInfo.InvariantCulture, out price)) return null;
+                        if (!Decimal.TryParse(worksheet.Cells[row, 3].Text.Trim().Replace(',', '.'), NumberStyles.Number, CultureInfo.InvariantCulture, out price)) return RedirectToAction("Product","Admin");
                         product.Price = price;
                         product.Images = worksheet.Cells[row, 4].Text.Trim().Split(' ').ToList();
 
@@ -96,16 +96,16 @@ namespace FiveDevsShop.Controllers
                             product.PropertiesValue.Add(worksheet.Cells[row, 9].Text.Trim());
                         }
 
-                        if (!IsProductValid(product)) return null;
-                        if (db.Product.FirstOrDefault(p => p.SkuCode == product.SkuCode) != null) return null;
+                        if (!IsProductValid(product)) return RedirectToAction("Product","Admin");
+                        if (db.Product.FirstOrDefault(p => p.SkuCode == product.SkuCode) != null) return RedirectToAction("Product","Admin");
                         importProducts.Add(product);
                     }
-                    else return null;
+                    else return RedirectToAction("Product","Admin");
                 }        
             }
             AddProducts(importProducts);
 
-            return Json(1);
+            return RedirectToAction("Product","Admin");
         }
 
         private Boolean AddProducts(List<ProductsImportModel> excelProducts)
@@ -494,7 +494,7 @@ namespace FiveDevsShop.Controllers
         {
             var product = db.Product.Find(id);
             db.Product.Remove(product);
-            db.SaveChangesAsync();
+            db.SaveChanges();
 
             return RedirectToAction("Product", "Admin");
         }

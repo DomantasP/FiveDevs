@@ -138,6 +138,9 @@ namespace FiveDevsShop.Controllers
                 }
             }
 
+            cart.Entries.Clear();
+            this.SaveCart(cart);
+
             return View("/Views/User/PaymentDone.cshtml");
         }
     }
