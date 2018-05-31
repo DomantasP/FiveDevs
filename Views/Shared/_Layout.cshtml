@@ -46,6 +46,10 @@
                 </li>
                 <li><a asp-area="" asp-controller="Home" asp-action="Contact">Kontaktai</a></li>
                 <li><a asp-area="" asp-controller="Product" asp-action = "ViewCart">Krepšelis</a></li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li><a asp-area="" asp-controller="Admin" asp-action="AdminMain">Administratoriaus panelė</a></li>
+                }
             </ul>
             <div class="navbar-left" style="margin-top: 12px;">
                 @using (Html.BeginForm("SearchProduct", "Product", FormMethod.Get))
