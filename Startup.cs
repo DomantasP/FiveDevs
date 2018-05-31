@@ -63,6 +63,7 @@ namespace FiveDevsShop
             services.AddTransient<IValidator<IndexViewModel>, IndexViewModelValidator>();
             services.AddTransient<IValidator<ChangePasswordViewModel>, ChangePasswordViewModelValidator>();
             services.AddTransient<IValidator<PaymentViewModel>, PaymentViewModelValidator>();
+            services.AddTransient<IValidator<CategoryAddViewModel>, CategoryAddViewModelValidator>();
             services.AddTransient<PriceCalculator>();
             services.AddTransient<IPaymentProcessor, PaymentProcessor>();
             services.AddTransient<IImageUploader, CloudinaryClient>();

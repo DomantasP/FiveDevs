@@ -10,11 +10,6 @@
         Title =  Model.Category.Title
     })
     
-    @Html.Partial("/Views/Shared/Components/Category/AddCategoryForm.cshtml", new CategoryAddViewModel()
-    {
-        ParentId = Model.Category.Id   
-    })
-    
 }
 @if (Model.Children.Any())
 {
@@ -23,6 +18,10 @@
         {
             <li >
                 @Html.Partial("/Views/Shared/Components/Category/AdminTree.cshtml", child)
+                @Html.Partial("/Views/Shared/Components/Category/AddCategoryForm.cshtml", new CategoryAddViewModel()
+                {
+                    ParentId = null
+                })
             </li>
         }
     </ul>
