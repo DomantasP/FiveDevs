@@ -473,6 +473,16 @@ namespace FiveDevsShop.Controllers
             }
         }
         
+        [Authorize(Roles = "Admin")]
+        public IActionResult DeleteProduct(int id)
+        {
+            var product = db.Product.Find(id);
+            db.Product.Remove(product);
+            db.SaveChangesAsync();
+
+            return RedirectToAction("Product", "Admin");
+        }
+        
         [HttpPost]
         public IActionResult AddProductToCart(GetProductViewModel model)
         {
