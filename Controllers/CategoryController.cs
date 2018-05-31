@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Routing;
 
 namespace FiveDevsShop.Controllers
 {
@@ -74,11 +76,18 @@ namespace FiveDevsShop.Controllers
 
             return products;
         }
+        
         [HttpPost]
-        public JsonResult DeleteCategory(int id)
+        [Authorize(Roles = "Admin")]
+        public IActionResult DeleteCategory(CategoryDeleteViewModel model)
         {
-            //if (categoryName == null) return null;
-            var category = db.Category.FirstOrDefault(c=>c.Id == id);
+            if (db.Product.Any(p => p.CategoryId == model.Id))
+            {
+                return RedirectToAction("Categories","Admin");
+            }
+            
+            var category = db.Category.FirstOrDefault(c=> c.Id == model.Id);
+            
             if (category == null) return null;
             
             //Find all categories to delete
@@ -101,8 +110,22 @@ namespace FiveDevsShop.Controllers
             }
             db.Category.RemoveRange(allCategories);
             db.SaveChanges();
-            return Json(1);
 
+            return RedirectToAction("Categories","Admin");
+        }
+        
+        public IActionResult AddCategory(CategoryAddViewModel model)
+        {
+
+            db.Category.Add(new Category()
+            {
+                Parent_id = model.ParentId,
+                Title = model.Title
+            });
+
+            db.SaveChanges();
+
+            return RedirectToAction("Categories", "Admin");
         }
     }
 }

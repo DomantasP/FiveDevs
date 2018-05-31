@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using FiveDevsShop.Models;
 using FiveDevsShop.Data;
-using Microsoft.AspNetCore.Http;
-using System.IO;
+using FiveDevsShop.Models.DomainServices;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FiveDevsShop.Controllers
@@ -30,10 +28,26 @@ namespace FiveDevsShop.Controllers
             return View(items);
         }
         
-        public IActionResult UserManagementView()
+
+        public IActionResult Categories()
         {
-            ViewData["Message"] = "Naudotojų peržiūra";
-            return PartialView();
+            var tree = new CategoryTree(db.Category);
+
+            var subtrees = tree.Subtrees(null).ToList();
+
+            return View(new CategoryViewModel()
+            {
+                CategoryPath = tree.FindPath(null),
+                Subtrees = subtrees
+            });
+        }
+       
+        
+        public IActionResult Product(int page = 1)
+        {
+            var model = Paging.LoadPage(db.Product, page);
+            
+            return View(model);
         }
         
         public IActionResult SalesView()
@@ -56,63 +70,7 @@ namespace FiveDevsShop.Controllers
 
             return PartialView(items);
         }
-
-        [HttpPost]
-        public JsonResult GetSubcategoriesInBatches() //Id - order Id
-        {
-            var rootCategories = from c in db.Category
-                                 where c.Parent_id == null
-                                 select c;
-
-            var categories = from c in db.Category
-                             orderby c.Title
-                             select c;
-
-            var lookup = db.Category.ToLookup(x => x.Parent_id);
-            var categoriesWithNoSub = (from rc in rootCategories
-                                       join c in categories
-                                       on rc.Id equals c.Parent_id into g
-                                       select new
-                                       {
-                                           parentID = rc.Id,
-                                           parentTitle = rc.Title,
-
-
-                                           subCat = g.Select(w => new
-                                                                  {
-                                                                      subCatId = w.Id,
-                                                                      subCatTitles = w.Title,
-                                                                      subSubCat = from c in categories
-                                                                                    where c.Parent_id == w.Id
-                                                                                    select new
-                                                                                    {
-                                                                                        subSubCatId = c.Id,
-                                                                                        subSubCatTitle = c.Title
-                                                                                    }
-                                                                  }
-                                                             )
-
-                                       }).OrderBy(t => t.parentTitle);
-           
-
-
-            return Json(categoriesWithNoSub.ToList());
-        }
         
-        [HttpPost]
-        public JsonResult GetRootCategories() //Id - order Id
-        {
-            var rootCats = from r in db.Category.ToList()
-                           where r.Parent_id == null
-                           select new
-                           {
-                               id = r.Id,
-                               title = r.Title
-                           };
-
-            return Json(rootCats);
-        }
-
         [HttpPost]
         public JsonResult ConfirmOrder(int orderId) //Id - order Id
         {
