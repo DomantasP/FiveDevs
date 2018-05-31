@@ -7,7 +7,7 @@
 <div class="cart-entry">
     <div class="s-buttons">
         <form asp-controller="Cart" asp-action="RemoveProduct" method="post">
-            @Html.HiddenFor(model => model.SkuCode)
+            <div style="display: none">@Html.EditorFor(model => model.SkuCode)</div>
             <button  type="submit"><span class="glyphicon glyphicon-remove"></span></button>
         </form>
             </div>
@@ -23,7 +23,7 @@
 
     <div class="s-quantity">
         <form asp-controller="Cart" asp-action="RemoveOne" method="post">
-            @Html.HiddenFor(model => model.SkuCode)
+            <div style="display: none">@Html.EditorFor(model => model.SkuCode)</div>
             <button class="minus-sbtn" type="submit" name="button">
                 <span class="glyphicon glyphicon-minus"></span>
             </button>
@@ -32,11 +32,11 @@
             @Model.Amount
         </label>
         <form asp-controller="Cart" asp-action="AddOne" method="post">
-            @Html.HiddenFor(model => model.SkuCode)
+            <div style="display: none">@Html.EditorFor(model => model.SkuCode)</div>
             <button class="plus-sbtn" type="submit" name="button">
                 <span class="glyphicon glyphicon-plus"></span>
             </button>
-            </form>
+        </form>
     </div>
 
     <div class="total-price">@Model.FinalPrice€</div>

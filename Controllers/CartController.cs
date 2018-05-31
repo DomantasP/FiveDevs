@@ -34,21 +34,21 @@ namespace FiveDevsShop.Controllers
             var cart = this.UserShoppingCart();      
             cart.removeFromCart(entry.SkuCode);
             this.SaveCart(cart);
-            return await ViewCart();
+            return RedirectToAction("ViewCart");
         }
         public async Task<IActionResult> AddOne(CartEntry entry)
         {
             var cart = this.UserShoppingCart();
             cart.increaseAmountByOne(entry.SkuCode);
             this.SaveCart(cart);
-            return await ViewCart();
+            return RedirectToAction("ViewCart");
         }
         public async Task<IActionResult> RemoveOne(CartEntry entry)
         {
             var cart = this.UserShoppingCart();
             cart.decreaseAmountByOne(entry.SkuCode);
             this.SaveCart(cart);
-            return await ViewCart();
+            return RedirectToAction("ViewCart");// await ViewCart();
         }
 
     }
