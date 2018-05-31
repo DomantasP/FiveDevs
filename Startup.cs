@@ -55,7 +55,6 @@ namespace FiveDevsShop
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddSingleton(new HttpClient());
-            services.AddSingleton<PaymentProcessor>();
 
             services.AddMvc().AddFluentValidation().AddSessionStateTempDataProvider();
 
@@ -65,7 +64,7 @@ namespace FiveDevsShop
             services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
             services.AddTransient<IValidator<PaymentViewModel>, PaymentViewModelValidator>();
             services.AddTransient<PriceCalculator>();
-            services.AddTransient<PaymentProcessor>();
+            services.AddTransient<IPaymentProcessor, PaymentProcessor>();
             services.AddTransient<IImageUploader, CloudinaryClient>();
             services.AddTransient<Paging>();
             

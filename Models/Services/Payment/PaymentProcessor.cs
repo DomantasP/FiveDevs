@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FiveDevsShop.Models.Services.Payment
 {
-    public class PaymentProcessor
+    public class PaymentProcessor : IPaymentProcessor
     {
         private readonly HttpClient httpClient;
 
