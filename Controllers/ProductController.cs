@@ -57,11 +57,11 @@ namespace FiveDevsShop.Controllers
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
                 int rowCount = worksheet.Dimension.Rows;
                 int ColCount = worksheet.Dimension.Columns;
-                
-                
+
+
                 for (int row = 2; row <= rowCount; row++)
                 {
-                    if (IsPropertyLine(worksheet, row))
+                    if (IsPropertyLine(worksheet, row) == 1)
                     {
                         importProducts[importProducts.Count - 1].PropertiesKey.Add(worksheet.Cells[row, 8].Text.Trim());
                         importProducts[importProducts.Count - 1].PropertiesValue.Add(worksheet.Cells[row, 9].Text.Trim());
@@ -69,17 +69,16 @@ namespace FiveDevsShop.Controllers
                     else if (IsCorrectLine(worksheet, row))
                     {
                         ProductsImportModel product = new ProductsImportModel();
+
                         product.Title = worksheet.Cells[row, 1].Text.Trim();
                         product.ShortDescription = worksheet.Cells[row, 2].Text.Trim();
-
                         Decimal price;
-                        if (!Regex.IsMatch(worksheet.Cells[row, 3].Text.Trim(), @"^[0-9]{1,8}[,.][0-9]{2}$")) return null;
+                        if (!Regex.IsMatch(worksheet.Cells[row, 3].Text.Trim().Replace('.', ','), @"^\d{0,8}(,\d{1,2})?$")) return null; //@"^[0-9]{1,8}[,.][0-9]{2}$"
 
                         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 
                         if (!Decimal.TryParse(worksheet.Cells[row, 3].Text.Trim().Replace(',', '.'), NumberStyles.Number, CultureInfo.InvariantCulture, out price)) return null;
                         product.Price = price;
-
                         product.Images = worksheet.Cells[row, 4].Text.Trim().Split(' ').ToList();
 
                         product.Images = DeleteEmpty(product.Images);
@@ -94,7 +93,8 @@ namespace FiveDevsShop.Controllers
                             product.PropertiesKey.Add(worksheet.Cells[row, 8].Text.Trim());
                             product.PropertiesValue.Add(worksheet.Cells[row, 9].Text.Trim());
                         }
-                        if(!IsProductValid(product)) return null;
+
+                        if (!IsProductValid(product)) return null;
                         if (db.Product.FirstOrDefault(p => p.SkuCode == product.SkuCode) != null) return null;
                         importProducts.Add(product);
                     }
@@ -119,10 +119,8 @@ namespace FiveDevsShop.Controllers
                     { 
                         for (int j = 0; j < excelProduct.Categories.Count; j++)
                         {
-                            if(j > 0) category = db.Category.FirstOrDefault(c => c.Title == excelProduct.Categories[j] && 
-                                    c.Parent_id == parentCategory.Id);
+                            if(j > 0) category = db.Category.FirstOrDefault(c => c.Title == excelProduct.Categories[j] && c.Parent_id == parentCategory.Id);
                             else category = db.Category.FirstOrDefault(c => c.Title == excelProduct.Categories[j]);
-
                             if (category == null && j == 0) /*Root category*/
                             {
                                 category = new Category();
@@ -142,14 +140,15 @@ namespace FiveDevsShop.Controllers
                             
                         }
                     }
-                    catch (Exception ex) { transaction.Rollback(); }
+                    catch (Exception ex) { transaction.Rollback(); return false; }
                     Product product = new Product();
                     product.SkuCode = excelProduct.SkuCode;
                     product.Price = excelProduct.Price;
                     product.Title = excelProduct.Title;
                     product.Discount = excelProduct.Discount;
                     product.Description = excelProduct.Description;
-                    product.ShortDescription = excelProduct.ShortDescription;
+                    //product.ShortDescription = excelProduct.ShortDescription;
+                    
                     product.CategoryId = category.Id;//db.Category.FirstOrDefault(c=>c.Title == excelProduct.Categories[excelProduct.Categories.Count-1]).Id;
 
                     try
@@ -157,7 +156,7 @@ namespace FiveDevsShop.Controllers
                         db.Product.Add(product);
                         db.SaveChanges();
                     }
-                    catch (Exception ex) { transaction.Rollback(); }
+                    catch (Exception ex) { transaction.Rollback(); return false; }
 
                     try
                     {
@@ -172,7 +171,7 @@ namespace FiveDevsShop.Controllers
                         }
                         db.SaveChanges();
                     }
-                    catch (Exception ex) { transaction.Rollback(); }
+                    catch (Exception ex) { transaction.Rollback(); return false; }
 
                     try
                     {
@@ -205,35 +204,29 @@ namespace FiveDevsShop.Controllers
         private Boolean IsProductValid(ProductsImportModel product)
         {
             if (!Regex.IsMatch(product.Title, @"^.{1,45}$")) return false;
-            if (!Regex.IsMatch(product.ShortDescription, @"^.{1,400}$")) return false;
-
+            if (product.ShortDescription != "" && !Regex.IsMatch(product.ShortDescription, @"^.{1,400}$")) return false;
             if (product.Price <= 0) return false;
-
             for (int i = 0; i < product.Images.Count; i++)
             {
                 if (!Regex.IsMatch(product.Images[i], @"(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*\.(?:jpg|gif|png|jpe|jpeg|pjpeg|x-png))(?:\?([^#]*))?(?:#(.*))?")) return false;
             }
-
             if (!Regex.IsMatch(product.SkuCode, @"^.{1,20}$")) return false;
             if (!Regex.IsMatch(product.Description, @"^.{1,16383}$")) return false;
-
             for (int i = 0; i < product.Categories.Count; i++)
             {
                 if (!Regex.IsMatch(product.Categories[i], @"^.{1,45}$")) return false;
             }
-
             for (int i = 0; i < product.PropertiesKey.Count; i++)
             {
                 if (!Regex.IsMatch(product.PropertiesKey[i], @"^.{1,40}$")) return false;
-                if (!Regex.IsMatch(product.PropertiesKey[i], @"^.{1,40}$")) return false;
+                if (!Regex.IsMatch(product.PropertiesValue[i], @"^.{1,40}$")) return false;
                 if (product.PropertiesKey.Count(a => a == product.PropertiesKey[i]) > 1) return false;
             }
-
             return true;
         }
         private Boolean IsCorrectLine(ExcelWorksheet worksheet, int row)
         {
-            if (!(worksheet.Cells[row, 1].Text.Trim() != "" && worksheet.Cells[row, 2].Text.Trim() != "" &&
+            if (!(worksheet.Cells[row, 1].Text.Trim() != ""  &&
                 worksheet.Cells[row, 3].Text.Trim() != "" && worksheet.Cells[row, 5].Text.Trim() != "" &&
                 worksheet.Cells[row, 6].Text.Trim() != "" && worksheet.Cells[row, 7].Text.Trim() != ""))
             {
@@ -241,18 +234,26 @@ namespace FiveDevsShop.Controllers
             }
             else return true;
         }
-        private Boolean IsPropertyLine(ExcelWorksheet worksheet, int row)
+        private int IsPropertyLine(ExcelWorksheet worksheet, int row)
         {
-            if (row == 1) return false;
-            if(worksheet.Cells[row, 1].Text.Trim() == "" && worksheet.Cells[row, 2].Text.Trim() == "" &&
+            
+            if (row == 1) return 0;
+            if (worksheet.Cells[row, 1].Text.Trim() == "" && worksheet.Cells[row, 2].Text.Trim() == "" &&
                 worksheet.Cells[row, 3].Text.Trim() == "" && worksheet.Cells[row, 4].Text.Trim() == "" &&
                 worksheet.Cells[row, 5].Text.Trim() == "" && worksheet.Cells[row, 6].Text.Trim() == "" &&
                 worksheet.Cells[row, 7].Text.Trim() == "" && worksheet.Cells[row, 8].Text.Trim() != "" &&
                 worksheet.Cells[row, 9].Text.Trim() != "")
             {
-                return true;
+                return 1;
+            } else if(worksheet.Cells[row, 1].Text.Trim() != "" &&
+                worksheet.Cells[row, 3].Text.Trim() != "" && 
+                worksheet.Cells[row, 5].Text.Trim() != "" && worksheet.Cells[row, 6].Text.Trim() != "" &&
+                worksheet.Cells[row, 7].Text.Trim() != "" && worksheet.Cells[row, 8].Text.Trim() != "" &&
+                worksheet.Cells[row, 9].Text.Trim() != "")
+            {
+                return 2;
             }
-            return false;
+            return 0;
         }
 
         private Boolean IsExcelFile(IFormFile file)
