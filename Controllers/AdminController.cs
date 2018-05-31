@@ -10,12 +10,9 @@ using FiveDevsShop.Data;
 using FiveDevsShop.Models.DomainServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-<<<<<<< HEAD
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
-=======
->>>>>>> Implement user lockout
 
 namespace FiveDevsShop.Controllers
 {        

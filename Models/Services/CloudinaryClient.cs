@@ -12,6 +12,22 @@ namespace FiveDevsShop.Services
             AppSettingsProvider.CloudinaryApiKey,
             AppSettingsProvider.CloudinarytSecret);
 
+<<<<<<< HEAD
+=======
+         private static string baseUrl= "http://res.cloudinary.com/five-devs-shop/image/upload/";
+         private static string imgType = ".jpg";
+         
+         public static Task UploadImageAsyncTask(string filePath, string imageId)
+         {
+             var uploadParams = new ImageUploadParams()
+             {
+                 File = new FileDescription(filePath),
+                 PublicId = imageId
+             };
+     
+             var uploadResult = cloudinary.Upload(uploadParams);
+         }
+>>>>>>> Further imporovements
 
         private static readonly Cloudinary cloudinary = new Cloudinary(account);
 

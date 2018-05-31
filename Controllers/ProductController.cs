@@ -558,7 +558,11 @@ namespace FiveDevsShop.Controllers
 
             var imageId = Guid.NewGuid().ToString();
 
+<<<<<<< HEAD
             uploader.UploadImage(filePath, imageId);
+=======
+            CloudinaryClient.UploadImageAsyncTask(filePath, imageId);
+>>>>>>> Further imporovements
 
             return imageId;
         }
