@@ -76,6 +76,9 @@ namespace FiveDevsShop
             {
                 options.IdleTimeout = TimeSpan.FromHours(1);
             });
+
+            services.AddTransient<IValidator<AddProductViewModel>, AddProductViewModelValidator>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -122,9 +125,16 @@ namespace FiveDevsShop
                     defaults: new { controller = "Category", action = "GetCategoryAndSubcategories" });
                 
                 routes.MapRoute(
-                    name: "product",
+                    name: "product_add",
                     template: "product/add",
-                    defaults: new { controller = "Product", action = "AddProduct" });
+                    defaults: new { controller = "Product", action = "AddProductView" });
+                
+                routes.MapRoute(
+                    name: "product_edit",
+                    template: "product/edit/{id?}",
+                    constraints: new { id = new IntRouteConstraint() },
+                    defaults: new { controller = "Product", action = "EditProductView" });
+
 
                 routes.MapRoute(
                     name: "get_product",
@@ -136,12 +146,16 @@ namespace FiveDevsShop
                     name: "index",
                     template: "index",
                     defaults: new { controller = "Home", action = "HomeProductList" });
-                
                                 
                 routes.MapRoute(
                     name: "admin",
                     template: "admin",
                     defaults: new { controller = "Admin", action = "AdminMain" });
+                
+                routes.MapRoute(
+                    name: "admin_categories",
+                    template: "admin/categories",
+                    defaults: new { controller = "Admin", action = "Categories" });
             });
         }
 

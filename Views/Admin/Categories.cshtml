@@ -1,4 +1,53 @@
-﻿<div class="col-md-12 categories-panel">
+﻿@model CategoryViewModel
 
+<div class="col-md-12 categories-panel">
+    
+    <h2>Pridėti arba šalinti kategorijas</h2>
+    <span>@ViewBag.hasProducts</span>
+    
+    @if (@ViewBag.hasProducts != null && ((bool) @ViewBag.hasProducts))
+    {
+        <p class="danger col-md-10">
+            Negalima ištrinti kategorijos, nes egzistuoja jai priklausančių prekių
+        </p>        
+    }
+    
+    @if (@ViewBag.hasProducts != null && !((bool) @ViewBag.hasProducts))
+    {
+        <p class="success col-md-10">
+            Kategorija sėkmingai ištrinta
+        </p>        
+    }
+
+
+    @if (Model.Subtrees.Any())
+    {
+        <div class="categories-panel-list">
+            
+            @Html.Partial("/Views/Shared/Components/Category/AddCategoryForm.cshtml", new CategoryAddViewModel()
+            {
+                ParentId = null
+            })
+            
+            <br/>
+
+            @foreach (var subtreeChunk in Model.Subtrees.Chunks(6))
+            {
+                <div>
+                    @foreach (var subtree in subtreeChunk)
+                    {
+                        <div class="top-level-subtree col-md-12">
+
+                            <ul>
+                                <li>
+                                    @Html.Partial("/Views/Shared/Components/Category/AdminTree.cshtml", subtree)
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
 </div>
 

@@ -1,0 +1,15 @@
+﻿@model CategoryAddViewModel
+
+<form asp-controller="Category" asp-action="AddCategory" method="post" >
+    @Html.HiddenFor(model => model.ParentId)
+    
+    <div class="form-group">    
+
+        <label for="skuCode">Kategorijos pavadinimas:</label>
+        <input type="text" class="form-control" id="sku-code" placeholder="Įveskite naujos kategorijos pavadinimą" asp-for="Title"/>
+        <span asp-validation-for="Title" class="text-danger"></span>
+    
+    </div>
+    
+    <button type="submit" class="btn btn-default">Pridėti naują kategoriją</button>
+</form>
