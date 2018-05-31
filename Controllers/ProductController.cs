@@ -13,14 +13,14 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Threading;
 using FiveDevsShop.Models.DomainServices;
-<<<<<<< HEAD
 using FiveDevsShop.Extensions;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-=======
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Internal;
->>>>>>> Implement Product adding and editing and categories management
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Internal;
+
 
 namespace FiveDevsShop.Controllers
 {
@@ -316,6 +316,7 @@ namespace FiveDevsShop.Controllers
                 return SearchProduct("");
             }   
         }
+
 
         public async Task<IActionResult> ViewCart()
         {

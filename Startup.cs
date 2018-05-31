@@ -78,7 +78,6 @@ namespace FiveDevsShop
             });
 
             services.AddTransient<IValidator<AddProductViewModel>, AddProductViewModelValidator>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -151,7 +150,6 @@ namespace FiveDevsShop
                     name: "index",
                     template: "index",
                     defaults: new { controller = "Home", action = "HomeProductList" });
-                
                                 
                 routes.MapRoute(
                     name: "admin",

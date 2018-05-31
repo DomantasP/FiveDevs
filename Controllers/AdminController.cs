@@ -46,7 +46,8 @@ namespace FiveDevsShop.Controllers
                 CategoryPath = tree.FindPath(null),
                 Subtrees = subtrees
             });
-        }       
+        }
+       
         
         public IActionResult Product(int page = 1)
         {
