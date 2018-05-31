@@ -3,22 +3,27 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Globalization;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FiveDevsShop.Models;
 using FiveDevsShop.Data;
 using FiveDevsShop.Models.DomainServices;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace FiveDevsShop.Controllers
 {        
+    
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AdminController(ApplicationDbContext db)
+        public AdminController(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
             this.db = db;
+            _userManager = userManager;
         }
 
         public IActionResult AdminMain()
@@ -49,282 +54,51 @@ namespace FiveDevsShop.Controllers
             
             return View(model);
         }
-        
-        public IActionResult SalesView()
-        {
-            ViewData["Message"] = "Pardavimų peržiūra";
-            return PartialView();
-        }
-        
-        public IActionResult AdminProductView()
-        {
-            ViewData["Message"] = "Prekių apžvalga";
 
-            return PartialView();
-        }
-        
-        public IActionResult AdminEditProductView()
+        public IActionResult Orders()
         {
-            List<Product> items = db.Product.ToList();
-            ViewData["Message"] = "Redaguoti prekę";
-
-            return PartialView(items);
+            // implement order loading
+            
+            return View();
         }
+
         
         [HttpPost]
-        public JsonResult ConfirmOrder(int orderId) //Id - order Id
+        public IActionResult ConfirmOrder(int orderId)
         {
             User_order order = db.User_order.FirstOrDefault(o => o.Id == orderId);
-            Debug.WriteLine(orderId);
-            
-                order.Status += 1;
 
-                try{db.SaveChanges();}
-                catch{return null;}
-     
-            return Json(order.Id);
+            //STATUS ENUM
+            
+            order.Status = 3;
+
+            db.SaveChanges();
+
+            return View("Orders");
+        }
+
+        
+        public IActionResult Users()
+        {
+            var model = _userManager.Users.ToList();
+            
+            return View(model);
         }
         
-        [HttpPost]
-        public JsonResult GetOrderItems(int Id) //Id - order Id
+        public async Task<RedirectToActionResult> LockoutUser(string id)
         {
-            var purchases = from p in db.Purchase
-                            where p.Order_id == Id
-                            select new
-                            {
-                                sku_code = p.Sku_code,
-                                title = p.Title,
-                                price = p.Price,
-                                quantity = p.Quantity,
-                                category = p.Category
-                            };
-
-            return Json(purchases);
+            var user = await _userManager.FindByIdAsync(id);
+            var model = _userManager.SetLockoutEnabledAsync(user,true);
+            
+            return RedirectToAction("Users");
         }
         
-        [HttpPost]
-        public JsonResult GetOrder(int Id)
+        public async Task<RedirectToActionResult> UnlockUser(string id)
         {
-            User_order order = db.User_order.FirstOrDefault(o => o.Id == Id);
-            ApplicationUser user = db.User.FirstOrDefault(u => u.Id == order.User_id);
-            var cost = (from p in db.Purchase
-                       where p.Order_id == order.Id
-                       group p by new { p.Order_id } into pp
-                       select pp.Sum(c => (c.Price * c.Quantity))).FirstOrDefault();
-
-            var returnData = new
-            {
-                Id = order.Id,
-                Date = order.Date,
-                User = user.UserName,
-                Address = order.Address,
-                Cost = cost,
-                Status = order.Status,
-                Stars = order.Stars,
-                Comment = order.Comment
-            };
-                             
-            return Json(returnData);
-        }
-        
-        [HttpPost]
-        public JsonResult GetOrders(int status)
-        {
-            List<User_order> orders = db.User_order.ToList();
-            List<Purchase> purchases = db.Purchase.ToList();
-            List<ApplicationUser> users = db.User.ToList();
-
-            var sortedOrders = from o in orders
-                               where o.Status == status
-                               select o;
-
-            var sortedPurchase = from p in purchases
-                                 join o in sortedOrders
-                                 on p.Order_id equals o.Id
-                                 join u in users
-                                 on o.User_id equals u.Id
-                                 group p by new {o.Id, o.Date, u.UserName} into pg
-                                 select new
-                                 {
-                                     Id = pg.Key.Id,
-                                     Date = pg.Key.Date,
-                                     User = pg.Key.UserName,
-                                     Cost = pg.Sum(c=>(c.Price * c.Quantity))
-                                 };
+            var user = await _userManager.FindByIdAsync(id);
+            var model = _userManager.SetLockoutEnabledAsync(user, false);
             
-  
-
-            return Json(sortedPurchase);
+            return RedirectToAction("Users");
         }
-
-        // status to ban - 1; to unban - 0
-        public JsonResult AdminChangeBanStatus(String username, int status)
-        {
-            ApplicationUser user = db.User.FirstOrDefault(p => p.UserName == username);
-
-                user.Ban_flag = status;
-                try{db.SaveChanges();}
-                catch{return null;}
-            
-            var userSpecialData = from c in db.User.ToList()
-                                  where c.UserName == username
-                                  select new
-                                  {
-                                      Username = c.UserName,
-                                      Email = c.Email,
-                                      Ban_flag = c.Ban_flag
-                                  };
-
-            return Json(userSpecialData);
-        }
-
-        [HttpPost]
-        public IActionResult AdminBanUser(String username)
-        {
-            return AdminChangeBanStatus(username, 1);
-        }
-
-        [HttpPost]
-        public IActionResult AdminUnbanUser(String username)
-        {
-            return AdminChangeBanStatus(username, 0);
-        }
-
-        [HttpPost]
-        public IActionResult AdminGetUserModel()
-        {
-            List<ApplicationUser> users = db.User.ToList();
-            var usersAdminData =  from c in users
-                select new { Username = c.UserName,
-                            Email = c.Email,
-                            Ban_flag = c.Ban_flag };
-
-            return Json(usersAdminData);
-        }
-        
-        [HttpPost]
-        
-        public IActionResult AdminGetModel()
-        {
-            var items = from i in db.Product.ToList()
-                        join c in db.Category.ToList()
-                        on i.CategoryId equals c.Id
-                        select new
-                        {
-                            id = i.Id,
-                            sku_code = i.SkuCode,
-                            price = i.Price,
-                            title = i.Title,
-                            discount = i.Discount,
-                            category = c.Title
-                        };
-
-            return Json(items);
-        }
-
-        [HttpPost]
-        public IActionResult AdminGetProductById(int id)
-        {
-            ViewData["Message"] = "Redaguoti prekę";
-            Product item = db.Product.First(p => p.Id == id);
-            Category category = db.Category.First(c => c.Id == item.CategoryId);
-
-            var itemWithNamedCategory =
-            new
-            {
-                id = item.Id,
-                sku_code = item.SkuCode,
-                price = item.Price,
-                title = item.Title,
-                description = item.Description,
-                discount = item.Discount,
-                category = category.Title,
-                categoryid = category.Id
-            };
-  
-            return Json(itemWithNamedCategory);
-        }
-        
-        [HttpPost]
-        public IActionResult AdminUpdateProduct(ProductsViewModel product)//(String idS, String sku_code, String categoryS, String title, String priceS, String description, String discountS, String subCategoryS)
-        {
-            ViewData["Message"] = "Atnaujinti prekę";
-
-            int id;
-            decimal price;
-            int discount;
-            
-            product.priceS = (product.priceS).Replace(",", ".");
-
-            Debug.WriteLine(product.priceS + "Turi buti taskas");
-      
-            if (!Int32.TryParse(product.idS, out id)) return null;
-            Product item = db.Product.FirstOrDefault(p => p.Id == id);
-            if (item == null) return null;
-            if (!Decimal.TryParse(product.priceS, NumberStyles.Number, CultureInfo.InvariantCulture, out price)) return null;
-            //price = Convert.ToDecimal(product.priceS, new CultureInfo("en-US"));
-            //price = decimal.Parse(product.priceS, new NumberFormatInfo() { NumberDecimalSeparator = "." });
-
-
-            //if (!decimal.TryParse(product.priceS, out price)) return null;
-            if (!Int32.TryParse(product.discountS, out discount)) return null;
-            Debug.WriteLine(price);
-           
-
-
-            Category category;
-            int setCategory = -1;
-            category = db.Category.ToList().FirstOrDefault(c => c.Title == product.categoryS.Trim());
-            if (category != null) setCategory = category.Id;
-
-            if (category == null)
-            {
-
-                    category = new Category();
-                    category.Title = product.categoryS.Trim();
-                    category.Parent_id = null;
-                    db.Category.Add(category);
-                    try { db.SaveChanges(); }
-                    catch { return null; }
-
-                setCategory = (db.Category.ToList().FirstOrDefault(c => c.Title == product.categoryS.Trim())).Id;
-            }
-            Category subcategory = null;
-            if (product.subCategoryS != null) subcategory = db.Category.ToList().FirstOrDefault(c => c.Title == product.subCategoryS.Trim());
-            if(subcategory != null) setCategory = category.Id;
-            if (product.subCategoryS != null && subcategory == null)
-            {
-                
-                    Category newCategory = new Category();
-                    newCategory.Title = product.subCategoryS.Trim();
-                    newCategory.Parent_id = category.Id;
-                    db.Category.Add(newCategory);
-                    try { db.SaveChanges(); }
-                    catch { return null; }
-                    setCategory = (db.Category.ToList().FirstOrDefault(c => c.Title == product.subCategoryS.Trim())).Id;
-                
-            }
-
-            
-                    item.Id = id;
-                    item.SkuCode = product.sku_code;
-                    item.CategoryId = setCategory;
-                    item.Title = product.title;
-                    item.Price = price;
-                    item.Description = product.description;
-                    item.Discount = discount;
-
-                try{db.SaveChanges();}
-                catch{return null;}
-
-                    return Json(item);
-            
-        }
-
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
     }
 }

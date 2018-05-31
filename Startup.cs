@@ -161,6 +161,26 @@ namespace FiveDevsShop
                     name: "admin_categories",
                     template: "admin/categories",
                     defaults: new { controller = "Admin", action = "Categories" });
+                
+                routes.MapRoute(
+                    name: "admin_orders",
+                    template: "admin/orders",
+                    defaults: new { controller = "Admin", action = "Orders" });
+                
+                routes.MapRoute(
+                    name: "admin_users",
+                    template: "admin/users",
+                    defaults: new { controller = "Admin", action = "Users" });
+                
+                routes.MapRoute(
+                    name: "lockout",
+                    template: "admin/lockout-user/{id?}",
+                    defaults: new { controller = "Admin", action = "LockoutUser" });
+                
+                routes.MapRoute(
+                    name: "unlock",
+                    template: "admin/unlock-user/{id?}",
+                    defaults: new { controller = "Admin", action = "UnlockUser" });
             });
         }
 
