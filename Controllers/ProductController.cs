@@ -4,8 +4,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using FiveDevsShop.Data;
 using FiveDevsShop.Models;
-using System.Net.Http;
-using System.Threading.Tasks;
 using FiveDevsShop.Services;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
@@ -15,18 +13,27 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Threading;
 using FiveDevsShop.Models.DomainServices;
+using FiveDevsShop.Extensions;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace FiveDevsShop.Controllers
 {
     public class ProductController : Controller
     {
 		private readonly ApplicationDbContext db;
-        // Only one should be instantiated throughout the whole application
-		private static readonly HttpClient client = new HttpClient();
+        private readonly PriceCalculator priceCalculator;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IImageUploader uploader;
+        private readonly Paging paging;
 
-        public ProductController(ApplicationDbContext db)
+        public ProductController(ApplicationDbContext db, PriceCalculator priceCalculator, UserManager<ApplicationUser> userManager, IImageUploader uploader, Paging paging)
         {
             this.db = db;
+            this.priceCalculator = priceCalculator;
+            this.userManager = userManager;
+            this.uploader = uploader;
+            this.paging = paging;
         }
 
         [HttpPost]
@@ -185,10 +192,7 @@ namespace FiveDevsShop.Controllers
             }
             return true;
         }
-
         
-
-    
         private List<String> DeleteEmpty(List<String> texts)
         {
             for(int i = 0; i < texts.Count; i++)
@@ -294,7 +298,7 @@ namespace FiveDevsShop.Controllers
                     }
                 }
 
-                var productView = Paging.LoadPage(products, page);
+                var productView = paging.LoadPage(products, page);
                 productView.AddQueryParam("name", name);
                 return View(new ProductSearchViewModel()
                 {
@@ -308,6 +312,16 @@ namespace FiveDevsShop.Controllers
             }   
         }
 
+        public async Task<IActionResult> ViewCart()
+        {
+            var user = await userManager.GetUserAsync(User);
+            var cart = this.UserShoppingCart();
+            return View("/Views/User/Cart.cshtml", new CartViewModel()
+            {
+                Cart = cart,
+                LoggedIn = user != null,
+            });
+        }
 
         [HttpPost]
         public IActionResult AddProduct(AddProductViewModel model)
@@ -370,9 +384,15 @@ namespace FiveDevsShop.Controllers
         public IActionResult AddProductToCart(GetProductViewModel model)
         {
             var product = db.Product.FirstOrDefault(p => p.Id == model.Id);
-            var productViewModel = BuildProductViewModel(product);
+            if (product == null)
+                return View("NotFound");
 
-            // TODO cart logic
+            var productViewModel = BuildProductViewModel(product);
+            var category = db.Category.First(c => c.Id == product.CategoryId);
+
+            var cart = this.UserShoppingCart();
+            cart.AddProduct(product, model.ProductCount, category.Title, uploader, priceCalculator);
+            this.SaveCart(cart);
 
             return View("GetProduct", productViewModel);
         }
@@ -416,7 +436,7 @@ namespace FiveDevsShop.Controllers
 
             var imageId = Guid.NewGuid().ToString();
 
-            CloudinaryClient.UploadImage(filePath, imageId);
+            uploader.UploadImage(filePath, imageId);
 
             return imageId;
         }
@@ -426,7 +446,7 @@ namespace FiveDevsShop.Controllers
             List<string> galleryImages = new List<string>();
 
             var imagesUrls = db.Image.Where(img => img.ProductId == product.Id)
-                              .Select(img => CloudinaryClient.GetImageUrl(img.Id)).ToList();
+                              .Select(img => uploader.GetImageUrl(img.Id)).ToList();
 
             var productViewModel = new GetProductViewModel()
             {
@@ -436,7 +456,7 @@ namespace FiveDevsShop.Controllers
                 Price = product.Price,
                 SkuCode = product.SkuCode,
                 Discount = product.Discount,
-                MainImageUrl = CloudinaryClient.GetImageUrl(product.MainImageId),
+                MainImageUrl = uploader.GetImageUrl(product.MainImageId),
                 GalleryImagesUrls = imagesUrls
             };
 

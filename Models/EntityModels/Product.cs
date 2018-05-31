@@ -1,5 +1,8 @@
-﻿namespace FiveDevsShop.Models
+﻿using System;
+
+namespace FiveDevsShop.Models
 {
+    [Serializable]
     public class Product
     {
         public int Id { get; set; }
