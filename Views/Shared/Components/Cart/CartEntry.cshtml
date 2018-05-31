@@ -2,10 +2,15 @@
 
 
 
+
+
 <div class="cart-entry">
     <div class="s-buttons">
-        <a href="@Url.Action("RemoveProduct","CartController", (new { skuCode = Model.SkuCode }))"><span class="glyphicon glyphicon-remove"></span></a>
-    </div>
+        <form asp-controller="Cart" asp-action="RemoveProduct" method="post">
+            @Html.HiddenFor(model => model.SkuCode)
+            <button  type="submit"><span class="glyphicon glyphicon-remove"></span></button>
+        </form>
+            </div>
 
     <div class="s-image">
         <img width="200px" src=@Model.ImageUrl alt="" />
@@ -17,13 +22,21 @@
 
 
     <div class="s-quantity">
-        <button class="minus-sbtn" type="button" name="button">
-            <span class="glyphicon glyphicon-minus"></span>
-        </button>
-        <input type="text" name="name" size="5" value=@Model.Amount />
-        <button class="plus-sbtn" type="button" name="button">
-            <span class="glyphicon glyphicon-plus"></span>
-        </button>
+        <form asp-controller="Cart" asp-action="RemoveOne" method="post">
+            @Html.HiddenFor(model => model.SkuCode)
+            <button class="minus-sbtn" type="submit" name="button">
+                <span class="glyphicon glyphicon-minus"></span>
+            </button>
+        </form>
+        <label class="s-label">
+            @Model.Amount
+        </label>
+        <form asp-controller="Cart" asp-action="AddOne" method="post">
+            @Html.HiddenFor(model => model.SkuCode)
+            <button class="plus-sbtn" type="submit" name="button">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+            </form>
     </div>
 
     <div class="total-price">@Model.FinalPrice€</div>

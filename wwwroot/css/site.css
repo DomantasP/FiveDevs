@@ -254,6 +254,7 @@ h3.category-breadcrumbs .glyphicon {
 
 }
 
+
     .s-buttons span {
         font-size: 30px;
         color : grey;
@@ -337,6 +338,13 @@ button[class*=sbtn] {
     font-size : 15px;
 }
 
+.s-label {
+    margin-left: 3px;
+    margin-left: 3px;
+    font-size: 16px;
+    color: #43484D;
+    font-weight: 300;
+}
 
 
 

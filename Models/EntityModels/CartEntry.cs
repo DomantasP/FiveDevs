@@ -15,4 +15,6 @@ namespace FiveDevsShop.Models
         public decimal FinalPrice { get; set; }
         public string Category { get; set; }
     }
+
+    
 }

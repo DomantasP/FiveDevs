@@ -11,12 +11,12 @@ namespace FiveDevsShop.Controllers
 {
     public class CartController : Controller
     {
-        private readonly ShoppingCart shoppingCart;
+        
         private readonly UserManager<ApplicationUser> userManager;
 
-        public CartController(ShoppingCart sc, UserManager<ApplicationUser> um)
+        public CartController(UserManager<ApplicationUser> um)
         {
-            shoppingCart = sc;
+           
             userManager = um;
         }
         public async Task<IActionResult> ViewCart()
@@ -29,12 +29,27 @@ namespace FiveDevsShop.Controllers
                 LoggedIn = user != null,
             });
         }
-        public RedirectToActionResult RemoveProduct(string skuCode)
+        public async Task<IActionResult> RemoveProduct(CartEntry entry)
         {
-            shoppingCart.removeFromCart(skuCode);
-            this.SaveCart(shoppingCart);
-            return RedirectToAction("ViewCart");
+            var cart = this.UserShoppingCart();      
+            cart.removeFromCart(entry.SkuCode);
+            this.SaveCart(cart);
+            return await ViewCart();
         }
-        
+        public async Task<IActionResult> AddOne(CartEntry entry)
+        {
+            var cart = this.UserShoppingCart();
+            cart.increaseAmountByOne(entry.SkuCode);
+            this.SaveCart(cart);
+            return await ViewCart();
+        }
+        public async Task<IActionResult> RemoveOne(CartEntry entry)
+        {
+            var cart = this.UserShoppingCart();
+            cart.decreaseAmountByOne(entry.SkuCode);
+            this.SaveCart(cart);
+            return await ViewCart();
+        }
+
     }
 }
