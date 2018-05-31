@@ -1,0 +1,42 @@
+﻿@model CartViewModel
+
+@{
+    ViewData["Title"] = "Krepšelis";
+}
+<div class="shopping-cart">
+
+    <div class="s-title">
+        <h2>Krepšelis</h2>
+    </div>
+        @if (Model.Cart.Entries.Count == 0)
+        {
+             <div class="stuscias">
+                  <p>Jūsų krepšelis šiuo metu yra tuščias.</p>
+             </div>
+        }
+        else
+        {
+           // @for(int i =0; i< Model.Cart.Entries.Count;i++)
+            @foreach (var entry in Model.Cart.Entries.Values)
+            {
+
+                @Html.Partial("/Views/Shared/Components/Cart/CartEntry.cshtml", entry)
+
+            }
+            <div class="total-cost">Iš viso:    @Model.Cart.TotalCost() €</div>           
+           
+            @if (Model.LoggedIn)
+            {
+                <div class="apbtn">
+                <button class="apmoketi" onclick="window.location.href='/payment'">Apmokėti</button>
+                </div>
+            }
+            else
+            {
+                <p>Norėdami užsakyti prekes, <a href="/Account/Login">prisijunkite.</a></p>
+            }
+             
+        }
+    
+
+</div>

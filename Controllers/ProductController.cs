@@ -4,8 +4,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using FiveDevsShop.Data;
 using FiveDevsShop.Models;
-using System.Net.Http;
-using System.Threading.Tasks;
 using FiveDevsShop.Services;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
@@ -15,18 +13,23 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Threading;
 using FiveDevsShop.Models.DomainServices;
+using FiveDevsShop.Extensions;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace FiveDevsShop.Controllers
 {
     public class ProductController : Controller
     {
 		private readonly ApplicationDbContext db;
-        // Only one should be instantiated throughout the whole application
-		private static readonly HttpClient client = new HttpClient();
+        private readonly PriceCalculator priceCalculator;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ProductController(ApplicationDbContext db)
+        public ProductController(ApplicationDbContext db, PriceCalculator priceCalculator, UserManager<ApplicationUser> userManager)
         {
             this.db = db;
+            this.priceCalculator = priceCalculator;
+            this.userManager = userManager;
         }
 
         [HttpPost]
@@ -308,6 +311,16 @@ namespace FiveDevsShop.Controllers
             }   
         }
 
+        public async Task<IActionResult> ViewCart()
+        {
+            var user = await userManager.GetUserAsync(User);
+            var cart = this.UserShoppingCart();
+            return View("/Views/User/Cart.cshtml", new CartViewModel()
+            {
+                Cart = cart,
+                LoggedIn = user != null,
+            });
+        }
 
         [HttpPost]
         public IActionResult AddProduct(AddProductViewModel model)
@@ -370,9 +383,15 @@ namespace FiveDevsShop.Controllers
         public IActionResult AddProductToCart(GetProductViewModel model)
         {
             var product = db.Product.FirstOrDefault(p => p.Id == model.Id);
-            var productViewModel = BuildProductViewModel(product);
+            if (product == null)
+                return View("NotFound");
 
-            // TODO cart logic
+            var productViewModel = BuildProductViewModel(product);
+            var category = db.Category.First(c => c.Id == product.CategoryId);
+
+            var cart = this.UserShoppingCart();
+            cart.AddProduct(product, model.ProductCount, category.Title, priceCalculator);
+            this.SaveCart(cart);
 
             return View("GetProduct", productViewModel);
         }

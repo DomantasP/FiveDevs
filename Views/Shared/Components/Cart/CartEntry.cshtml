@@ -1,0 +1,43 @@
+﻿@model CartEntry
+
+
+
+
+
+<div class="cart-entry">
+    <div class="s-buttons">
+        <form asp-controller="Cart" asp-action="RemoveProduct" method="post">
+            <div style="display: none">@Html.EditorFor(model => model.SkuCode)</div>
+            <button  type="submit"><span class="glyphicon glyphicon-remove"></span></button>
+        </form>
+            </div>
+
+    <div class="s-image">
+        <img width="200px" src=@Model.ImageUrl alt="" />
+    </div>
+
+    <div class="s-description">
+        <span>@Model.Title</span>
+    </div>
+
+
+    <div class="s-quantity">
+        <form asp-controller="Cart" asp-action="RemoveOne" method="post">
+            <div style="display: none">@Html.EditorFor(model => model.SkuCode)</div>
+            <button class="minus-sbtn" type="submit" name="button">
+                <span class="glyphicon glyphicon-minus"></span>
+            </button>
+        </form>
+        <label class="s-label">
+            @Model.Amount
+        </label>
+        <form asp-controller="Cart" asp-action="AddOne" method="post">
+            <div style="display: none">@Html.EditorFor(model => model.SkuCode)</div>
+            <button class="plus-sbtn" type="submit" name="button">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+        </form>
+    </div>
+
+    <div class="total-price">@Model.FinalPrice€</div>
+</div>

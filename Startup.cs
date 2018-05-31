@@ -16,6 +16,9 @@ using FluentValidation.AspNetCore;
 using FiveDevsShop.Validators;
 using FluentValidation;
 using FiveDevsShop.Models.AccountViewModels;
+using System.Net.Http;
+using FiveDevsShop.Models.Services.Payment;
+using FiveDevsShop.Models.DomainServices;
 
 namespace FiveDevsShop
 {
@@ -51,12 +54,24 @@ namespace FiveDevsShop
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddMvc().AddFluentValidation();
+            services.AddSingleton(new HttpClient());
+            services.AddSingleton<PaymentProcessor>();
+
+            services.AddMvc().AddFluentValidation().AddSessionStateTempDataProvider();
 
             services.AddTransient<IValidator<GetProductViewModel>, GetProductViewModelValidator>();
             services.AddTransient<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
             services.AddTransient<IValidator<LoginViewModel>, LoginViewModelValidator>();
             services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
+            services.AddTransient<IValidator<PaymentViewModel>, PaymentViewModelValidator>();
+            services.AddTransient<PriceCalculator>();
+            services.AddTransient<PaymentProcessor>();
+            
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,9 +89,20 @@ namespace FiveDevsShop
 
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute(
+                    name: "payment",
+                    template: "payment",
+                    defaults: new { controller = "Payment", action = "StartPayment" });
+
+                routes.MapRoute(
+                    name: "cart",
+                    template: "cart",
+                    defaults: new { controller = "Product", action = "ViewCart" });
+
                 routes.MapRoute(
                     name: "home",
                     template: "",
@@ -114,6 +140,9 @@ namespace FiveDevsShop
             AppSettingsProvider.CloudinaryCloud = Configuration["CloudinaryCredentials:Cloud"];
             AppSettingsProvider.CloudinaryApiKey = Configuration["CloudinaryCredentials:ApiKey"];
             AppSettingsProvider.CloudinarytSecret = Configuration["CloudinaryCredentials:Secret"];
+            AppSettingsProvider.PaymentUsername = Configuration["PaymentCredentials:Username"];
+            AppSettingsProvider.PaymentPassword = Configuration["PaymentCredentials:Password"];
+            AppSettingsProvider.PaymentServiceUrl = Configuration["PaymentCredentials:Url"];
         }
     }
 }
