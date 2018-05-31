@@ -16,6 +16,7 @@ using FluentValidation.AspNetCore;
 using FiveDevsShop.Validators;
 using FluentValidation;
 using FiveDevsShop.Models.AccountViewModels;
+using FiveDevsShop.Models.ManageViewModels;
 using System.Net.Http;
 using FiveDevsShop.Models.Services.Payment;
 using FiveDevsShop.Models.DomainServices;
@@ -62,6 +63,8 @@ namespace FiveDevsShop
             services.AddTransient<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
             services.AddTransient<IValidator<LoginViewModel>, LoginViewModelValidator>();
             services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
+            services.AddTransient<IValidator<IndexViewModel>, IndexViewModelValidator>();
+            services.AddTransient<IValidator<ChangePasswordViewModel>, ChangePasswordViewModelValidator>();
             services.AddTransient<IValidator<PaymentViewModel>, PaymentViewModelValidator>();
             services.AddTransient<PriceCalculator>();
             services.AddTransient<IPaymentProcessor, PaymentProcessor>();

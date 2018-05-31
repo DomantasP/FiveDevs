@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using FiveDevsShop.Models;
 using FiveDevsShop.Models.ManageViewModels;
 using FiveDevsShop.Services;
+using FiveDevsShop.Data;
 
 namespace FiveDevsShop.Controllers
 {
@@ -25,6 +26,7 @@ namespace FiveDevsShop.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
+        private readonly ApplicationDbContext _dbContext;
 
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
         private const string RecoveryCodesKey = nameof(RecoveryCodesKey);
@@ -34,13 +36,15 @@ namespace FiveDevsShop.Controllers
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
-          UrlEncoder urlEncoder)
+          UrlEncoder urlEncoder,
+          ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
             _urlEncoder = urlEncoder;
+            _dbContext = dbContext;
         }
 
         [TempData]
@@ -59,7 +63,14 @@ namespace FiveDevsShop.Controllers
             {
                 Username = user.UserName,
                 Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
+                City = user.City,
+                Street = user.Street,
+                HouseNumber = user.HouseNumber,
+                ApartmentNumber = user.ApartmentNumber,
+                PostalCode = user.PostalCode,
                 IsEmailConfirmed = user.EmailConfirmed,
                 StatusMessage = StatusMessage
             };
@@ -82,27 +93,25 @@ namespace FiveDevsShop.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var email = user.Email;
-            if (model.Email != email)
+            user.Email = model.Email;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.City = model.City;
+            user.Street = model.Street;
+            user.HouseNumber = model.HouseNumber;
+            user.ApartmentNumber = model.ApartmentNumber;
+            user.PostalCode = model.PostalCode;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
             {
-                var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
-                if (!setEmailResult.Succeeded)
-                {
-                    throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
-                }
+                _logger.LogInformation("User successfully updated his account.");
+
+                StatusMessage = "Paskyra atnaujinta sėkmingai.";
+                return RedirectToAction(nameof(Index));
             }
 
-            var phoneNumber = user.PhoneNumber;
-            if (model.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
-                }
-            }
-
-            StatusMessage = "Paskyra atnaujinta sėkmingai.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -167,6 +176,10 @@ namespace FiveDevsShop.Controllers
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
             if (!changePasswordResult.Succeeded)
             {
+                if (changePasswordResult.Errors.Any(e => e.Description == "Incorrect password."))
+                {
+                    changePasswordResult.Errors.First(e => e.Description == "Incorrect password.").Description = "Dabartinis slaptažodis neteisingas.";
+                }
                 AddErrors(changePasswordResult);
                 return View(model);
             }
@@ -181,7 +194,31 @@ namespace FiveDevsShop.Controllers
         [HttpGet]
         public async Task<IActionResult> PurchaseHistory()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var sortedOrders = from o in _dbContext.User_order
+                               where o.User_id == user.Id
+                               orderby o.date descending
+                               select new PurchaseHistoryViewModel()
+                               {
+                                   Id = o.Id,
+                                   Date = o.date,
+                                   Status = o.Status,
+                               };
+
+            var orders = sortedOrders.ToList();
+            foreach (var order in orders)
+            {
+                order.Items = (from p in _dbContext.Purchase
+                          where p.Order_id == order.Id
+                          select p).ToList();
+            } 
+
+            return View("/Views/Manage/PurchaseHistory.cshtml", orders);
         }
 
         [HttpGet]
