@@ -17,37 +17,9 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-
     </environment>
 </head>
 <body>
-                <ul>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" asp-area="">
-                            Kategorijos<span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            @await Component.InvokeAsync("Category")
-                        </ul>
-                    </li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Kontaktai</a></li>
-                    <li><a asp-area="" asp-controller="Product" asp-action = "ViewCart">Krepšelis</a></li>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <li><a asp-area="" asp-controller="Admin" asp-action="AdminMain">Administratoriaus panelė</a></li>
-                    }
-                </ul>
-                <div class="navbar-left" style="margin-top:12px;">
-                        @using (Html.BeginForm("SearchProduct", "Product", FormMethod.Get))
-                        {
-                            <ul class="nav navbar-nav">
-                                <li>@Html.TextBox("name", null,  new { placeholder = "Ieškoti prekių..." , id = "searchField"})</li>
-                                <li><button type="submit" id="searchButton" disabled><span class="glyphicon glyphicon-search"></span></button></li>
-                            </ul>
-                        }
-                </div>
-                
-                @await Html.PartialAsync("_LoginPartial")
 
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -72,8 +44,8 @@
                         @await Component.InvokeAsync("Category")
                     </ul>
                 </li>
-                <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                 <li><a asp-area="" asp-controller="Home" asp-action="Contact">Kontaktai</a></li>
+                <li><a asp-area="" asp-controller="Product" asp-action = "ViewCart">Krepšelis</a></li>
             </ul>
             <div class="navbar-left" style="margin-top: 12px;">
                 @using (Html.BeginForm("SearchProduct", "Product", FormMethod.Get))

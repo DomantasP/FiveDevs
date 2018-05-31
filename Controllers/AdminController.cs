@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FiveDevsShop.Models;
@@ -10,23 +7,22 @@ using FiveDevsShop.Data;
 using FiveDevsShop.Models.DomainServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using Microsoft.AspNetCore.Authorization;
+
 
 namespace FiveDevsShop.Controllers
 {        
-    
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly Paging paging;    
 
-        public AdminController(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
+        public AdminController(ApplicationDbContext db, UserManager<ApplicationUser> userManager, Paging paging)
         {
             this.db = db;
             _userManager = userManager;
+            this.paging = paging;
         }
 
         public IActionResult AdminMain()
@@ -48,11 +44,10 @@ namespace FiveDevsShop.Controllers
                 Subtrees = subtrees
             });
         }
-       
         
         public IActionResult Product(int page = 1)
         {
-            var model = Paging.LoadPage(db.Product, page);
+            var model = paging.LoadPage(db.Product, page);
             
             return View(model);
         }

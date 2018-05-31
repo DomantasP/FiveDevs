@@ -314,11 +314,6 @@ namespace FiveDevsShop.Controllers
             }   
         }
 
-        [Authorize(Roles = "Admin")]
-        public IActionResult AddProductView()
-        {
-            var model = new AddProductViewModel {Categories = db.Category.ToList()};
-
         public async Task<IActionResult> ViewCart()
         {
             var user = await userManager.GetUserAsync(User);
