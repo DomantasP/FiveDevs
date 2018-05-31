@@ -137,7 +137,7 @@ namespace FiveDevsShop.Controllers
                             
                         }
                     }
-                    catch (Exception ex) { transaction.Rollback(); }
+                    catch (Exception) { transaction.Rollback(); }
                     Product product = new Product();
                     product.SkuCode = excelProduct.SkuCode;
                     product.Price = excelProduct.Price;
@@ -152,7 +152,7 @@ namespace FiveDevsShop.Controllers
                         db.Product.Add(product);
                         db.SaveChanges();
                     }
-                    catch (Exception ex) { transaction.Rollback(); }
+                    catch (Exception) { transaction.Rollback(); }
 
                     try
                     {
@@ -167,7 +167,7 @@ namespace FiveDevsShop.Controllers
                         }
                         db.SaveChanges();
                     }
-                    catch (Exception ex) { transaction.Rollback(); }
+                    catch (Exception) { transaction.Rollback(); }
 
                     try
                     {
@@ -181,7 +181,7 @@ namespace FiveDevsShop.Controllers
                         }
                         db.SaveChanges();
                     }
-                    catch (Exception ex) { transaction.Rollback(); }
+                    catch (Exception) { transaction.Rollback(); }
                 }
                 transaction.Commit();
             }
@@ -533,7 +533,7 @@ namespace FiveDevsShop.Controllers
 
             var imageId = Guid.NewGuid().ToString();
 
-            CloudinaryClient.UploadImage(filePath, imageId);
+            CloudinaryClient.UploadImageAsyncTask(filePath, imageId);
 
             return imageId;
         }

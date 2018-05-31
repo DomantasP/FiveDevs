@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FiveDevsShop.Controllers
 {        
-    
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
@@ -33,7 +32,6 @@ namespace FiveDevsShop.Controllers
             return View(items);
         }
         
-
         public IActionResult Categories()
         {
             var tree = new CategoryTree(db.Category);

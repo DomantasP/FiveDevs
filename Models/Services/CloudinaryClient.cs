@@ -1,4 +1,5 @@
-﻿using CloudinaryDotNet;
+﻿using System.Threading.Tasks;
+using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Configuration;
 
@@ -16,7 +17,7 @@ namespace FiveDevsShop.Services
          private static string baseUrl= "http://res.cloudinary.com/five-devs-shop/image/upload/";
          private static string imgType = ".jpg";
          
-         public static void UploadImage(string filePath, string imageId)
+         public static Task UploadImageAsyncTask(string filePath, string imageId)
          {
              var uploadParams = new ImageUploadParams()
              {

@@ -179,7 +179,7 @@ namespace FiveDevsShop.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> PurchaseHistory()
+        public IActionResult PurchaseHistory()
         {
             return View();
         }
