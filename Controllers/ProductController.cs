@@ -18,9 +18,6 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Internal;
-
 
 namespace FiveDevsShop.Controllers
 {
@@ -317,6 +314,10 @@ namespace FiveDevsShop.Controllers
             }   
         }
 
+        [Authorize(Roles = "Admin")]
+        public IActionResult AddProductView()
+        {
+            var model = new AddProductViewModel {Categories = db.Category.ToList()};
 
         public async Task<IActionResult> ViewCart()
         {

@@ -60,6 +60,7 @@ namespace FiveDevsShop
             services.AddTransient<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
             services.AddTransient<IValidator<LoginViewModel>, LoginViewModelValidator>();
             services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
+<<<<<<< HEAD
             services.AddTransient<IValidator<IndexViewModel>, IndexViewModelValidator>();
             services.AddTransient<IValidator<ChangePasswordViewModel>, ChangePasswordViewModelValidator>();
             services.AddTransient<IValidator<PaymentViewModel>, PaymentViewModelValidator>();
@@ -74,6 +75,8 @@ namespace FiveDevsShop
                 options.IdleTimeout = TimeSpan.FromHours(1);
             });
 
+=======
+>>>>>>> 8aeda09a2d51a4c1f2dbbf920453768c18db204c
             services.AddTransient<IValidator<AddProductViewModel>, AddProductViewModelValidator>();
         }
 

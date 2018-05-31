@@ -10,14 +10,9 @@ using FiveDevsShop.Data;
 using FiveDevsShop.Models.DomainServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-<<<<<<< HEAD
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
-=======
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
->>>>>>> Implemented order management
 
 namespace FiveDevsShop.Controllers
 {        

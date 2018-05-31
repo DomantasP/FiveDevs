@@ -11,6 +11,10 @@ html {
   height: 100%;
 }
 
+html {
+  height: 100%;
+}
+
 body {
   padding-top: 50px;
   padding-bottom: 260px;
@@ -343,6 +347,63 @@ button[class*='sbtn'] {
   font-size: 16px;
   color: #43484d;
   font-weight: 300;
+}
+
+.admin-panel {
+  padding: 100px 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.admin-panel-item {
+  color: white;
+  background: #333333;
+  text-align: center;
+  margin: 20px;
+  min-width: 140px;
+}
+
+.admin-panel-item img {
+  height: 150px;
+  width: 150px;
+}
+
+.admin-panel-item:hover {
+  text-decoration: none;
+  color: lightgreen;
+}
+
+.categories-panel {
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.categories-panel-list {
+  margin-top: 20px;
+  padding: 50px;
+  height: 100%;
+}
+
+.categories-panel-list ul li button {
+  margin: 2px;
+}
+
+.categories-panel-list ul li {
+  list-style: none;
+  border-left: 1px solid dodgerblue;
+  padding: 20px;
+  border-top: 1px solid dodgerblue;
+}
+
+.categories-panel-list h4 {
+  font-weight: 500;
+}
+
+.new-product-link {
+  margin-bottom: 20px;
+  display: block;
 }
 
 .admin-panel {
