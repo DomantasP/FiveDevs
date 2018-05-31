@@ -135,6 +135,11 @@ namespace FiveDevsShop
                     constraints: new { id = new IntRouteConstraint() },
                     defaults: new { controller = "Product", action = "EditProductView" });
 
+                routes.MapRoute(
+                    name: "product_delete",
+                    template: "product/delete/{id?}",
+                    constraints: new { id = new IntRouteConstraint() },
+                    defaults: new { controller = "Product", action = "DeleteProduct" });
 
                 routes.MapRoute(
                     name: "get_product",

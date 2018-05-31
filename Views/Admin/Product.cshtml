@@ -27,10 +27,7 @@
                 <td>@item.Discount</td>
                 <td><a href="/product/edit/@item.Id"><button>Redaguoti</button></a></td>
                 <td>
-                    <form asp-controller="Product" asp-action="DeleteProduct" method="post">
-                        @Html.Hidden(item.Id.ToString())
-                        <button type="submit">Trinti</button>
-                    </form>
+                    <td><a href="/product/delete/@item.Id"><button>Trinti</button></a></td>
                 </td>
             </tr>
         }
