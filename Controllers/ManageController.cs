@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using FiveDevsShop.Models;
 using FiveDevsShop.Models.ManageViewModels;
 using FiveDevsShop.Services;
+using FiveDevsShop.Data;
 
 namespace FiveDevsShop.Controllers
 {
@@ -25,6 +26,7 @@ namespace FiveDevsShop.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
+        private readonly ApplicationDbContext _dbContext;
 
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
         private const string RecoveryCodesKey = nameof(RecoveryCodesKey);
@@ -34,13 +36,15 @@ namespace FiveDevsShop.Controllers
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
-          UrlEncoder urlEncoder)
+          UrlEncoder urlEncoder,
+          ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
             _urlEncoder = urlEncoder;
+            _dbContext = dbContext;
         }
 
         [TempData]
@@ -190,7 +194,31 @@ namespace FiveDevsShop.Controllers
         [HttpGet]
         public async Task<IActionResult> PurchaseHistory()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var sortedOrders = from o in _dbContext.User_order
+                               where o.User_id == user.Id
+                               orderby o.date descending
+                               select new PurchaseHistoryViewModel()
+                               {
+                                   Id = o.Id,
+                                   Date = o.date,
+                                   Status = o.Status,
+                               };
+
+            var orders = sortedOrders.ToList();
+            foreach (var order in orders)
+            {
+                order.Items = (from p in _dbContext.Purchase
+                          where p.Order_id == order.Id
+                          select p).ToList();
+            } 
+
+            return View("/Views/Manage/PurchaseHistory.cshtml", orders);
         }
 
         [HttpGet]

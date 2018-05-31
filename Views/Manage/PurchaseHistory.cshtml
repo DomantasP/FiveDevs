@@ -1,4 +1,4 @@
-﻿
+﻿@model IEnumerable<PurchaseHistoryViewModel>
 @{
     ViewData["Title"] = "Pirkimų istorija";
     ViewData.AddActivePage(ManageNavPages.PurchaseHistory);
@@ -6,3 +6,62 @@
 
 <h4>Pirkimų istorija</h4>
 
+<table class="table table-bordered">
+    <thead style="background-color:lightblue">
+        <tr>
+            <th scope="col">Data</th>
+            <th scope="col">Statusas</th>
+            <th scope="col">Prekė</th>
+            <th scope="col">Kaina (€)</th>
+            <th scope="col">Bendra kaina (€)</th>
+        </tr>
+    </thead>
+    <tbody style="background-color:white">
+        @foreach (var order in Model)
+        {
+            int index = 0;
+            var orderTotalPrice = order.Items.Sum(o => o.Price);
+
+            @foreach (var orderItem in order.Items)
+            {
+        <tr>
+            @if (index == 0)
+            {
+                <th scope="row" rowspan="@order.Items.Count">@order.Date</th>
+
+                @if (order.Status == 0)
+                {
+                    <td scope="row" rowspan="@order.Items.Count">Nepatvirtintas</td>
+                }
+
+                @if (order.Status == 1)
+                {
+                    <td scope="row" rowspan="@order.Items.Count">Patvirtintas</td>
+                }
+
+                @if (order.Status == 2)
+                {
+                    <td scope="row" rowspan="@order.Items.Count">Išsiųstas</td>
+                }
+
+                @if (order.Status == 3)
+                {
+                    <td scope="row" rowspan="@order.Items.Count">Patvirtintas</td>
+                }
+            }
+
+            <td>@orderItem.Title</td>
+            <td>@orderItem.Price</td>
+
+            @if (index == 0)
+            {
+                <td rowspan="@order.Items.Count">@orderTotalPrice</td>
+            }
+        </tr>
+
+                index += 1;
+            }
+
+        }
+    </tbody>
+</table>
