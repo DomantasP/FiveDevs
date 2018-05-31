@@ -16,10 +16,10 @@ namespace FiveDevsShop.Controllers
     public class PaymentController : Controller
     {
         private readonly ApplicationDbContext db;
-        private readonly PaymentProcessor paymentProcessor;
+        private readonly IPaymentProcessor paymentProcessor;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public PaymentController(ApplicationDbContext db, PaymentProcessor paymentProcessor, UserManager<ApplicationUser> userManager)
+        public PaymentController(ApplicationDbContext db, IPaymentProcessor paymentProcessor, UserManager<ApplicationUser> userManager)
         {
             this.db = db;
             this.paymentProcessor = paymentProcessor;

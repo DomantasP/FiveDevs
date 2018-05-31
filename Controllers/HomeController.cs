@@ -14,10 +14,12 @@ namespace FiveDevsShop.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly Paging paging;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context, Paging paging)
         {
             this.db = context;
+            this.paging = paging;
         }
 
         public IActionResult Index()
@@ -56,7 +58,7 @@ namespace FiveDevsShop.Controllers
 
         private ProductListViewModel LoadProductPreviews(int page)
         {
-            return Paging.LoadPage(db.Product, page);
+            return paging.LoadPage(db.Product, page);
         }
 
         public IActionResult Error()

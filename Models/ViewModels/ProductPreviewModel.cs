@@ -22,16 +22,13 @@ namespace FiveDevsShop.Models
 
         public bool IsDiscounted => Discount > 0;
 
-        public static ProductPreviewModel FromProduct(Product product)
+        public ProductPreviewModel(Product product, IImageUploader uploader)
         {
-            return new ProductPreviewModel()
-            {
-                Id = product.Id,
-                Title = product.Title,
-                Price = product.Price,
-                Discount = product.Discount,
-                MainImageUrl = CloudinaryClient.GetImageUrl(product.MainImageId),
-            };
+            Id = product.Id;
+            Title = product.Title;
+            Price = product.Price;
+            Discount = product.Discount;
+            MainImageUrl = uploader.GetImageUrl(product.MainImageId);
         }
     }
 }

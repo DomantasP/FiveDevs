@@ -13,10 +13,12 @@ namespace FiveDevsShop.Controllers
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly Paging paging;
 
-        public CategoryController(ApplicationDbContext db)
+        public CategoryController(ApplicationDbContext db, Paging paging)
         {
             this.db = db;
+            this.paging = paging;
         }
 
         public IActionResult GetCategoryAndSubcategories(int? id, int page = 1)
@@ -47,7 +49,7 @@ namespace FiveDevsShop.Controllers
 
         private ProductListViewModel ShowProductsInCategory(CategoryTree tree, int? id, int page)
         {
-            return Paging.LoadPage(FindProductsInCategory(tree, id), page);
+            return paging.LoadPage(FindProductsInCategory(tree, id), page);
         }
 
         // TODO: this loads all products eagerly, even though we throw away most of them
